@@ -1,6 +1,6 @@
 {
-	"name": "@alessiofrittoli/node-module-starter",
-	"version": "1.7.0",
+	"name": "@alessiofrittoli/react-hooks",
+	"version": "0.1.0",
 	"description": "Starter repository for developing node_modules",
 	"author": {
 		"name": "Alessio Frittoli",
@@ -19,14 +19,14 @@
 		"npm",
 		"node_modules"
 	],
-	"homepage": "https://github.com/alessiofrittoli/node-module-starter#readme",
+	"homepage": "https://github.com/alessiofrittoli/react-hooks#readme",
 	"bugs": {
-		"url": "https://github.com/alessiofrittoli/node-module-starter/issues",
+		"url": "https://github.com/alessiofrittoli/react-hooks/issues",
 		"email": "info@alessiofrittoli.it"
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/alessiofrittoli/node-module-starter.git"
+		"url": "git+https://github.com/alessiofrittoli/react-hooks.git"
 	},
 	"main": "./dist/index.js",
 	"module": "./dist/index.mjs",
@@ -42,7 +42,7 @@
 		"build": "pnpm lint && pnpm test:ci && tsup",
 		"build:watch": "tsup --watch",
 		"lint": "eslint",
-		"release": "node scripts/publish.js --verbose",
+		"release": "node scripts/publish.js --verbose --npm",
 		"//2a": "*********************************************************************",
 		"//2b": "***************************** UNIT TESTS ****************************",
 		"//2c": "*********************************************************************",
@@ -58,8 +58,7 @@
 		"test:coverage:serve": "concurrently --prefix none --kill-others \"pnpm test:coverage\" \"pnpm test:serve-coverage\"",
 		"//4a": "*********************************************************************",
 		"//4b": "************************ TARGETED UNIT TESTS ************************",
-		"//4c": "*********************************************************************",
-		"test:jest": "pnpm test:watch jest.test.ts"
+		"//4c": "*********************************************************************"
 	},
 	"devDependencies": {
 		"@alessiofrittoli/node-scripts": "^2.4.0",
