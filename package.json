@@ -58,6 +58,11 @@
 			"types": "./dist/misc/index.d.ts",
 			"import": "./dist/misc/index.mjs",
 			"require": "./dist/misc/index.js"
+		},
+		"./eslint": {
+			"types": "./dist/eslint.d.ts",
+			"import": "./dist/eslint.mjs",
+			"require": "./dist/eslint.js"
 		}
 	},
 	"sideEffects": false,
