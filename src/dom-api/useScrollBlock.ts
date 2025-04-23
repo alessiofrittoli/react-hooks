@@ -8,22 +8,26 @@ import {
 /**
  * Prevent Element overflow.
  * 
- * @param target (Optional) The target HTMLElement. Default: `Document.documentElement`.
+ * @param target (Optional) The React RefObject target HTMLElement. Default: `Document.documentElement`.
  */
-export const useScrollBlock = ( target?: HTMLElement ) => {
+export const useScrollBlock = ( target?: React.RefObject<HTMLElement | null> ) => {
 	
 	/**
 	 * Block scroll.
 	 * 
 	 */
-	const blockScroll = useCallback( () => blockScrollHandler( target ), [ target ] )
+	const blockScroll = useCallback(
+		() => blockScrollHandler( target?.current || undefined ), [ target ]
+	)
 
 
 	/**
 	 * Restore scroll.
 	 * 
 	 */
-	const restoreScroll = useCallback( () => restoreScrollHandler( target ), [ target ] )
+	const restoreScroll = useCallback(
+		() => restoreScrollHandler( target?.current || undefined ), [ target ]
+	)
 
 	
 	return [ blockScroll, restoreScroll ] as const

@@ -122,7 +122,7 @@
 		"typescript-eslint": "^8.31.0"
 	},
 	"dependencies": {
-		"@alessiofrittoli/web-utils": "^1.9.0"
+		"@alessiofrittoli/web-utils": "^1.9.1"
 	},
 	"peerDependencies": {
 		"@types/react": "^19",

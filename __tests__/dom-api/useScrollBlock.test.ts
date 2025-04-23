@@ -1,3 +1,4 @@
+import { useRef } from 'react'
 import { renderHook, act } from '@testing-library/react'
 import { useScrollBlock } from '@/dom-api/useScrollBlock'
 import { blockScroll, restoreScroll } from '@alessiofrittoli/web-utils/dom'
@@ -32,7 +33,11 @@ describe( 'useScrollBlock', () => {
 	it( 'calls blockScroll with custom target when invoked', () => {
 
 		const target = document.createElement( 'div' )
-		const { result: { current } } = renderHook( () => useScrollBlock( target ) )
+		const { result: { current } } = renderHook( () => {
+			const targetRef	= useRef( target )
+			return useScrollBlock( targetRef )
+		} )
+
 		const [ hookBlockScroll ] = current
 
 		act( () => {
@@ -61,7 +66,10 @@ describe( 'useScrollBlock', () => {
 	it( 'calls restoreScroll with custom target when invoked', () => {
 
 		const target = document.createElement( 'div' )
-		const { result: { current } } = renderHook( () => useScrollBlock( target ) )
+		const { result: { current } } = renderHook( () => {
+			const targetRef	= useRef( target )
+			return useScrollBlock( targetRef )
+		} )
 		const [, hookRestoreScroll ] = current
 
 		act( () => {
