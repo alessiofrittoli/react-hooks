@@ -24,6 +24,7 @@
 - [Getting started](#getting-started)
 - [API Reference](#api-reference)
   - [Browser API](#browser-api)
+  - [DOM API](#dom-api)
 - [Development](#development)
   - [Install depenendencies](#install-depenendencies)
   - [Build the source code](#build-the-source-code)
@@ -320,6 +321,94 @@ import { useIsPortrait } from '@alessiofrittoli/react-hooks/browser-api'
 
 ```tsx
 const isLandscape = ! useIsPortrait()
+```
+
+</details>
+
+---
+
+#### DOM API
+
+##### `useScrollBlock`
+
+Prevent Element overflow.
+
+<details>
+
+<summary style="cursor:pointer">Parameters</summary>
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `target`  | `React.RefObject<HTMLElement>` | `Document.documentElement` | (Optional) The React RefObject target HTMLElement. |
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Returns</summary>
+
+Type: `[ () => void, () => void ]`
+
+A tuple with block and restore scroll callbacks.
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Usage</summary>
+
+###### Importing the hook
+
+```tsx
+import { useScrollBlock } from '@alessiofrittoli/react-hooks'
+// or
+import { useScrollBlock } from '@alessiofrittoli/react-hooks/dom-api'
+```
+
+---
+
+###### Block Document Overflow
+
+```tsx
+const [ blockScroll, restoreScroll ] = useScrollBlock()
+
+const openPopUpHandler = useCallback( () => {
+  ...
+  blockScroll()
+}, [ blockScroll ] )
+
+const closePopUpHandler = useCallback( () => {
+  ...
+  restoreScroll()
+}, [ restoreScroll ] )
+
+...
+```
+
+---
+
+###### Block HTML Element Overflow
+
+```tsx
+const elementRef = useRef<HTMLDivElement>( null )
+
+const [ blockScroll, restoreScroll ] = useScrollBlock( elementRef )
+
+const scrollBlockHandler = useCallback( () => {
+  ...
+  blockScroll()
+}, [ blockScroll ] )
+
+const scrollRestoreHandler = useCallback( () => {
+  ...
+  restoreScroll()
+}, [ restoreScroll ] )
+
+...
 ```
 
 </details>

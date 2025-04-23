@@ -48,6 +48,11 @@
 			"types": "./dist/browser-api/storage/index.d.ts",
 			"import": "./dist/browser-api/storage/index.mjs",
 			"require": "./dist/browser-api/storage/index.js"
+		},
+		"./dom-api": {
+			"types": "./dist/dom-api/index.d.ts",
+			"import": "./dist/dom-api/index.mjs",
+			"require": "./dist/dom-api/index.js"
 		}
 	},
 	"sideEffects": false,
@@ -76,7 +81,8 @@
 		"//4b": "************************ TARGETED UNIT TESTS ************************",
 		"//4c": "*********************************************************************",
 		"test:storage": "pnpm test:watch browser-api/storage/*",
-		"test:browser-api": "pnpm test:watch --testPathPattern='browser-api/(?!storage/).*\\.test\\.(js|jsx|ts|tsx)'"
+		"test:browser-api": "pnpm test:watch --testPathPattern='browser-api/(?!storage/).*\\.test\\.(js|jsx|ts|tsx)'",
+		"test:dom-api": "pnpm test:watch dom-api/*"
 	},
 	"pnpm": {
 		"onlyBuiltDependencies": [
@@ -116,7 +122,7 @@
 		"typescript-eslint": "^8.31.0"
 	},
 	"dependencies": {
-		"@alessiofrittoli/web-utils": "^1.9.0"
+		"@alessiofrittoli/web-utils": "^1.9.1"
 	},
 	"peerDependencies": {
 		"@types/react": "^19",
