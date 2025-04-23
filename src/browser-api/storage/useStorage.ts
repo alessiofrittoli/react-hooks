@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
-import { LocalStorage, SessionStorage } from '@alessiofrittoli/web-utils'
+import { LocalStorage } from '@alessiofrittoli/web-utils/storage/LocalStorage'
+import { SessionStorage } from '@alessiofrittoli/web-utils/storage/SessionStorage'
 
 type Value<T>		= T | undefined | null
 type SetValue<T>	= React.Dispatch<React.SetStateAction<T>>
