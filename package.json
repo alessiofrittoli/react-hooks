@@ -33,6 +33,23 @@
 	"files": [
 		"dist"
 	],
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.mjs",
+			"require": "./dist/index.js"
+		},
+		"./browser-api": {
+			"types": "./dist/browser-api/index.d.ts",
+			"import": "./dist/browser-api/index.mjs",
+			"require": "./dist/browser-api/index.js"
+		},
+		"./browser-api/storage": {
+			"types": "./dist/browser-api/storage/index.d.ts",
+			"import": "./dist/browser-api/storage/index.mjs",
+			"require": "./dist/browser-api/storage/index.js"
+		}
+	},
 	"sideEffects": false,
 	"scripts": {
 		"//1a": "*********************************************************************",
