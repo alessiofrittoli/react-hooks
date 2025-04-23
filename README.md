@@ -566,6 +566,71 @@ export const ClientComponent: React.FC = () => {
 
 ---
 
+##### `useIsFirstRender`
+
+Check if is first React Hook/Component render.
+
+<details>
+
+<summary style="cursor:pointer">Returns</summary>
+
+Type: `boolean`
+
+- `true` at the mount time.
+- `false` otherwise.
+
+Note that if the React Hook/Component has no state updates, `useIsFirstRender` will always return `true`.
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Usage</summary>
+
+###### Importing the hook
+
+```tsx
+import { useIsFirstRender } from '@alessiofrittoli/react-hooks'
+// or
+import { useIsFirstRender } from '@alessiofrittoli/react-hooks/misc'
+```
+
+###### Basic usage
+
+```tsx
+'use client'
+
+import { useIsFirstRender } from '@alessiofrittoli/react-hooks/misc'
+
+export const ClientComponent: React.FC = () => {
+
+  const isFirstRender = useIsFirstRender()
+  const [ counter, setCounter ] = useState( 0 )
+
+  useEffect( () => {
+    const intv = setInterval( () => {
+      setCounter( prev => prev + 1 )
+    }, 1000 )
+    return () => clearInterval( intv )
+  }, [] )
+
+  return (
+    <div>
+      { isFirstRender ? 'First render' : 'Subsequent render' }
+      <hr />
+      { counter }
+    </div>
+  )
+
+}
+```
+
+</details>
+
+---
+
 ### Development
 
 #### Install depenendencies
