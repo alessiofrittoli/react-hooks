@@ -22,6 +22,7 @@
 ### Table of Contents
 
 - [Getting started](#getting-started)
+- [ESLint Configuration](#eslint-configuration)
 - [API Reference](#api-reference)
   - [Browser API](#browser-api)
   - [DOM API](#dom-api)
@@ -49,6 +50,27 @@ or using `pnpm`
 
 ```bash
 pnpm i @alessiofrittoli/react-hooks
+```
+
+---
+
+### ESLint Configuration
+
+This library may define and exports hooks that requires additional ESLint configuration for your project such as [`useUpdateEffect`](#useupdateeffect).
+
+Simply imports recommended configuration from `@alessiofrittoli/react-hooks/eslint` and add them to your ESLint configuration like so:
+
+```mjs
+import { config as AFReactHooksEslint } from '@alessiofrittoli/react-hooks/eslint'
+
+/** @type {import('eslint').Linter.Config[]} */
+const config = [
+  ...AFReactHooksEslint.recommended,
+  // ... other configurations
+]
+
+
+export default config
 ```
 
 ---
@@ -622,6 +644,79 @@ export const ClientComponent: React.FC = () => {
       <hr />
       { counter }
     </div>
+  )
+
+}
+```
+
+</details>
+
+---
+
+##### `useUpdateEffect`
+
+Modified version of `useEffect` that skips the first render.
+
+<details>
+
+<summary style="cursor:pointer">Parameters</summary>
+
+| Parameter | Type                   | Description |
+|-----------|------------------------|-------------|
+| `effect`  | `React.EffectCallback` | Imperative function that can return a cleanup function. |
+| `deps`    | `React.DependencyList` | If present, effect will only activate if the values in the list change. |
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Usage</summary>
+
+###### Importing the hook
+
+```tsx
+import { useUpdateEffect } from '@alessiofrittoli/react-hooks'
+// or
+import { useUpdateEffect } from '@alessiofrittoli/react-hooks/misc'
+```
+
+###### Basic usage
+
+```tsx
+'use client'
+
+import { useEffect, useState } from 'react'
+import { useUpdateEffect } from '@alessiofrittoli/react-hooks/misc'
+
+export const ClientComponent: React.FC = () => {
+
+  const [ count, setCount ] = useState( 0 )
+
+  useEffect( () => {
+    const intv = setInterval( () => {
+      setCount( prev => prev + 1 )
+    }, 1000 )
+    return () => clearInterval( intv )
+  }, [] )
+
+  useEffect( () => {
+    console.log( 'useEffect', count ) // starts from 0
+    return () => {
+      console.log( 'useEffect - clean up', count ) // starts from 0
+    }
+  }, [ count ] )
+
+  useUpdateEffect( () => {
+    console.log( 'useUpdateEffect', count ) // starts from 1
+    return () => {
+      console.log( 'useUpdateEffect - clean up', count ) // starts from 1
+    }
+  }, [ count ] )
+
+  return (
+    <div>{ count }</div>
   )
 
 }

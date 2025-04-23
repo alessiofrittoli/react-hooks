@@ -5,8 +5,8 @@ import { useIsFirstRender } from './useIsFirstRender'
 /**
  * Modified version of `useEffect` that skips the first render.
  *
- * @param effect Imperative function that can return a cleanup function.
- * @param deps If present, effect will only activate if the values in the list change.
+ * @param	effect	Imperative function that can return a cleanup function.
+ * @param	deps	If present, effect will only activate if the values in the list change.
  */
 export const useUpdateEffect = (
 	effect	: React.EffectCallback,
