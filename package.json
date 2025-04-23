@@ -81,7 +81,8 @@
 		"//4b": "************************ TARGETED UNIT TESTS ************************",
 		"//4c": "*********************************************************************",
 		"test:storage": "pnpm test:watch browser-api/storage/*",
-		"test:browser-api": "pnpm test:watch --testPathPattern='browser-api/(?!storage/).*\\.test\\.(js|jsx|ts|tsx)'"
+		"test:browser-api": "pnpm test:watch --testPathPattern='browser-api/(?!storage/).*\\.test\\.(js|jsx|ts|tsx)'",
+		"test:dom-api": "pnpm test:watch dom-api/*"
 	},
 	"pnpm": {
 		"onlyBuiltDependencies": [

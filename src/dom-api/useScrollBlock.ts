@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 import {
 	blockScroll as blockScrollHandler,
 	restoreScroll as restoreScrollHandler
-} from '@alessiofrittoli/web-utils'
+} from '@alessiofrittoli/web-utils/dom'
 
 
 /**
