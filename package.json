@@ -74,7 +74,8 @@
 		"test:coverage:serve": "concurrently --prefix none --kill-others \"pnpm test:coverage\" \"pnpm test:serve-coverage\"",
 		"//4a": "*********************************************************************",
 		"//4b": "************************ TARGETED UNIT TESTS ************************",
-		"//4c": "*********************************************************************"
+		"//4c": "*********************************************************************",
+		"test:storage": "pnpm test:watch browser-api/storage/*"
 	},
 	"pnpm": {
 		"onlyBuiltDependencies": [
