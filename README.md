@@ -84,7 +84,7 @@ Easly handle Local or Session Storage State.
 |-----------|------|---------|-------------|
 | `key`          | `string`           | - | The storage item key. |
 | `initialValue` | `T`                | - | The storage item initial value. |
-| `type`         | `local \| session` | local | (Optional) The storage API to use. |
+| `type`         | `local\|session`   | local | (Optional) The storage API to use. |
 
 </details>
 
@@ -339,7 +339,7 @@ Prevent Element overflow.
 
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
-| `target`  | `React.RefObject<HTMLElement>` | `Document.documentElement` | (Optional) The React RefObject target HTMLElement. |
+| `target`  | `React.RefObject<HTMLElement\|null>` | `Document.documentElement` | (Optional) The React RefObject target HTMLElement. |
 
 </details>
 
@@ -409,6 +409,101 @@ const scrollRestoreHandler = useCallback( () => {
 }, [ restoreScroll ] )
 
 ...
+```
+
+</details>
+
+---
+
+##### `useFocusTrap`
+
+Trap focus inside the given HTML Element.
+
+This comes pretty handy when rendering a modal that shouldn't be closed without a user required action.
+
+<details>
+
+<summary style="cursor:pointer">Parameters</summary>
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `target`  | `React.RefObject<HTMLElement\|null>` | The target HTMLElement React RefObject to trap focus within. |
+|           |      | If no target is given, you must provide the target HTMLElement when calling `setFocusTrap`. |
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Returns</summary>
+
+Type: `readonly [ SetFocusTrap, RestoreFocusTrap ]`
+
+A tuple containing:
+
+- `setFocusTrap`: A function to enable the focus trap. Optionally accept an HTMLElement as target.
+- `restoreFocusTrap`: A function to restore the previous focus state.
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Usage</summary>
+
+###### Importing the hook
+
+```tsx
+import { useFocusTrap } from '@alessiofrittoli/react-hooks'
+// or
+import { useFocusTrap } from '@alessiofrittoli/react-hooks/dom-api'
+```
+
+---
+
+###### Defining the target on hook initialization
+
+```tsx
+const modalRef = useRef<HTMLDivElement>( null )
+const [ setFocusTrap, restoreFocusTrap ] = useFocusTrap( modalRef )
+
+const modalOpenHandler = useCallback( () => {
+  if ( ! modalRef.current ) return
+  // ... open modal
+  setFocusTrap()
+  modalRef.current.focus() // focus the dialog so next tab will focus the next element inside the modal
+}, [ setFocusTrap ] )
+
+const modalCloseHandler = useCallback( () => {
+  // ... close modal
+  restoreFocusTrap() // cancel focus trap and restore focus to the last active element before enablig the focus trap
+}, [ restoreFocusTrap ] )
+```
+
+---
+
+###### Defining the target ondemand
+
+```tsx
+const modalRef = useRef<HTMLDivElement>( null )
+const modal2Ref = useRef<HTMLDivElement>( null )
+const [ setFocusTrap, restoreFocusTrap ] = useFocusTrap()
+
+const modalOpenHandler = useCallback( () => {
+  if ( ! modalRef.current ) return
+  // ... open modal
+  setFocusTrap( modalRef.current )
+  modalRef.current.focus()
+}, [ setFocusTrap ] )
+
+const modal2OpenHandler = useCallback( () => {
+  if ( ! modal2Ref.current ) return
+  // ... open modal
+  setFocusTrap( modal2Ref.current )
+  modal2Ref.current.focus()
+}, [ setFocusTrap ] )
 ```
 
 </details>
