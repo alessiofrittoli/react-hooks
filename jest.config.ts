@@ -16,11 +16,17 @@ dotenv.config( { path: [
  * 
  */
 const config: JestConfigWithTsJest = {
-	/** https://jestjs.io/docs/configuration#testenvironment-string */
-	testEnvironment: 'node',
+	/**
+	 * Use JSDOM by default since react testing library requires JSDOM environment.
+	 * 
+	 * Use `@jest-environment node` directive at the top of your testing file if testing simple functions.
+	 * 
+	 * https://jestjs.io/docs/configuration#testenvironment-string
+	 */
+	testEnvironment: 'jest-environment-jsdom',
 	moduleDirectories: [ 'node_modules', '<rootDir>/' ],
 	setupFilesAfterEnv: [ './jest.setup.ts' ],
-	testMatch: [ '**/__tests__/**/*.test.ts' ],
+	testMatch: ['**/__tests__/**/*.(test|spec).(ts|tsx)'],
 	/**
 	 * If you're using [Module Path Aliases](https://nextjs.org/docs/advanced-features/module-path-aliases),
 	 * you will have to add the moduleNameMapper in order for jest to resolve your absolute paths.
