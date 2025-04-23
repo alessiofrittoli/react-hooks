@@ -1,5 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
+type SetFocusTrap = ( target?: HTMLElement ) => void
+type RestoreFocusTrap = () => void
+
 const focusableSelector = [
 	'input', 'select', 'textarea',
 	'button', '[href]', '[tabindex]:not([tabindex="-1"])',
@@ -7,7 +10,7 @@ const focusableSelector = [
 
 
 /**
- * Trap focus inside the given HTMLElement.
+ * Trap focus inside the given HTML Element.
  * 
  * @param target (Optional) The target HTMLElement React RefObject to trap focus within.
  * 					If no target is given, you must provide the target HTMLElement when calling `setFocusTrap`.
@@ -16,50 +19,56 @@ const focusableSelector = [
  * - `setFocusTrap`: A function to enable the focus trap. Optionally accept an HTMLElement as target.
  * - `restoreFocusTrap`: A function to restore the previous focus state.
  */
-export const useFocusTrap = ( target?: React.RefObject<HTMLElement | null> ) => {
+export const useFocusTrap = (
+	target?: React.RefObject<HTMLElement | null>
+): readonly [ SetFocusTrap, RestoreFocusTrap ] => {
 
 	const [ focusTrap, setFocusTrapDispatch ] = (
-		useState<boolean | HTMLElement>( target?.current || false )
+		useState<HTMLElement | false>( false )
 	)
 
 	const lastActiveElement = useRef(
-		typeof document !== 'undefined' ? document.activeElement as HTMLElement : null
+		typeof document !== 'undefined'
+			? document.activeElement as HTMLElement
+			: null
 	)
 	
 	/**
 	 * Enable the focus trap.
 	 * 
 	 */
-	const setFocusTrap = useCallback( ( target?: HTMLElement ) => {
-		lastActiveElement.current = document.activeElement as HTMLElement
-		return setFocusTrapDispatch( target || true )
-	}, [] )
+	const setFocusTrap = useCallback<SetFocusTrap>( onDemandTarget => {
+
+		lastActiveElement.current	= document.activeElement as HTMLElement
+		const focusTrap				= onDemandTarget || target?.current || false
+		
+		if ( ! focusTrap ) return
+
+		return setFocusTrapDispatch( focusTrap )
+	
+	}, [ target ] )
 
 
 	/**
 	 * Restore the focus to the latest Document active Element.
 	 */
-	const restoreFocusTrap = useCallback( () => {
+	const restoreFocusTrap = useCallback<RestoreFocusTrap>( () => {
+
 		lastActiveElement.current?.focus()
 		setFocusTrapDispatch( false )
+	
 	}, [] )
 
 	
 	useEffect( () => {
 
-		const _target = (
-			typeof focusTrap !== 'boolean'
-				? focusTrap
-				: target?.current
-		)
-
-		if ( ! _target ) return
+		if ( ! focusTrap ) return
 
 		const keyDownHandler = ( event: KeyboardEvent ) => {
 
 			if ( event.key !== 'Tab' ) return
 
-			const focusableElements		= Array.from( _target.querySelectorAll<HTMLElement>( focusableSelector ) ),
+			const focusableElements		= Array.from( focusTrap.querySelectorAll<HTMLElement>( focusableSelector ) ),
 				firstFocusableElement	= focusableElements.at( 0 ),
 				lastFocusableElement	= focusableElements.at( -1 );
 
@@ -94,8 +103,8 @@ export const useFocusTrap = ( target?: React.RefObject<HTMLElement | null> ) => 
 			document.removeEventListener( 'keydown', keyDownHandler );
 		}
 
-	}, [ focusTrap, target ] )
+	}, [ focusTrap ] )
 
-	return [ setFocusTrap, restoreFocusTrap ] as const
+	return [ setFocusTrap, restoreFocusTrap ]
 
 }
