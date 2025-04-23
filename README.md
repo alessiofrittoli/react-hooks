@@ -283,6 +283,49 @@ const isDarkOS = useMediaQuery( '(prefers-color-scheme: dark)' )
 
 ---
 
+##### `useIsPortrait`
+
+Check if device is portrait oriented.
+
+React State get updated when device orientation changes.
+
+<details>
+
+<summary style="cursor:pointer">Returns</summary>
+
+Type: `boolean`
+
+- `true` if the device is portrait oriented.
+- `false` otherwise.
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Usage</summary>
+
+###### Importing the hook
+
+```tsx
+import { useIsPortrait } from '@alessiofrittoli/react-hooks'
+// or
+import { useIsPortrait } from '@alessiofrittoli/react-hooks/browser-api'
+```
+
+---
+
+###### Check if user device is in landscape
+
+```tsx
+const isLandscape = ! useIsPortrait()
+```
+
+</details>
+
+---
+
 ### Development
 
 #### Install depenendencies
