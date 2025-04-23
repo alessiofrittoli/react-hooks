@@ -23,6 +23,7 @@
 
 - [Getting started](#getting-started)
 - [API Reference](#api-reference)
+  - [Browser API](#browser-api)
 - [Development](#development)
   - [Install depenendencies](#install-depenendencies)
   - [Build the source code](#build-the-source-code)
@@ -107,11 +108,17 @@ A tuple with the stored item value or initial value and the setter function.
 ###### Importing the hooks
 
 ```tsx
-import { useStorage } from '@alessiofrittoli/react-hooks'
+import {
+  useStorage, useLocalStorage, useSessionStorage
+} from '@alessiofrittoli/react-hooks'
 // or
-import { useStorage } from '@alessiofrittoli/react-hooks/browser-api'
+import {
+  useStorage, useLocalStorage, useSessionStorage
+} from '@alessiofrittoli/react-hooks/browser-api'
 // or
-import { useStorage } from '@alessiofrittoli/react-hooks/browser-api/storage'
+import {
+  useStorage, useLocalStorage, useSessionStorage
+} from '@alessiofrittoli/react-hooks/browser-api/storage'
 ```
 
 ---
@@ -220,6 +227,59 @@ Applies the same API Reference.
 Shortcut React Hook for [`useStorage`](#usestorage).
 
 Applies the same API Reference.
+
+---
+
+##### `useMediaQuery`
+
+Get Document Media matches and listen for changes.
+
+<details>
+
+<summary style="cursor:pointer">Parameters</summary>
+
+| Parameter | Type     | Description |
+|-----------|----------|-------------|
+| `query`   | `string` | A string specifying the media query to parse into a `MediaQueryList`. |
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Returns</summary>
+
+Type: `boolean`
+
+- `true` if the document currently matches the media query list.
+- `false` otherwise.
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Usage</summary>
+
+###### Importing the hook
+
+```tsx
+import { useMediaQuery } from '@alessiofrittoli/react-hooks'
+// or
+import { useMediaQuery } from '@alessiofrittoli/react-hooks/browser-api'
+```
+
+---
+
+###### Check if user device prefers dark color scheme
+
+```tsx
+const isDarkOS = useMediaQuery( '(prefers-color-scheme: dark)' )
+```
+
+</details>
 
 ---
 
