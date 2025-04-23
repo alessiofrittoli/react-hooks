@@ -337,9 +337,9 @@ Prevent Element overflow.
 
 <summary style="cursor:pointer">Parameters</summary>
 
-| Parameter | Type          | Default | Description |
-|-----------|---------------|---------|-------------|
-| `target`  | `HTMLElement` | `Document.documentElement` | (Optional) The React RefObject target HTMLElement. |
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `target`  | `React.RefObject<HTMLElement>` | `Document.documentElement` | (Optional) The React RefObject target HTMLElement. |
 
 </details>
 
