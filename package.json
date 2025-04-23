@@ -33,6 +33,23 @@
 	"files": [
 		"dist"
 	],
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.mjs",
+			"require": "./dist/index.js"
+		},
+		"./browser-api": {
+			"types": "./dist/browser-api/index.d.ts",
+			"import": "./dist/browser-api/index.mjs",
+			"require": "./dist/browser-api/index.js"
+		},
+		"./browser-api/storage": {
+			"types": "./dist/browser-api/storage/index.d.ts",
+			"import": "./dist/browser-api/storage/index.mjs",
+			"require": "./dist/browser-api/storage/index.js"
+		}
+	},
 	"sideEffects": false,
 	"scripts": {
 		"//1a": "*********************************************************************",
@@ -57,16 +74,14 @@
 		"test:coverage:serve": "concurrently --prefix none --kill-others \"pnpm test:coverage\" \"pnpm test:serve-coverage\"",
 		"//4a": "*********************************************************************",
 		"//4b": "************************ TARGETED UNIT TESTS ************************",
-		"//4c": "*********************************************************************"
+		"//4c": "*********************************************************************",
+		"test:storage": "pnpm test:watch browser-api/storage/*"
 	},
 	"pnpm": {
 		"onlyBuiltDependencies": [
 			"@alessiofrittoli/type-utils",
 			"esbuild"
-		],
-		"overrides": {
-			"@alessiofrittoli/web-utils": "link:../web-utils"
-		}
+		]
 	},
 	"devDependencies": {
 		"@alessiofrittoli/node-scripts": "^2.4.0",
