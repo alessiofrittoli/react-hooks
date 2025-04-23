@@ -27,11 +27,7 @@ export const useFocusTrap = (
 		useState<HTMLElement | false>( false )
 	)
 
-	const lastActiveElement = useRef(
-		typeof document !== 'undefined'
-			? document.activeElement as HTMLElement
-			: null
-	)
+	const lastActiveElement = useRef<HTMLElement>( null )
 	
 	/**
 	 * Enable the focus trap.

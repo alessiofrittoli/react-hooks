@@ -25,6 +25,7 @@
 - [API Reference](#api-reference)
   - [Browser API](#browser-api)
   - [DOM API](#dom-api)
+  - [Miscellaneous](#miscellaneous)
 - [Development](#development)
   - [Install depenendencies](#install-depenendencies)
   - [Build the source code](#build-the-source-code)
@@ -504,6 +505,61 @@ const modal2OpenHandler = useCallback( () => {
   setFocusTrap( modal2Ref.current )
   modal2Ref.current.focus()
 }, [ setFocusTrap ] )
+```
+
+</details>
+
+---
+
+#### Miscellaneous
+
+##### `useIsClient`
+
+Check if the React Hook or Component where this hook is executed is running in a browser environment.
+
+This is pretty usefull to avoid hydration errors.
+
+<details>
+
+<summary style="cursor:pointer">Returns</summary>
+
+Type: `boolean`
+
+- `true` if the React Hook or Component is running in a browser environment.
+- `false` otherwise.
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Usage</summary>
+
+###### Importing the hook
+
+```tsx
+import { useIsClient } from '@alessiofrittoli/react-hooks'
+// or
+import { useIsClient } from '@alessiofrittoli/react-hooks/misc'
+```
+
+###### Basic usage
+
+```tsx
+'use client'
+
+import { useIsClient } from '@alessiofrittoli/react-hooks/misc'
+
+export const ClientComponent: React.FC = () => {
+
+  const isClient = useIsClient()
+
+  return (
+    <div>Running { ! isClient ? 'server' : 'client' }-side</div>
+  )
+
+}
 ```
 
 </details>
