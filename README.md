@@ -52,7 +52,174 @@ pnpm i @alessiofrittoli/react-hooks
 
 ### API Reference
 
-⚠️ Docs coming soon
+#### Browser API
+
+##### Storage
+
+The following storage hooks use Storage Utilities from [`@alessiofrittoli/web-utils`](https://npmjs.com/package/@alessiofrittoli/web-utils#storage-utilities) adding a React oriented implementation.
+
+###### `useStorage`
+
+Easly handle Local or Session Storage State.
+
+<details>
+
+<summary style="cursor:pointer">Type parameters</summary>
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `T`       | `any` | `string` | A custom type applied to the stored item. |
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Parameters</summary>
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `key`          | `string`           | - | The storage item key. |
+| `initialValue` | `T`                | - | The storage item initial value. |
+| `type`         | `local \| session` | local | (Optional) The storage API to use. |
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Returns</summary>
+
+Type: `[ Value<T>, SetValue<Value<T>> ]`
+
+A tuple with the stored item value or initial value and the setter function.
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Usage</summary>
+
+###### Importing the hooks
+
+```tsx
+import { useStorage } from '@alessiofrittoli/react-hooks'
+// or
+import { useStorage } from '@alessiofrittoli/react-hooks/browser-api'
+// or
+import { useStorage } from '@alessiofrittoli/react-hooks/browser-api/storage'
+```
+
+---
+
+###### Reading item value from storage
+
+```tsx
+'use client'
+
+import { useStorage } from '@alessiofrittoli/react-hooks/browser-api/storage'
+
+type Locale = 'it' | 'en'
+
+const storage       = 'local' // or 'session'
+const defaultLocale = 'it'
+
+export const SomeComponent: React.FC = () => {
+
+  const [ userLocale ] = useStorage<Locale>( 'user-locale', defaultLocale, storage )
+
+  return (
+    ...
+  )
+
+}
+```
+
+---
+
+###### Updating storage item value
+
+```tsx
+'use client'
+
+import { useCallback } from 'react'
+import { useStorage } from '@alessiofrittoli/react-hooks/browser-api/storage'
+
+type Locale = 'it' | 'en'
+
+const storage       = 'local' // or 'session'
+const defaultLocale = 'it'
+
+export const LanguageSwitcher: React.FC = () => {
+
+  const [ userLocale, setUserLocale ] = useStorage<Locale>( 'user-locale', defaultLocale, storage )
+
+  const clickHandler = useCallback( () => {
+    setUserLocale( 'en' )
+  }, [ setUserLocale ] )
+
+  return (
+    ...
+  )
+
+}
+```
+
+---
+
+###### Deleting storage item
+
+```tsx
+'use client'
+
+import { useCallback } from 'react'
+import { useStorage } from '@alessiofrittoli/react-hooks/browser-api/storage'
+
+type Locale = 'it' | 'en'
+
+const storage       = 'local' // or 'session'
+const defaultLocale = 'it'
+
+export const LanguageSwitcher: React.FC = () => {
+
+  const [ userLocale, setUserLocale ] = useStorage<Locale>( 'user-locale', defaultLocale, storage )
+
+  const deleteHandler = useCallback( () => {
+    setUserLocale( null )
+    // or
+    setUserLocale( undefined )
+    // or
+    setUserLocale( '' )
+  }, [ setUserLocale ] )
+
+  return (
+    ...
+  )
+
+}
+```
+
+</details>
+
+---
+
+###### `useLocalStorage`
+
+Shortcut React Hook for [`useStorage`](#usestorage).
+
+Applies the same API Reference.
+
+---
+
+###### `useSessionStorage`
+
+Shortcut React Hook for [`useStorage`](#usestorage).
+
+Applies the same API Reference.
 
 ---
 
