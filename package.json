@@ -81,10 +81,7 @@
 		"onlyBuiltDependencies": [
 			"@alessiofrittoli/type-utils",
 			"esbuild"
-		],
-		"overrides": {
-			"@alessiofrittoli/web-utils": "link:../web-utils"
-		}
+		]
 	},
 	"devDependencies": {
 		"@alessiofrittoli/node-scripts": "^2.4.0",
