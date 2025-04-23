@@ -1,17 +1,15 @@
 import { renderHook, act } from '@testing-library/react'
-import { LocalStorage as WebLocalStorage } from '@alessiofrittoli/web-utils/storage/LocalStorage'
-import { SessionStorage as WebSessionStorage } from '@alessiofrittoli/web-utils/storage/SessionStorage'
-
+import {
+	LocalStorage as WebLocalStorage,
+	SessionStorage as WebSessionStorage
+} from '@alessiofrittoli/web-utils'
 import { useStorage } from '@/browser-api/storage/useStorage'
 
-jest.mock( '@alessiofrittoli/web-utils/storage/LocalStorage', () => ( {
+jest.mock( '@alessiofrittoli/web-utils', () => ( {
 	LocalStorage: {
 		get: jest.fn(),
 		set: jest.fn(),
 	},
-} ) )
-
-jest.mock( '@alessiofrittoli/web-utils/storage/SessionStorage', () => ( {
 	SessionStorage: {
 		get: jest.fn(),
 		set: jest.fn(),
