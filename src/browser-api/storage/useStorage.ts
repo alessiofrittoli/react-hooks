@@ -6,7 +6,7 @@ type Value<T>		= T | undefined | null
 type SetValue<T>	= React.Dispatch<React.SetStateAction<T>>
 
 /**
- * useStorage hook.
+ * Easly handle Local or Session Storage State.
  * 
  * @param	key				The storage item key.
  * @param	initialValue	The storage item initial value.
@@ -19,10 +19,8 @@ export const useStorage = <T = string>(
 ): [ Value<T>, SetValue<Value<T>> ] => {
 
 	const readValue = useCallback( () => (
-		typeof window !== 'undefined'
-			? ( type === 'local' ? LocalStorage : SessionStorage )
-				.get<T>( key ) ?? initialValue
-			: initialValue
+		( type === 'local' ? LocalStorage : SessionStorage )
+			.get<T>( key ) ?? initialValue
 	), [ type, key, initialValue ] )
 
 
