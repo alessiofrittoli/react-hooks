@@ -53,6 +53,11 @@
 			"types": "./dist/dom-api/index.d.ts",
 			"import": "./dist/dom-api/index.mjs",
 			"require": "./dist/dom-api/index.js"
+		},
+		"./misc": {
+			"types": "./dist/misc/index.d.ts",
+			"import": "./dist/misc/index.mjs",
+			"require": "./dist/misc/index.js"
 		}
 	},
 	"sideEffects": false,
