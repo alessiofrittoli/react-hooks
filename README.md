@@ -2,7 +2,7 @@
 
 [![NPM Latest Version][version-badge]][npm-url] [![Coverage Status][coverage-badge]][coverage-url] [![Socket Status][socket-badge]][socket-url] [![NPM Monthly Downloads][downloads-badge]][npm-url] [![Dependencies][deps-badge]][deps-url]
 
-[![GitHub Sponsor][sponsor-badge]][sponsor-url] [![GitHub Sponsor][sponsor-count-badge]][sponsor-count-url]
+[![GitHub Sponsor][sponsor-badge]][sponsor-url]
 
 [version-badge]: https://img.shields.io/npm/v/%40alessiofrittoli%2Freact-hooks
 [npm-url]: https://npmjs.org/package/%40alessiofrittoli%2Freact-hooks
@@ -16,14 +16,13 @@
 
 [sponsor-badge]: https://img.shields.io/static/v1?label=Fund%20this%20package&message=%E2%9D%A4&logo=GitHub&color=%23DB61A2
 [sponsor-url]: https://github.com/sponsors/alessiofrittoli
-[sponsor-count-badge]: https://img.shields.io/github/sponsors/alessiofrittoli?label=Sponsor&logo=GitHub
-[sponsor-count-url]: https://github.com/sponsors/alessiofrittoli
 
-## Starter repository for developing node_modules
+## TypeScript React utility Hooks
 
 ### Table of Contents
 
 - [Getting started](#getting-started)
+- [API Reference](#api-reference)
 - [Development](#development)
   - [Install depenendencies](#install-depenendencies)
   - [Build the source code](#build-the-source-code)
@@ -48,6 +47,12 @@ or using `pnpm`
 ```bash
 pnpm i @alessiofrittoli/react-hooks
 ```
+
+---
+
+### API Reference
+
+⚠️ Docs coming soon
 
 ---
 
