@@ -726,6 +726,16 @@ export const ClientComponent: React.FC = () => {
 
 ---
 
+##### `usePagination`
+
+Get pagination informations based on the given options.
+
+This hook memoize the returned result of the [`paginate`](https://github.com/alessiofrittoli/math-utils/blob/master/docs/helpers/README.md#paginate) function imported from [`@alessiofrittoli/math-utils`](https://npmjs.com/package/@alessiofrittoli/math-utils).
+
+See [`paginate`](https://github.com/alessiofrittoli/math-utils/blob/master/docs/helpers/README.md#paginate) function Documentation for more information about it.
+
+---
+
 ### Development
 
 #### Install depenendencies
