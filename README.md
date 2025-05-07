@@ -135,14 +135,6 @@ A tuple with the stored item value or initial value and the setter function.
 import {
   useStorage, useLocalStorage, useSessionStorage
 } from '@alessiofrittoli/react-hooks'
-// or
-import {
-  useStorage, useLocalStorage, useSessionStorage
-} from '@alessiofrittoli/react-hooks/browser-api'
-// or
-import {
-  useStorage, useLocalStorage, useSessionStorage
-} from '@alessiofrittoli/react-hooks/browser-api/storage'
 ```
 
 ---
@@ -152,7 +144,7 @@ import {
 ```tsx
 'use client'
 
-import { useStorage } from '@alessiofrittoli/react-hooks/browser-api/storage'
+import { useStorage } from '@alessiofrittoli/react-hooks'
 
 type Locale = 'it' | 'en'
 
@@ -178,7 +170,7 @@ export const SomeComponent: React.FC = () => {
 'use client'
 
 import { useCallback } from 'react'
-import { useStorage } from '@alessiofrittoli/react-hooks/browser-api/storage'
+import { useStorage } from '@alessiofrittoli/react-hooks'
 
 type Locale = 'it' | 'en'
 
@@ -208,7 +200,7 @@ export const LanguageSwitcher: React.FC = () => {
 'use client'
 
 import { useCallback } from 'react'
-import { useStorage } from '@alessiofrittoli/react-hooks/browser-api/storage'
+import { useStorage } from '@alessiofrittoli/react-hooks'
 
 type Locale = 'it' | 'en'
 
@@ -291,8 +283,6 @@ Type: `boolean`
 
 ```tsx
 import { useMediaQuery } from '@alessiofrittoli/react-hooks'
-// or
-import { useMediaQuery } from '@alessiofrittoli/react-hooks/browser-api'
 ```
 
 ---
@@ -334,8 +324,6 @@ Type: `boolean`
 
 ```tsx
 import { useIsPortrait } from '@alessiofrittoli/react-hooks'
-// or
-import { useIsPortrait } from '@alessiofrittoli/react-hooks/browser-api'
 ```
 
 ---
@@ -388,8 +376,6 @@ A tuple with block and restore scroll callbacks.
 
 ```tsx
 import { useScrollBlock } from '@alessiofrittoli/react-hooks'
-// or
-import { useScrollBlock } from '@alessiofrittoli/react-hooks/dom-api'
 ```
 
 ---
@@ -480,8 +466,6 @@ A tuple containing:
 
 ```tsx
 import { useFocusTrap } from '@alessiofrittoli/react-hooks'
-// or
-import { useFocusTrap } from '@alessiofrittoli/react-hooks/dom-api'
 ```
 
 ---
@@ -562,8 +546,6 @@ Type: `boolean`
 
 ```tsx
 import { useIsClient } from '@alessiofrittoli/react-hooks'
-// or
-import { useIsClient } from '@alessiofrittoli/react-hooks/misc'
 ```
 
 ###### Basic usage
@@ -571,7 +553,7 @@ import { useIsClient } from '@alessiofrittoli/react-hooks/misc'
 ```tsx
 'use client'
 
-import { useIsClient } from '@alessiofrittoli/react-hooks/misc'
+import { useIsClient } from '@alessiofrittoli/react-hooks'
 
 export const ClientComponent: React.FC = () => {
 
@@ -615,8 +597,6 @@ Note that if the React Hook/Component has no state updates, `useIsFirstRender` w
 
 ```tsx
 import { useIsFirstRender } from '@alessiofrittoli/react-hooks'
-// or
-import { useIsFirstRender } from '@alessiofrittoli/react-hooks/misc'
 ```
 
 ###### Basic usage
@@ -624,7 +604,7 @@ import { useIsFirstRender } from '@alessiofrittoli/react-hooks/misc'
 ```tsx
 'use client'
 
-import { useIsFirstRender } from '@alessiofrittoli/react-hooks/misc'
+import { useIsFirstRender } from '@alessiofrittoli/react-hooks'
 
 export const ClientComponent: React.FC = () => {
 
@@ -678,8 +658,6 @@ Modified version of `useEffect` that skips the first render.
 
 ```tsx
 import { useUpdateEffect } from '@alessiofrittoli/react-hooks'
-// or
-import { useUpdateEffect } from '@alessiofrittoli/react-hooks/misc'
 ```
 
 ###### Basic usage
@@ -688,7 +666,7 @@ import { useUpdateEffect } from '@alessiofrittoli/react-hooks/misc'
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useUpdateEffect } from '@alessiofrittoli/react-hooks/misc'
+import { useUpdateEffect } from '@alessiofrittoli/react-hooks'
 
 export const ClientComponent: React.FC = () => {
 
