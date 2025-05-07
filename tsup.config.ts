@@ -3,7 +3,7 @@ import { defineConfig } from 'tsup'
 const enableSourcemap = process.env.NODE_ENV !== 'production'
 
 export default defineConfig( {
-	entry		: [ 'src/**/*.ts' ],
+	entry		: [ 'src/index.ts', 'src/eslint.ts' ],
 	format		: [ 'cjs', 'esm' ],
 	dts			: true,
 	splitting	: true,

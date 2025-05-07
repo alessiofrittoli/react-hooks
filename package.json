@@ -35,34 +35,24 @@
 	],
 	"exports": {
 		".": {
-			"types": "./dist/index.d.ts",
-			"import": "./dist/index.mjs",
-			"require": "./dist/index.js"
-		},
-		"./browser-api": {
-			"types": "./dist/browser-api/index.d.ts",
-			"import": "./dist/browser-api/index.mjs",
-			"require": "./dist/browser-api/index.js"
-		},
-		"./browser-api/storage": {
-			"types": "./dist/browser-api/storage/index.d.ts",
-			"import": "./dist/browser-api/storage/index.mjs",
-			"require": "./dist/browser-api/storage/index.js"
-		},
-		"./dom-api": {
-			"types": "./dist/dom-api/index.d.ts",
-			"import": "./dist/dom-api/index.mjs",
-			"require": "./dist/dom-api/index.js"
-		},
-		"./misc": {
-			"types": "./dist/misc/index.d.ts",
-			"import": "./dist/misc/index.mjs",
-			"require": "./dist/misc/index.js"
+			"import": {
+				"types": "./dist/index.d.mts",
+				"default": "./dist/index.mjs"
+			},
+			"require": {
+				"types": "./dist/index.d.ts",
+				"default": "./dist/index.js"
+			}
 		},
 		"./eslint": {
-			"types": "./dist/eslint.d.ts",
-			"import": "./dist/eslint.mjs",
-			"require": "./dist/eslint.js"
+			"import": {
+				"types": "./dist/eslint.d.mts",
+				"default": "./dist/eslint.mjs"
+			},
+			"require": {
+				"types": "./dist/eslint.d.ts",
+				"default": "./dist/eslint.js"
+			}
 		}
 	},
 	"sideEffects": false,
