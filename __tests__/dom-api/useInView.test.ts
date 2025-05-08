@@ -85,17 +85,6 @@ describe( 'useInView', () => {
 	} )
 
 
-	it( 'disconnects observer when component unmounts', () => {
-
-		const { unmount } = renderHook( () => useInView( mockRef ) )
-		unmount()
-
-		expect( mockIntersectionObserver.disconnect )
-			.toHaveBeenCalled()
-
-	} )
-
-
 	it( 'sets threshold to 1 if given `amount` is set to all', () => {
 
 		renderHook( () => useInView( mockRef, { amount: 'all' } ) )
@@ -126,6 +115,28 @@ describe( 'useInView', () => {
 	} )
 
 
+	it( 'observes the given target', () => {
+
+		const observe = jest.spyOn( mockIntersectionObserver, 'observe' )
+
+		renderHook( () => useInView( mockRef ) )
+
+		expect( observe ).toHaveBeenCalledWith( mockRef.current )
+		
+	} )
+
+
+	it( 'doesn\'t observe if target ref is falsey', () => {
+
+		const observe = jest.spyOn( mockIntersectionObserver, 'observe' )
+
+		renderHook( () => useInView( { current: null } ) )
+
+		expect( observe ).not.toHaveBeenCalled()
+		
+	} )
+
+
 	it( 'updates inView state when intersection occurs', async () => {
 
 		const { result } = renderHook( () => useInView( mockRef ) )
@@ -138,6 +149,18 @@ describe( 'useInView', () => {
 		} )
 
 		expect( result.current.inView ).toBe( true )
+
+	} )
+
+
+	it( 'disconnects observer when component unmounts', () => {
+
+		const { unmount } = renderHook( () => useInView( mockRef ) )
+		
+		unmount()
+
+		expect( mockIntersectionObserver.disconnect )
+			.toHaveBeenCalled()
 
 	} )
 
@@ -199,8 +222,8 @@ describe( 'useInView', () => {
 	
 	it( 'catches onStart callback errors without state updates', async () => {
 
-		const consoleError = jest.spyOn( console, 'error' )
-		const onStartMock = jest.fn( () => {
+		const consoleError	= jest.spyOn( console, 'error' )
+		const onStartMock	= jest.fn( () => {
 			throw new Error( 'For some reason' )
 		} )
 		const options: UseInViewOptions = { onStart: onStartMock }

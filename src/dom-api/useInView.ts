@@ -59,6 +59,7 @@ export interface UseInViewOptions
 	once?: boolean
 	/**
 	 * Initial value. Default: `false`.
+	 * 
 	 */
 	initial?: boolean
 	/**
@@ -83,15 +84,17 @@ interface UseInViewReturnType
 	 */
 	inView: boolean
 	/**
+	 * The {@link IntersectionObserver} instance.
+	 * 
+	 * [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver)
+	 */
+	observer?: IntersectionObserver
+	/**
 	 * A React Dispatch SetState action that allows custom state updates.
 	 * 
 	 */
 	setInView: React.Dispatch<React.SetStateAction<boolean>>
-	/**
-	 * The {@link IntersectionObserver} instance.
-	 * 
-	 */
-	observer?: IntersectionObserver
+
 }
 
 
@@ -166,9 +169,7 @@ export const useInView = (
 
 		observer.observe( target.current )
 
-		return () => {
-			observer.disconnect()
-		}
+		return () => observer.disconnect()
 
 	}, [ target, observer ] )
 
