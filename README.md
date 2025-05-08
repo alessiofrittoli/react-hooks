@@ -279,17 +279,11 @@ Type: `boolean`
 
 <summary style="cursor:pointer">Usage</summary>
 
-###### Importing the hook
-
-```tsx
-import { useMediaQuery } from '@alessiofrittoli/react-hooks'
-```
-
----
-
 ###### Check if user device prefers dark color scheme
 
 ```tsx
+import { useMediaQuery } from '@alessiofrittoli/react-hooks'
+
 const isDarkOS = useMediaQuery( '(prefers-color-scheme: dark)' )
 ```
 
@@ -320,17 +314,11 @@ Type: `boolean`
 
 <summary style="cursor:pointer">Usage</summary>
 
-###### Importing the hook
-
-```tsx
-import { useIsPortrait } from '@alessiofrittoli/react-hooks'
-```
-
----
-
 ###### Check if user device is in landscape
 
 ```tsx
+import { useIsPortrait } from '@alessiofrittoli/react-hooks'
+
 const isLandscape = ! useIsPortrait()
 ```
 
@@ -372,17 +360,11 @@ A tuple with block and restore scroll callbacks.
 
 <summary style="cursor:pointer">Usage</summary>
 
-###### Importing the hook
-
-```tsx
-import { useScrollBlock } from '@alessiofrittoli/react-hooks'
-```
-
----
-
 ###### Block Document Overflow
 
 ```tsx
+import { useScrollBlock } from '@alessiofrittoli/react-hooks'
+
 const [ blockScroll, restoreScroll ] = useScrollBlock()
 
 const openPopUpHandler = useCallback( () => {
@@ -462,17 +444,11 @@ A tuple containing:
 
 <summary style="cursor:pointer">Usage</summary>
 
-###### Importing the hook
-
-```tsx
-import { useFocusTrap } from '@alessiofrittoli/react-hooks'
-```
-
----
-
 ###### Defining the target on hook initialization
 
 ```tsx
+import { useFocusTrap } from '@alessiofrittoli/react-hooks'
+
 const modalRef = useRef<HTMLDivElement>( null )
 const [ setFocusTrap, restoreFocusTrap ] = useFocusTrap( modalRef )
 
@@ -494,6 +470,8 @@ const modalCloseHandler = useCallback( () => {
 ###### Defining the target ondemand
 
 ```tsx
+import { useFocusTrap } from '@alessiofrittoli/react-hooks'
+
 const modalRef = useRef<HTMLDivElement>( null )
 const modal2Ref = useRef<HTMLDivElement>( null )
 const [ setFocusTrap, restoreFocusTrap ] = useFocusTrap()
@@ -511,6 +489,216 @@ const modal2OpenHandler = useCallback( () => {
   setFocusTrap( modal2Ref.current )
   modal2Ref.current.focus()
 }, [ setFocusTrap ] )
+```
+
+</details>
+
+---
+
+##### `useInView`
+
+Check if the given target Element is intersecting with an ancestor Element or with a top-level document's viewport.
+
+<details>
+
+<summary style="cursor:pointer">Parameters</summary>
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `target`  | `React.RefObject<Element\|null>` | The React.RefObject of the target Element to observe. |
+| `options` | `UseInViewOptions` | (Optional) An object defining custom `IntersectionObserver` options. |
+| `options.root` | `Element\|Document\|false\|null` | (Optional) Identifies the `Element` or `Document` whose bounds are treated as the bounding box of the viewport for the Element which is the observer's target. |
+| `options.margin` | `MarginType` | (Optional) A string, formatted similarly to the CSS margin property's value, which contains offsets for one or more sides of the root's bounding box. |
+| `options.amount` | `'all'\|'some'\|number\|number[]` | (Optional) The intersecting target thresholds. |
+| | | Threshold can be set to: |
+| | | - `all` - `1` will be used. |
+| | | - `some` - `0.5` will be used. |
+| | | - `number` |
+| | | - `number[]` |
+| `options.once` | `boolean` | (Optional) By setting this to `true` the observer will be disconnected after the target Element enters the viewport. |
+| `options.initial` | `boolean` | (Optional) Initial value. Default: `false`. |
+| `options.enable` | `boolean` | (Optional) Defines the initial observation activity. Use the returned `setEnabled` to update this state. Default: `true`. |
+| `options.onStart` | `OnStartHandler` | (Optional) A custom callback executed when target element's visibility has crossed one or more thresholds. |
+| | | This callback is awaited before any state update. |
+| | | If an error is thrown the React State update won't be fired. |
+| | | ⚠️ Wrap your callback with `useCallback` to avoid unnecessary `IntersectionObserver` recreation. |
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Returns</summary>
+
+Type: `UseInViewReturnType`
+
+An object containing:
+
+- `inView`: `boolean` - Indicates whether the target Element is in viewport or not.
+- `setInView`: `React.Dispatch<React.SetStateAction<boolean>>` - A React Dispatch SetState action that allows custom state updates.
+- `enabled`: `boolean` - Indicates whether the target Element is being observed or not.
+- `setEnabled`: `React.Dispatch<React.SetStateAction<boolean>>` - A React Dispatch SetState action that allows to enable/disable observation when needed.
+- `observer`: `IntersectionObserver | undefined` - The `IntersectionObserver` instance. It could be `undefined` if `IntersectionObserver` is not available or observation is not enabled.
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Usage</summary>
+
+###### Basic usage
+
+```tsx
+'use client'
+
+import { useRef } from 'react'
+import { useInView } from '@alessiofrittoli/react-hooks'
+
+const UseInViewExample: React.FC = () => {
+
+  const targetRef   = useRef<HTMLDivElement>( null )
+  const { inView }  = useInView( ref )
+
+  return (
+    Array.from( Array( 6 ) ).map( ( value, index ) => (
+      <div
+        key={ index }
+        style={ {
+          height          : '50vh',
+          border          : '1px solid red',
+          display         : 'flex',
+          alignItems      : 'center',
+          justifyContent  : 'center',
+        } }
+      >
+        <div
+          ref={ index === 2 ? targetRef : undefined }
+          style={ {
+            width           : 150,
+            height          : 150,
+            borderRadius    : 12,
+            display         : 'flex',
+            alignItems      : 'center',
+            justifyContent  : 'center',
+            background      : inView ? '#51AF83' : '#201A1B',
+            color           : inView ? '#201A1B' : '#FFFFFF',
+          } }
+        >{ index + 1 }</div>
+      </div>
+    ) )
+  )
+
+}
+```
+
+---
+
+###### Disconnect observer after target enters the viewport
+
+```tsx
+'use client'
+
+import { useRef } from 'react'
+import { useInView } from '@alessiofrittoli/react-hooks'
+
+const OnceExample: React.FC = () => {
+
+  const targetRef   = useRef<HTMLDivElement>( null )
+  const { inView }  = useInView( targetRef, { once: true } )
+
+  useEffect( () => {
+
+    if ( ! inView ) return
+    console.count( 'Fired only once: element entered viewport.' )
+
+  }, [ inView ] )
+
+  return (
+    <div
+      ref={ targetRef }
+      style={ {
+        height      : 200,
+        background  : inView ? 'lime' : 'gray',
+      } }
+    />
+  )
+
+}
+```
+
+---
+
+###### Observe target only when needed
+
+```tsx
+'use client'
+
+import { useRef } from 'react'
+import { useInView } from '@alessiofrittoli/react-hooks'
+
+const OnDemandObservation: React.FC = () => {
+
+  const targetRef = useRef<HTMLDivElement>( null )
+  const {
+    inView, enabled, setEnabled
+  } = useInView( targetRef, { enable: false } )
+
+  return (
+    <div>
+      <button onClick={ () => setEnabled( prev => ! prev ) }>
+        { enabled ? 'Disconnect observer' : 'Observe' }
+      </button>
+      <div
+        ref={ targetRef }
+        style={ {
+          height      : 200,
+          marginTop   : 50,
+          background  : inView ? 'lime' : 'gray',
+        } }
+      />
+    </div>
+  )
+
+}
+```
+
+---
+
+###### Execute custom callback when intersection occurs
+
+```tsx
+'use client'
+
+import { useRef } from 'react'
+import { useInView, type OnStartHandler } from '@alessiofrittoli/react-hooks'
+
+
+const AsyncStartExample: React.FC = () => {
+
+  const targetRef = useRef<HTMLDivElement>( null )
+  const onStart   = useCallback<OnStartHandler>( async entry => {
+
+    console.log( 'Delaying state update...' )
+    await new Promise( resolve => setTimeout( resolve, 1000 ) ) // Simulate delay
+    console.log( 'Async task completed. `inView` will now be updated.' )
+  
+  }, [] )
+
+  const { inView } = useInView( targetRef, { onStart } )
+
+  return (
+    <div
+      ref={ targetRef }
+      style={ {
+        height      : 200,
+        background  : inView ? 'lime' : 'gray',
+      } }
+    />
+  )
+}
 ```
 
 </details>
@@ -541,12 +729,6 @@ Type: `boolean`
 <details>
 
 <summary style="cursor:pointer">Usage</summary>
-
-###### Importing the hook
-
-```tsx
-import { useIsClient } from '@alessiofrittoli/react-hooks'
-```
 
 ###### Basic usage
 
@@ -592,12 +774,6 @@ Note that if the React Hook/Component has no state updates, `useIsFirstRender` w
 <details>
 
 <summary style="cursor:pointer">Usage</summary>
-
-###### Importing the hook
-
-```tsx
-import { useIsFirstRender } from '@alessiofrittoli/react-hooks'
-```
 
 ###### Basic usage
 
@@ -653,12 +829,6 @@ Modified version of `useEffect` that skips the first render.
 <details>
 
 <summary style="cursor:pointer">Usage</summary>
-
-###### Importing the hook
-
-```tsx
-import { useUpdateEffect } from '@alessiofrittoli/react-hooks'
-```
 
 ###### Basic usage
 
