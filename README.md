@@ -105,9 +105,9 @@ Easly handle Local or Session Storage State.
 
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
-| `key`          | `string`           | - | The storage item key. |
-| `initialValue` | `T`                | - | The storage item initial value. |
-| `type`         | `local\|session`   | local | (Optional) The storage API to use. |
+| `key`     | `string`           | - | The storage item key. |
+| `initial` | `T`                | - | The storage item initial value. |
+| `type`    | `local\|session`   | local | (Optional) The storage API to use. |
 
 </details>
 

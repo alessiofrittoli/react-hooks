@@ -8,20 +8,20 @@ type SetValue<T>	= React.Dispatch<React.SetStateAction<T>>
 /**
  * Easly handle Local or Session Storage State.
  * 
- * @param	key				The storage item key.
- * @param	initialValue	The storage item initial value.
- * @param	type			( Optional ) The storage API to use. Default: `local`.
+ * @param	key		The storage item key.
+ * @param	initial	The storage item initial value.
+ * @param	type	( Optional ) The storage API to use. Default: `local`.
  */
 export const useStorage = <T = string>(
-	key				: string,
-	initialValue?	: T,
-	type			: 'local' | 'session' = 'local'
+	key		: string,
+	initial?: T,
+	type	: 'local' | 'session' = 'local'
 ): [ Value<T>, SetValue<Value<T>> ] => {
 
 	const readValue = useCallback( () => (
 		( type === 'local' ? LocalStorage : SessionStorage )
-			.get<T>( key ) ?? initialValue
-	), [ type, key, initialValue ] )
+			.get<T>( key ) ?? initial
+	), [ type, key, initial ] )
 
 
 	/**
@@ -29,7 +29,7 @@ export const useStorage = <T = string>(
 	 * Pass initial state function to useState so logic is only executed once.
 	 * 
 	 */
-	const [ storedValue, setStoredValue ] = useState<Value<T>>( initialValue )
+	const [ storedValue, setStoredValue ] = useState<Value<T>>( initial )
 
 	/**
 	 * Return a wrapped version of useState's setter function that
