@@ -153,6 +153,21 @@ describe( 'useInView', () => {
 	} )
 
 
+	it( 'allows consumer to update inView state', async () => {
+
+		const { result } = renderHook( () => useInView( mockRef ) )
+		
+		expect( result.current.inView ).toBe( false )
+
+		await act( async () => {
+			result.current.setInView( true )
+		} )
+
+		expect( result.current.inView ).toBe( true )
+
+	} )
+
+
 	it( 'disconnects observer when component unmounts', () => {
 
 		const { unmount } = renderHook( () => useInView( mockRef ) )

@@ -17,6 +17,8 @@ export type MarginType = (
  * 
  * If an error is thrown the React State update won't be fired.
  * 
+ * ⚠️ Wrap your callback with `useCallback` to avoid unnecessary `IntersectionObserver` recreation.
+ * 
  * @param	entry		The intersecting {@link IntersectionObserverEntry}.
  * @param	observer	The current {@link IntersectionObserver} instance.
  */
@@ -30,7 +32,7 @@ export interface UseInViewOptions
 	 * 
 	 * If the `root` is `null`, then the bounds of the actual document viewport are used.
 	 * 
-	 * [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/root
+	 * [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver/root)
 	 */
 	root?: Element | Document | false | null
 	/**
@@ -68,6 +70,8 @@ export interface UseInViewOptions
 	 * This callback is awaited before any state update.
 	 * 
 	 * If an error is thrown the React State update won't be fired.
+	 * 
+	 * ⚠️ Wrap your callback with `useCallback` to avoid unnecessary `IntersectionObserver` recreation.
 	 * 
 	 * @param	entry		The intersecting {@link IntersectionObserverEntry}.
 	 * @param	observer	The current {@link IntersectionObserver} instance.
