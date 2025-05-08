@@ -291,8 +291,12 @@ describe( 'useInView', () => {
 	
 	it( 'catches onStart callback errors without state updates', async () => {
 
-		const consoleError	= jest.spyOn( console, 'error' )
-		const onStartMock	= jest.fn( () => {
+		const consoleError = (
+			jest.spyOn( console, 'error' )
+				.mockImplementationOnce( () => {} ) // do not print to stdout.
+		)
+
+		const onStartMock = jest.fn( () => {
 			throw new Error( 'For some reason' )
 		} )
 		const options: UseInViewOptions = { onStart: onStartMock }
@@ -308,13 +312,17 @@ describe( 'useInView', () => {
 		expect( result.current.inView ).toBe( false ) // state update not triggered
 		expect( consoleError )
 			.toHaveBeenCalledWith( new Error( 'For some reason' ) )
-
+		
+		consoleError.mockRestore()
 	} )
 
 
 	it( 'catches IntersectionObserver constructing errors', () => {
 
-		const consoleError = jest.spyOn( console, 'error' )
+		const consoleError = (
+			jest.spyOn( console, 'error' )
+				.mockImplementationOnce( () => {} ) // do not print to stdout.
+		)
 
 		// @ts-expect-error negative testing
 		const options: UseInViewOptions = { root: true }
@@ -324,6 +332,7 @@ describe( 'useInView', () => {
 		expect( consoleError )
 			.toHaveBeenCalledWith( expect.any( TypeError ) )
 
+		consoleError.mockRestore()
 	} )
 
 } )
