@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 export type MarginValue = `${ number }${ 'px' | '%' }`
 
@@ -60,10 +60,17 @@ export interface UseInViewOptions
 	 */
 	once?: boolean
 	/**
-	 * Initial value. Default: `false`.
+	 * Initial value.
 	 * 
+	 * @default true
 	 */
 	initial?: boolean
+	/**
+	 * Defines the initial observation activity. Use {@link UseInViewReturnType.setEnabled} to update this state.
+	 * 
+	 * @default true
+	 */
+	enable?: boolean
 	/**
 	 * A custom callback executed when target element's visibility has crossed one or more thresholds.
 	 * 
@@ -88,7 +95,14 @@ interface UseInViewReturnType
 	 */
 	inView: boolean
 	/**
+	 * Indicates whether the target Element is being observed or not.
+	 * 
+	 */
+	enabled: boolean
+	/**
 	 * The {@link IntersectionObserver} instance.
+	 * 
+	 * It could be `undefined` if `IntersectionObserver` is not available or observation is not enabled.
 	 * 
 	 * [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/IntersectionObserver)
 	 */
@@ -98,7 +112,11 @@ interface UseInViewReturnType
 	 * 
 	 */
 	setInView: React.Dispatch<React.SetStateAction<boolean>>
-
+	/**
+	 * A React Dispatch SetState action that allows to enable/disable observation when needed.
+	 * 
+	 */
+	setEnabled: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 
@@ -117,24 +135,28 @@ export const useInView = (
 
 	const {
 		initial = false, once,
-		amount, margin, root, onStart,
+		amount, margin, root, enable = true, onStart,
 	} = options
 
-	const [ inView, setInView ] = useState( initial )
+	const isMounted = useRef( true )
+
+	const [ inView, setInView ]		= useState( initial )
+	const [ enabled, setEnabled ]	= useState( enable )
 
 	const observer = useMemo( () => {
 
-		if ( typeof IntersectionObserver === 'undefined' ) {
-			return;
-		}
+		if (
+			! enabled ||
+			typeof IntersectionObserver === 'undefined'
+		) return
+
+		const threshold = (
+			amount === 'all' ? 1 : (
+				amount === 'some' ? 0.5 : amount
+			)
+		)
 
 		try {
-
-			const threshold = (
-				amount === 'all' ? 1 : (
-					amount === 'some' ? 0.5 : amount
-				)
-			)
 
 			return (
 				new IntersectionObserver(
@@ -145,6 +167,7 @@ export const useInView = (
 
 						try {
 							await onStart?.( entry, observer )
+							if ( ! isMounted.current ) return
 							setInView( isInview )
 						} catch ( error ) {
 							console.error( error )
@@ -164,20 +187,27 @@ export const useInView = (
 			console.error( error )
 		}
 
-	}, [ root, margin, amount, once, onStart ] )
+	}, [ root, margin, amount, once, enabled, onStart ] )
 
 
 	useEffect( () => {
 
-		if ( ! target.current || ! observer ) return
+		isMounted.current = true
 
+		if (
+			! enabled || ! target.current || ! observer
+		) return
+		
 		observer.observe( target.current )
 
-		return () => observer.disconnect()
+		return () => {
+			isMounted.current = false
+			observer.disconnect()
+		}
 
-	}, [ target, observer ] )
+	}, [ target, observer, enabled ] )
 
 
-	return { inView, observer, setInView }
+	return { inView, enabled, observer, setInView, setEnabled }
 
 }

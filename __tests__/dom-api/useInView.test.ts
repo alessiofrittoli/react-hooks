@@ -69,7 +69,7 @@ describe( 'useInView', () => {
 		const { result: { current } } = renderHook( () => useInView( mockRef ) )
 		
 		expect( current.inView ).toBe( false )
-		expect( current.observer ).toBe( undefined )
+		expect( current.observer ).toBeUndefined()
 		expect( typeof current.setInView ).toBe( 'function' )
 	
 	} )
@@ -168,6 +168,39 @@ describe( 'useInView', () => {
 	} )
 
 
+	it( 'allows on-demand target observation', async () => {
+
+		const { result } = renderHook( () => useInView( mockRef, { enable: false } ) )
+
+		expect( result.current.enabled )
+			.toBe( false )
+		expect( typeof result.current.setEnabled )
+			.toBe( 'function' )
+		expect( result.current.observer )
+			.toBeUndefined()
+		
+		act( () => {
+			result.current.setEnabled( true )
+		} )
+
+		expect( result.current.enabled )
+			.toBe( true )
+		expect( result.current.observer )
+			.toBe( mockIntersectionObserver )
+
+
+		const observerCallback = ( result.current.observer as MockedIntersectionObserver ).callback
+		const entry = { isIntersecting: true } as IntersectionObserverEntry
+		
+		await act( async () => {
+			await observerCallback?.( [ entry ], result.current.observer! )
+		} )
+
+		expect( result.current.inView ).toBe( true )
+
+	} )
+
+
 	it( 'disconnects observer when component unmounts', () => {
 
 		const { unmount } = renderHook( () => useInView( mockRef ) )
@@ -233,6 +266,27 @@ describe( 'useInView', () => {
 			.toHaveBeenCalledWith( entry, result.current.observer )
 
 	} )
+
+
+	it( 'doesn\'t update state if Component did unmount after awaiting onStart', async () => {
+
+		const onStartMock = jest.fn()
+		const options: UseInViewOptions = { onStart: onStartMock }
+		const { result, unmount } = renderHook( () => useInView( mockRef, options ) )
+
+		const observerCallback = ( result.current.observer as MockedIntersectionObserver ).callback
+		const entry = { isIntersecting: true } as IntersectionObserverEntry
+
+		unmount()
+
+		await act( async () => {
+			await observerCallback?.( [ entry ], result.current.observer! )
+		} )
+
+
+		expect( result.current.inView ).toBe( false )
+
+	} )
 	
 	
 	it( 'catches onStart callback errors without state updates', async () => {
@@ -251,7 +305,7 @@ describe( 'useInView', () => {
 			await observerCallback?.( [ entry ], result.current.observer! )
 		} )
 
-		expect( result.current.inView ).toBe( false )
+		expect( result.current.inView ).toBe( false ) // state update not triggered
 		expect( consoleError )
 			.toHaveBeenCalledWith( new Error( 'For some reason' ) )
 

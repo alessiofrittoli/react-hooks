@@ -515,11 +515,13 @@ Check if the given target Element is intersecting with an ancestor Element or wi
 | | | - `some` - `0.5` will be used. |
 | | | - `number` |
 | | | - `number[]` |
-| `options.once` | `boolean` | (Optioanl) By setting this to `true` the observer will be disconnected after the target Element enters the viewport. |
+| `options.once` | `boolean` | (Optional) By setting this to `true` the observer will be disconnected after the target Element enters the viewport. |
 | `options.initial` | `boolean` | (Optional) Initial value. Default: `false`. |
+| `options.enable` | `boolean` | (Optional) Defines the initial observation activity. Use the returned `setEnabled` to update this state. Default: `true`. |
 | `options.onStart` | `OnStartHandler` | (Optional) A custom callback executed when target element's visibility has crossed one or more thresholds. |
 | | | This callback is awaited before any state update. |
 | | | If an error is thrown the React State update won't be fired. |
+| | | ⚠️ Wrap your callback with `useCallback` to avoid unnecessary `IntersectionObserver` recreation. |
 
 </details>
 
@@ -535,7 +537,9 @@ An object containing:
 
 - `inView`: `boolean` - Indicates whether the target Element is in viewport or not.
 - `setInView`: `React.Dispatch<React.SetStateAction<boolean>>` - A React Dispatch SetState action that allows custom state updates.
-- `observer`: `IntersectionObserver | undefined` - The `IntersectionObserver` instance.
+- `enabled`: `boolean` - Indicates whether the target Element is being observed or not.
+- `setEnabled`: `React.Dispatch<React.SetStateAction<boolean>>` - A React Dispatch SetState action that allows to enable/disable observation when needed.
+- `observer`: `IntersectionObserver | undefined` - The `IntersectionObserver` instance. It could be `undefined` if `IntersectionObserver` is not available or observation is not enabled.
 
 </details>
 
@@ -550,6 +554,7 @@ An object containing:
 ```tsx
 'use client'
 
+import { useRef } from 'react'
 import { useInView } from '@alessiofrittoli/react-hooks'
 
 const UseInViewExample: React.FC = () => {
@@ -590,6 +595,111 @@ const UseInViewExample: React.FC = () => {
 ```
 
 ---
+
+###### Disconnect observer after target enters the viewport
+
+```tsx
+'use client'
+
+import { useRef } from 'react'
+import { useInView } from '@alessiofrittoli/react-hooks'
+
+const OnceExample: React.FC = () => {
+
+  const targetRef   = useRef<HTMLDivElement>( null )
+  const { inView }  = useInView( targetRef, { once: true } )
+
+  useEffect( () => {
+
+    if ( ! inView ) return
+    console.count( 'Fired only once: element entered viewport.' )
+
+  }, [ inView ] )
+
+  return (
+    <div
+      ref={ targetRef }
+      style={ {
+        height      : 200,
+        background  : inView ? 'lime' : 'gray',
+      } }
+    />
+  )
+
+}
+```
+
+---
+
+###### Observe target only when needed
+
+```tsx
+'use client'
+
+import { useRef } from 'react'
+import { useInView } from '@alessiofrittoli/react-hooks'
+
+const OnDemandObservation: React.FC = () => {
+
+  const targetRef = useRef<HTMLDivElement>( null )
+  const {
+    inView, enabled, setEnabled
+  } = useInView( targetRef, { enable: false } )
+
+  return (
+    <div>
+      <button onClick={ () => setEnabled( prev => ! prev ) }>
+        { enabled ? 'Disconnect observer' : 'Observe' }
+      </button>
+      <div
+        ref={ targetRef }
+        style={ {
+          height      : 200,
+          marginTop   : 50,
+          background  : inView ? 'lime' : 'gray',
+        } }
+      />
+    </div>
+  )
+
+}
+```
+
+---
+
+###### Execute custom callback when intersection occurs
+
+```tsx
+'use client'
+
+import { useRef } from 'react'
+import { useInView, type OnStartHandler } from '@alessiofrittoli/react-hooks'
+
+
+const AsyncStartExample: React.FC = () => {
+
+  const targetRef = useRef<HTMLDivElement>( null )
+  const onStart   = useCallback<OnStartHandler>( async entry => {
+
+    console.log( 'Delaying state update...' )
+    await new Promise( resolve => setTimeout( resolve, 1000 ) ) // Simulate delay
+    console.log( 'Async task completed. `inView` will now be updated.' )
+  
+  }, [] )
+
+  const { inView } = useInView( targetRef, { onStart } )
+
+  return (
+    <div
+      ref={ targetRef }
+      style={ {
+        height      : 200,
+        background  : inView ? 'lime' : 'gray',
+      } }
+    />
+  )
+}
+```
 
 </details>
 
