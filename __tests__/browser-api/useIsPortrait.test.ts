@@ -10,6 +10,10 @@ const mockedUseMediaQuery = useMediaQuery as jest.Mock
 
 describe( 'useIsPortrait', () => {
 
+	afterEach( () => {
+		jest.clearAllMocks().resetModules()
+	} )
+
 	it( 'returns true when the device is in portrait mode', () => {
 
 		mockedUseMediaQuery.mockReturnValue( true )
