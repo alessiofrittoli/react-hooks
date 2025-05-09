@@ -7,12 +7,12 @@ import { useLocalStorage } from './storage'
 export interface UseDarkModeOutput
 {
 	/**
-	 * Indicates wheter dark mode is enabled or not.
+	 * Indicates whether dark mode is enabled.
 	 * 
 	 */
 	isDarkMode: boolean
 	/**
-	 * Indicates wheter the current device prefers dark theme or not.
+	 * Indicates whether the current device prefers dark theme.
 	 * 
 	 */
 	isDarkOS: boolean
@@ -37,12 +37,17 @@ export interface UseDarkModeOutput
 export interface UseDarkModeOptions
 {
 	/**
-	 * A boolean value which determines the default value if no preference has been saved in Local Storage.
+	 * The fallback value to use if no preference is saved in `localStorage`.
+	 * 
+	 * @default
+	 * 
+	 * true	// if device prefers dark color scheme.
+	 * false	// if device prefers light color scheme.
 	 * 
 	 */
 	initial?: boolean
 	/**
-	 * An Array of class names toggled to the Document HTML Element. ( e.g. [ 'dark-theme', 'light-theme' ] )
+	 * Array of class names to toggle on the `<html>` element, e.g. `['dark', 'light']`.
 	 * 
 	 */
 	docClassNames?: [ dark: string, light: string ]
@@ -50,11 +55,17 @@ export interface UseDarkModeOptions
 
 
 /**
- * Use Dark Mode hook.
+ * Easily manage dark mode with full respect for user device preferences.
  * 
- * @param options An object defining hook options. See {@link UseDarkModeOptions} for more info.
+ * This hook is user-oriented and built to honor system-level color scheme settings:
  * 
- * @returns	An object containing dark mode utilities.
+ * - If the device prefers a dark color scheme, dark mode is automatically enabled on first load.
+ * - If the user enables/disables dark mode via a web widget, the preference is stored in `localStorage` under the key `dark-mode`.
+ * - If the device color scheme preference changes (e.g. via OS settings), that change takes precedence and is stored for future visits.
+ * 
+ * @param options Configuration object for the hook. See {@link UseDarkModeOptions} for more info.
+ * 
+ * @returns	An object containing utilities for managing dark mode.
  */
 export const useDarkMode = ( options: UseDarkModeOptions = {} ): UseDarkModeOutput => {
 
@@ -62,8 +73,7 @@ export const useDarkMode = ( options: UseDarkModeOptions = {} ): UseDarkModeOutp
 	const isDarkOS	= useMediaQuery( '(prefers-color-scheme: dark)' )
 	
 	const {
-		initial = isDarkOS,
-		docClassNames = [],
+		initial = isDarkOS, docClassNames = [],
 	} = options
 
 	const [ isDarkMode, setIsDarkMode ]	= useLocalStorage( 'dark-mode', initial )
@@ -80,8 +90,8 @@ export const useDarkMode = ( options: UseDarkModeOptions = {} ): UseDarkModeOutp
 
 
 	useEffect( () => {
-		if ( darkClassName ) document.body.parentElement?.classList.toggle( darkClassName, darkModeEnabled )
-		if ( lightClassName ) document.body.parentElement?.classList.toggle( lightClassName, ! darkModeEnabled )
+		if ( darkClassName ) document.documentElement.classList.toggle( darkClassName, darkModeEnabled )
+		if ( lightClassName ) document.documentElement.classList.toggle( lightClassName, ! darkModeEnabled )
 	}, [ darkModeEnabled, darkClassName, lightClassName ] )
 
 

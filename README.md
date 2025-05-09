@@ -291,6 +291,159 @@ const isDarkOS = useMediaQuery( '(prefers-color-scheme: dark)' )
 
 ---
 
+##### `useDarkMode`
+
+Easily manage dark mode with full respect for user device preferences.
+
+This hook is user-oriented and built to honor system-level color scheme settings:
+
+- If the device prefers a dark color scheme, dark mode is automatically enabled on first load.
+- If the user enables/disables dark mode via a web widget, the preference is stored in `localStorage` under the key `dark-mode`.
+- If the device color scheme preference changes (e.g. via OS settings), that change takes precedence and is stored for future visits.
+
+<details>
+
+<summary style="cursor:pointer">Parameters</summary>
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `options` | `UseDarkModeOptions` | (Optional) Configuration object for the hook. |
+| `options.initial` | `boolean` | (Optional) The fallback value to use if no preference is saved in `localStorage`. Defaults to `true` if the device prefers dark mode. |
+| `options.docClassNames` | `[dark: string, light: string]` | (Optional) Array of class names to toggle on the `<html>` element, e.g. `['dark', 'light']`. |
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Returns</summary>
+
+Type: `UseDarkModeOutput`
+
+An object containing utilities for managing dark mode:
+
+- `isDarkMode`: `boolean` — Whether dark mode is currently enabled.
+- `isDarkOS`: `boolean` — Whether the user's system prefers dark mode.
+- `toggleDarkMode`: `() => void` — Toggles dark mode and saves the preference.
+- `enableDarkMode`: `() => void` — Enables dark mode and saves the preference.
+- `disableDarkMode`: `() => void` — Disables dark mode and saves the preference.
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Usage</summary>
+
+###### Basic usage
+
+```tsx
+'use client'
+
+import { useDarkMode } from '@alessiofrittoli/react-hooks'
+
+export const Component: React.FC = () => {
+  const { isDarkMode } = useDarkMode()
+
+  return (
+    <div>{ isDarkMode ? 'Dark mode enabled' : 'Dark mode disabled' }</div>
+  )
+}
+```
+
+---
+
+###### Update Document class names for CSS styling
+
+```tsx
+// Component.tsx
+'use client'
+
+import { useDarkMode } from '@alessiofrittoli/react-hooks'
+
+export const Component: React.FC = () => {
+  const { isDarkMode } = useDarkMode( {
+    docClassNames: [ 'dark', 'light' ],
+  } )
+
+  return (
+    <div>{ isDarkMode ? 'Dark mode enabled' : 'Dark mode disabled' }</div>
+  )
+}
+```
+
+```css
+/* style.css */
+.light {
+  color-scheme: light;
+}
+
+.dark {
+  color-scheme: dark;
+}
+
+.light body
+{
+  color     : black;
+  background: white;
+}
+
+.dark body
+{
+  color     : white;
+  background: black;
+}
+```
+
+---
+
+###### Custom theme swithcer
+
+```tsx
+'use client'
+
+import { useDarkMode } from '@alessiofrittoli/react-hooks'
+
+export const ThemeSwitcher: React.FC = () => {
+  const { isDarkMode, toggleDarkMode } = useDarkMode()
+
+  return (
+    <button onClick={ toggleDarkMode }>
+      { isDarkMode ? '🌙' : '☀️' }
+    </button>
+  )
+}
+```
+
+---
+
+###### Sync Document theme-color for consistent browser styling
+
+Browsers automatically apply colorization using:
+
+```html
+<meta name='theme-color' media='(prefers-color-scheme: dark)' />
+```
+
+This works based on the OS preference — *not your site theme*. That can cause mismatches if, for example, the system is in dark mode but the user disabled dark mode via a web toggle.
+
+To ensure consistency, `useDarkMode` updates these meta tags dynamically based on the actual mode.
+
+Just make sure to define both `light` and `dark` theme-color tags in your document:
+
+```html
+<head>
+  <meta name='theme-color' media='(prefers-color-scheme: light)' content='lime'>
+  <meta name='theme-color' media='(prefers-color-scheme: dark)' content='aqua'>
+</head>
+```
+
+</details>
+
+---
+
 ##### `useIsPortrait`
 
 Check if device is portrait oriented.
