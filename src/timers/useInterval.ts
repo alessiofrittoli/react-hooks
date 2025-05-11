@@ -76,7 +76,8 @@ export function useInterval<T extends readonly unknown[]>(
 {
 
 	const {
-		delay = 1, args, autoplay = true, updateState = false,
+		delay = 1, args, autoplay = true,
+		runOnStart = false, updateState = false,
 	} = options
 
 	const timerRef = useRef<TimerId>( undefined )
@@ -84,6 +85,14 @@ export function useInterval<T extends readonly unknown[]>(
 
 
 	const start = useCallback<StartTimer>( () => {
+
+		if ( runOnStart ) {
+			if ( args ) {
+				callback( ...args )
+			} else {
+				callback()
+			}
+		}
 		
 		timerRef.current = setInterval( callback, delay, ...( args || [] ) )
 		
@@ -91,7 +100,7 @@ export function useInterval<T extends readonly unknown[]>(
 
 		return timerRef.current
 
-	}, [ delay, args, updateState, callback ] )
+	}, [ delay, args, updateState, runOnStart, callback ] )
 
 
 	const stop = useCallback<StopTimer>( () => {
