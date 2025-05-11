@@ -84,7 +84,26 @@ export function useInterval<T extends readonly unknown[]>(
 	const [ isActive, setIsActive ] = useState( autoplay )
 
 
+	/**
+	 * Clear timer without state update.
+	 * 
+	 * @returns `true` if timer was running, `false` otherwise.
+	 */
+	const clear = useCallback( () => {
+
+		if ( ! timerRef.current ) return false
+
+		clearInterval( timerRef.current )
+		timerRef.current = undefined
+
+		return true
+
+	}, [] )
+
+
 	const start = useCallback<StartTimer>( () => {
+
+		const wasActive = clear()
 
 		if ( runOnStart ) {
 			if ( args ) {
@@ -96,24 +115,18 @@ export function useInterval<T extends readonly unknown[]>(
 		
 		timerRef.current = setInterval( callback, delay, ...( args || [] ) )
 		
-		if ( updateState ) setIsActive( true )
+		if ( ! wasActive && updateState ) setIsActive( true )
 
 		return timerRef.current
 
-	}, [ delay, args, updateState, runOnStart, callback ] )
+	}, [ delay, args, updateState, runOnStart, callback, clear ] )
 
 
 	const stop = useCallback<StopTimer>( () => {
 
-		if ( ! timerRef.current ) return
+		if ( clear() && updateState ) setIsActive( false )
 
-		clearInterval( timerRef.current )
-		timerRef.current = undefined
-
-		if ( updateState ) setIsActive( false )
-	
-
-	}, [ updateState ] )
+	}, [ updateState, clear ] )
 
 
 	useEffect( () => {
