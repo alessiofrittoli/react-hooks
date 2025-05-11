@@ -89,4 +89,5 @@ export interface StateTimerReturnType extends TimerReturnType
 }
 
 
+export * from './useInterval'
 export * from './useTimeout'
