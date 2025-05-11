@@ -99,7 +99,26 @@ export function useTimeout<T extends readonly unknown[]>(
 	const [ isActive, setIsActive ] = useState( autoplay )
 
 
+	/**
+	 * Clear timer without state update.
+	 * 
+	 * @returns `true` if timer was running, `false` otherwise.
+	 */
+	const clear = useCallback( () => {
+
+		if ( ! timerRef.current ) return false
+
+		clearTimeout( timerRef.current )
+		timerRef.current = undefined
+
+		return true
+
+	}, [] )
+
+
 	const start = useCallback<StartTimer>( () => {
+
+		const wasActive = clear()
 
 		if ( runOnStart ) {
 			if ( args ) {
@@ -110,28 +129,24 @@ export function useTimeout<T extends readonly unknown[]>(
 		}
 		
 		timerRef.current = setTimeout( () => {
+			timerRef.current = undefined
 			if ( updateState ) setIsActive( false )
 			if ( args ) return callback( ...args )
 			callback()
 		}, delay )
 
-		if ( updateState ) setIsActive( true )
+		if ( ! wasActive && updateState ) setIsActive( true )
 
 		return timerRef.current
 
-	}, [ delay, args, updateState, runOnStart, callback ] )
+	}, [ delay, args, updateState, runOnStart, callback, clear ] )
 
 
 	const stop = useCallback<StopTimer>( () => {
-		
-		if ( ! timerRef.current ) return
 
-		clearTimeout( timerRef.current )
-		timerRef.current = undefined
+		if ( clear() && updateState ) setIsActive( false )
 
-		if ( updateState ) setIsActive( false )
-
-	}, [ updateState ] )
+	}, [ updateState, clear ] )
 
 
 	useEffect( () => {
