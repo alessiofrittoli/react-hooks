@@ -9,6 +9,7 @@ describe( 'useTimeout', () => {
 	} )
 
 	afterAll( () => {
+		jest.clearAllTimers()
 		jest.useRealTimers()
 	} )
 
@@ -181,6 +182,28 @@ describe( 'useTimeout', () => {
 	
 		} )
 
+
+		it( 'set isActive to true only when timer was previously inactive', () => {
+
+			const callback		= jest.fn()
+			const delay			= 1000
+			const autoplay		= false
+			const updateState	= true
+	
+			const { result } = renderHook( () => (
+				useTimeout( callback, { delay, autoplay, updateState } )
+			) )
+
+			expect( result.current.isActive ).toBe( false )
+	
+			act( () => {
+				result.current.start()
+			} )
+
+			expect( result.current.isActive ).toBe( true )
+
+		} )
+
 	} )
 	
 	
@@ -222,6 +245,28 @@ describe( 'useTimeout', () => {
 			
 			expect( callback ).not.toHaveBeenCalled()
 			expect( clearTimeout ).not.toHaveBeenCalled()
+
+		} )
+
+
+		it( 'sets isActive to false only when timer is running and updateState is true', () => {
+
+			const callback		= jest.fn()
+			const delay			= 1000
+			const autoplay		= true
+			const updateState	= true
+	
+			const { result } = renderHook( () => (
+				useTimeout( callback, { delay, autoplay, updateState } )
+			) )
+
+			expect( result.current.isActive ).toBe( true )
+	
+			act( () => {
+				result.current.stop()
+			} )
+
+			expect( result.current.isActive ).toBe( false )
 
 		} )
 
