@@ -93,6 +93,7 @@
 		]
 	},
 	"devDependencies": {
+		"@alessiofrittoli/event-emitter": "^1.4.0",
 		"@alessiofrittoli/node-scripts": "^2.5.0",
 		"@eslint/compat": "^1.2.9",
 		"@eslint/eslintrc": "^3.3.1",
