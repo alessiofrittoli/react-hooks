@@ -84,7 +84,8 @@
 		"test:storage": "pnpm test:watch browser-api/storage/*",
 		"test:browser-api": "pnpm test:watch --testPathPattern='browser-api/(?!storage/).*\\.test\\.(js|jsx|ts|tsx)'",
 		"test:dom-api": "pnpm test:watch dom-api/*",
-		"test:misc": "pnpm test:watch misc/*"
+		"test:misc": "pnpm test:watch misc/*",
+		"test:timers": "pnpm test:watch timers/*"
 	},
 	"pnpm": {
 		"onlyBuiltDependencies": [
