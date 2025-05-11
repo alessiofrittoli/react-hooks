@@ -146,6 +146,43 @@ describe( 'useInterval', () => {
 	
 		} )
 
+
+		it( 'optionally run callback when timer starts', () => {
+
+			const callback	= jest.fn()
+			const delay		= 1000
+	
+			renderHook( () => (
+				useInterval( callback, { delay, runOnStart: true } )
+			) )
+	
+			act( () => {
+				jest.advanceTimersByTime( delay )
+			} )
+	
+			expect( callback ).toHaveBeenCalledTimes( 2 )
+	
+		} )
+		
+		
+		it( 'optionally run callback with custom args when timer starts', () => {
+
+			const callback	= jest.fn()
+			const delay		= 1000
+	
+			renderHook( () => (
+				useInterval( callback, { delay, args: [ 1, 2 ], runOnStart: true } )
+			) )
+	
+			act( () => {
+				jest.advanceTimersByTime( delay )
+			} )
+	
+			expect( callback ).toHaveBeenCalledTimes( 2 )
+			expect( callback ).toHaveBeenCalledWith( 1, 2 )
+	
+		} )
+
 	} )
 	
 	

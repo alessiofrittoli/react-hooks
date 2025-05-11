@@ -48,6 +48,12 @@ export interface TimerOptions<T extends readonly unknown[]>
 	 */
 	updateState?: boolean
 	/**
+	 * Indicates whether to execute the callback when timer starts.
+	 * 
+	 * @default false
+	 */
+	runOnStart?: boolean
+	/**
 	 * Optional arguments to pass when the `callback` is called.
 	 * 
 	 * Make sure to memoize its value to avoid timer restarts when a state update happen in your Component.
