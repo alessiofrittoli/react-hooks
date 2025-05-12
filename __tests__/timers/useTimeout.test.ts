@@ -66,7 +66,7 @@ describe( 'useTimeout', () => {
 	} )
 
 
-	it( 'clears the timeout on unmount', () => {
+	it( 'clears the timer on unmount', () => {
 
 		const callback	= jest.fn()
 		const delay		= 1000
