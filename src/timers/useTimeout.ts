@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import type { StartTimer, StopTimer, TimerHandler, TimerId } from '.'
-import type { TimerOptions, StateTimerOptions } from '.'
-import type { TimerReturnType, StateTimerReturnType } from '.'
+import type { StartTimer, StopTimer, TimerHandler, TimerId } from './types'
+import type { TimerOptions, StateTimerOptions } from './types'
+import type { TimerReturnType, StateTimerReturnType } from './types'
 
 
 /**

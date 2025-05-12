@@ -1,4 +1,4 @@
-import { useInterval } from '@/timers'
+import { useInterval } from '@/timers/useInterval'
 import { act, renderHook } from '@testing-library/react'
 
 

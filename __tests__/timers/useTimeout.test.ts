@@ -1,4 +1,4 @@
-import { useTimeout } from '@/timers'
+import { useTimeout } from '@/timers/useTimeout'
 import { act, renderHook } from '@testing-library/react'
 
 
