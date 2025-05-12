@@ -91,9 +91,14 @@ export interface TimerReturnType
 
 export interface StateTimerReturnType extends TimerReturnType
 {
+	/**
+	 * Indicates whether the timer is active.
+	 * 
+	 */
 	isActive: boolean
 }
 
 
 export * from './useInterval'
+export * from './useIntervalWhenVisible'
 export * from './useTimeout'
