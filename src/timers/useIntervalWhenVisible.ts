@@ -3,7 +3,7 @@ import { useInterval } from './useInterval'
 import type { TimerHandler, TimerOptions, StateTimerOptions, TimerId } from '.'
 import type { TimerReturnType, StateTimerReturnType } from '.'
 
-export interface UseIntervalWhenVisibleTimerReturnType extends Omit<TimerReturnType, 'start'>
+export interface UseIntervalWhenVisibleReturnType extends Omit<TimerReturnType, 'start'>
 {
 	/**
 	 * Manually start the timer.
@@ -14,7 +14,7 @@ export interface UseIntervalWhenVisibleTimerReturnType extends Omit<TimerReturnT
 }
 
 
-export interface UseIntervalWhenVisibleStateTimerReturnType extends Omit<StateTimerReturnType, 'start'>
+export interface UseIntervalWhenVisibleStateReturnType extends Omit<StateTimerReturnType, 'start'>
 {
 	/**
 	 * Manually start the timer.
@@ -30,23 +30,64 @@ export interface UseIntervalWhenVisibleStateTimerReturnType extends Omit<StateTi
 }
 
 
+/**
+ * Schedules repeated execution of `callback` every `delay` milliseconds when `Document` is visible.
+ * 
+ * This hook automatically starts and stops the interval based on the `Document` visibility.
+ * 
+ * The `Timeout` is automatically cancelled on unmount.
+ * 
+ * @template T An Array defining optional arguments passed to the `callback`.
+ * 
+ * @param	callback	The function to call when the timer elapses.
+ * @param	options		(Optional) An object defining custom timer options. See {@link StateTimerOptions} for more info.
+ * 
+ * @returns An object with timer utilities. See {@link UseIntervalWhenVisibleStateReturnType} for more info.
+ */
 export function useIntervalWhenVisible<T extends readonly unknown[]>(
 	callback: TimerHandler<T>,
 	options?: StateTimerOptions<T>,
-): UseIntervalWhenVisibleStateTimerReturnType
+): UseIntervalWhenVisibleStateReturnType
 
 
+/**
+ * Schedules repeated execution of `callback` every `delay` milliseconds when `Document` is visible.
+ * 
+ * This hook automatically starts and stops the interval based on the `Document` visibility.
+ * 
+ * The `Timeout` is automatically cancelled on unmount.
+ * 
+ * @template T An Array defining optional arguments passed to the `callback`.
+ * 
+ * @param	callback	The function to call when the timer elapses.
+ * @param	options		(Optional) An object defining custom timer options. See {@link TimerOptions} for more info.
+ * 
+ * @returns An object with timer utilities. See {@link UseIntervalWhenVisibleReturnType} for more info.
+ */
 export function useIntervalWhenVisible<T extends readonly unknown[]>(
 	callback: TimerHandler<T>,
 	options?: TimerOptions<T>,
-): UseIntervalWhenVisibleTimerReturnType
+): UseIntervalWhenVisibleReturnType
 
 
-
+/**
+ * Schedules repeated execution of `callback` every `delay` milliseconds when `Document` is visible.
+ * 
+ * This hook automatically starts and stops the interval based on the `Document` visibility.
+ * 
+ * The `Timeout` is automatically cancelled on unmount.
+ * 
+ * @template T An Array defining optional arguments passed to the `callback`.
+ * 
+ * @param	callback	The function to call when the timer elapses.
+ * @param	options		(Optional) An object defining custom timer options. See {@link TimerOptions} and {@link StateTimerOptions} for more info.
+ * 
+ * @returns An object with timer utilities. See {@link UseIntervalWhenVisibleReturnType} and {@link UseIntervalWhenVisibleStateReturnType} for more info.
+ */
 export function useIntervalWhenVisible<T extends readonly unknown[]>(
 	callback: TimerHandler<T>,
 	options	: TimerOptions<T> | StateTimerOptions<T> = {},
-): UseIntervalWhenVisibleTimerReturnType | UseIntervalWhenVisibleStateTimerReturnType
+): UseIntervalWhenVisibleReturnType | UseIntervalWhenVisibleStateReturnType
 {
 
 	const { autoplay = true } = options
