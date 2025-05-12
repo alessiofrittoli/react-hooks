@@ -1,4 +1,4 @@
-import { useInterval } from '@/timers'
+import { useInterval } from '@/timers/useInterval'
 import { act, renderHook } from '@testing-library/react'
 
 
@@ -66,7 +66,7 @@ describe( 'useInterval', () => {
 	} )
 
 
-	it( 'clears the timeout on unmount', () => {
+	it( 'clears the timer on unmount', () => {
 
 		const callback	= jest.fn()
 		const delay		= 1000

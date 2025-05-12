@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from 'react'
 import { useInterval } from './useInterval'
-import type { TimerHandler, TimerOptions, StateTimerOptions, TimerId } from '.'
-import type { TimerReturnType, StateTimerReturnType } from '.'
+import type { TimerHandler, TimerOptions, StateTimerOptions, TimerId } from './types'
+import type { TimerReturnType, StateTimerReturnType } from './types'
 
 export interface UseIntervalWhenVisibleReturnType extends Omit<TimerReturnType, 'start'>
 {
