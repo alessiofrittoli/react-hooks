@@ -13,6 +13,11 @@ const compat = new FlatCompat( {
 	baseDirectory: __dirname,
 } )
 
+/** react-hooks/exhaustive-deps additional hooks. */
+const additionalHooks = [
+	'useUpdateEffect',
+]
+
 // Initial file generated with `npm lint -- --init`
 
 /** @type {import('eslint').Linter.Config[]} */
@@ -42,7 +47,7 @@ const config = [
 		'react-hooks/exhaustive-deps': [
 			'warn',
 			{
-				additionalHooks: '(useUpdateEffect)',
+				additionalHooks: additionalHooks.join( '|' ),
 			},
 		],
 	} },

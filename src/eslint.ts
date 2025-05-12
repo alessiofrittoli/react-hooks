@@ -5,6 +5,10 @@ interface ESLintConfiguration
 	recommended: Linter.Config[]
 }
 
+/** react-hooks/exhaustive-deps additional hooks. */
+const additionalHooks = [
+	'useUpdateEffect',
+]
 
 /**
  * [`@alessiofrittoli/react-hooks`](https://npmjs.com/package/@alessiofrittoli/react-hooks) Recommended ESLint configurations.
@@ -16,7 +20,7 @@ export const config: ESLintConfiguration = {
 				'react-hooks/exhaustive-deps': [
 					'warn',
 					{
-						additionalHooks: '(useUpdateEffect)',
+						additionalHooks: additionalHooks.join( '|' ),
 					},
 				],
 			}

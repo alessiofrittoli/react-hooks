@@ -399,7 +399,7 @@ export const Component: React.FC = () => {
 
 ---
 
-###### Custom theme swithcer
+###### Custom theme switcher
 
 ```tsx
 'use client'
