@@ -87,7 +87,7 @@ export interface UseInViewOptions
 }
 
 
-interface UseInViewReturnType
+export interface UseInViewReturnType
 {
 	/**
 	 * Indicates whether the target Element is in viewport or not.
