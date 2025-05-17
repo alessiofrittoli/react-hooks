@@ -682,9 +682,17 @@ Check if the given target Element is intersecting with an ancestor Element or wi
 | | | - `number` |
 | | | - `number[]` |
 | `options.once` | `boolean` | (Optional) By setting this to `true` the observer will be disconnected after the target Element enters the viewport. |
-| `options.initial` | `boolean` | (Optional) Initial value. Default: `false`. |
+| `options.initial` | `boolean` | (Optional) Initial value. This value is used while server rendering then will be updated in the client based on target visibility. Default: `false`. |
 | `options.enable` | `boolean` | (Optional) Defines the initial observation activity. Use the returned `setEnabled` to update this state. Default: `true`. |
-| `options.onStart` | `OnStartHandler` | (Optional) A custom callback executed when target element's visibility has crossed one or more thresholds. |
+| `options.onIntersect` | `OnIntersectStateHandler` | (Optional) A custom callback executed when target element's visibility has crossed one or more thresholds. |
+| | | This callback is awaited before any state update. |
+| | | If an error is thrown the React State update won't be fired. |
+| | | ⚠️ Wrap your callback with `useCallback` to avoid unnecessary `IntersectionObserver` recreation. |
+| `options.onEnter` | `OnIntersectHandler` | (Optional) A custom callback executed when target element's visibility has crossed one or more thresholds. |
+| | | This callback is awaited before any state update. |
+| | | If an error is thrown the React State update won't be fired. |
+| | | ⚠️ Wrap your callback with `useCallback` to avoid unnecessary `IntersectionObserver` recreation. |
+| `options.onExit` | `OnIntersectHandler` | (Optional) A custom callback executed when target element's visibility has crossed one or more thresholds. |
 | | | This callback is awaited before any state update. |
 | | | If an error is thrown the React State update won't be fired. |
 | | | ⚠️ Wrap your callback with `useCallback` to avoid unnecessary `IntersectionObserver` recreation. |
@@ -839,21 +847,63 @@ const OnDemandObservation: React.FC = () => {
 'use client'
 
 import { useRef } from 'react'
-import { useInView, type OnStartHandler } from '@alessiofrittoli/react-hooks'
+import { useInView, type OnIntersectStateHandler } from '@alessiofrittoli/react-hooks'
 
 
 const AsyncStartExample: React.FC = () => {
 
   const targetRef = useRef<HTMLDivElement>( null )
-  const onStart   = useCallback<OnStartHandler>( async entry => {
+  const onIntersect   = useCallback<OnIntersectStateHandler>( async ( { entry, isEntering } ) => {
 
+    if ( isEntering ) {
+      console.log( 'Delaying state update...' )
+      await new Promise( resolve => setTimeout( resolve, 1000 ) ) // Simulate delay
+      console.log( 'Async task completed. `inView` will now be updated.' )
+      return
+    }
+    
     console.log( 'Delaying state update...' )
     await new Promise( resolve => setTimeout( resolve, 1000 ) ) // Simulate delay
     console.log( 'Async task completed. `inView` will now be updated.' )
   
   }, [] )
 
-  const { inView } = useInView( targetRef, { onStart } )
+  const { inView } = useInView( targetRef, { onIntersect } )
+
+  return (
+    <div
+      ref={ targetRef }
+      style={ {
+        height      : 200,
+        background  : inView ? 'lime' : 'gray',
+      } }
+    />
+  )
+}
+```
+
+---
+
+###### Execute custom callback when `onEnter` and `onExit`
+
+```tsx
+'use client'
+
+import { useRef } from 'react'
+import { useInView, type OnIntersectHandler } from '@alessiofrittoli/react-hooks'
+
+
+const AsyncStartExample: React.FC = () => {
+
+  const targetRef = useRef<HTMLDivElement>( null )
+  const onEnter = useCallback<OnIntersectHandler>( async ( { entry } ) => {
+    console.log( 'In viewport - ', entry )
+  }, [] )
+  const onExit = useCallback<OnIntersectHandler>( async ( { entry } ) => {
+    console.log( 'Exited viewport - ', entry )
+  }, [] )
+
+  const { inView } = useInView( targetRef, { onEnter, onExit } )
 
   return (
     <div
