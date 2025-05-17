@@ -6,6 +6,8 @@ type MockedIntersectionObserver = (
 	& {
 		callback?: IntersectionObserverCallback
 		options?: IntersectionObserverInit
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		construct: jest.Mock<MockedIntersectionObserver, [callback: IntersectionObserverCallback, options?: IntersectionObserverInit | undefined], any>
 	}
 )
 
@@ -21,10 +23,7 @@ describe( 'useInView', () => {
 			observe		: jest.fn(),
 			unobserve	: jest.fn(),
 			disconnect	: jest.fn(),
-		} as unknown as MockedIntersectionObserver
-
-		global.IntersectionObserver = (
-			jest.fn( ( callback, options ) => {
+			construct	: jest.fn( ( callback: IntersectionObserverCallback, options?: IntersectionObserverInit ) => {
 
 				mockIntersectionObserver.callback = callback
 				mockIntersectionObserver.options = options
@@ -32,9 +31,19 @@ describe( 'useInView', () => {
 				if ( options?.root && ! ( options.root instanceof Element ) ) {
 					throw new TypeError( 'Type error' )
 				}
+
+				// the real intersection observer calls the `callback` on initialization.
+				const entry = { isIntersecting: false } as IntersectionObserverEntry
+				callback( [ entry ], mockIntersectionObserver )
 				
 				return mockIntersectionObserver
-			} )
+
+			} ),
+		} as unknown as MockedIntersectionObserver
+
+
+		global.IntersectionObserver = (
+			jest.fn( mockIntersectionObserver.construct )
 		)
 
 	} )
@@ -54,6 +63,21 @@ describe( 'useInView', () => {
 
 
 	it( 'returns initial state as true when initial option is set to true', () => {
+
+		/**
+		 * Mock constructor implementation to avoid the initial `callback` call
+		 * made by `IntersectionObserver` by default.
+		 * 
+		 * We can't check that double state update.
+		 */
+		mockIntersectionObserver.construct.mockImplementationOnce( ( callback, options ) => {
+
+			mockIntersectionObserver.callback	= callback
+			mockIntersectionObserver.options	= options
+			
+			return mockIntersectionObserver
+
+		} )
 
 		const options: UseInViewOptions = { initial: true }
 		const { result } = renderHook( () => useInView( mockRef, options ) )
@@ -233,8 +257,8 @@ describe( 'useInView', () => {
 
 	it( 'does nothing if entry is undefined in IntersectionObserver callback', async () => {
 
-		const onStartMock = jest.fn()
-		const options: UseInViewOptions = { onStart: onStartMock }
+		const onIntersectMock = jest.fn()
+		const options: UseInViewOptions = { onIntersect: onIntersectMock }
 		const { result } = renderHook( () => useInView( mockRef, options ) )
 
 		const observerCallback = ( result.current.observer as MockedIntersectionObserver ).callback
@@ -244,15 +268,62 @@ describe( 'useInView', () => {
 		} )
 
 		expect( result.current.inView ).toBe( false )
-		expect( onStartMock ).not.toHaveBeenCalled()
+		expect( onIntersectMock ).not.toHaveBeenCalled()
 
 	} )
 
 
-	it( 'calls onStart callback when intersection occurs', async () => {
+	it( 'calls onIntersect callback when intersection occurs', async () => {
 
-		const onStartMock = jest.fn()
-		const options: UseInViewOptions = { onStart: onStartMock }
+		const onIntersectMock = jest.fn()
+		const options: UseInViewOptions = { onIntersect: onIntersectMock }
+		const { result } = renderHook( () => useInView( mockRef, options ) )
+
+		const observerCallback = ( result.current.observer as MockedIntersectionObserver ).callback
+		const entry = { isIntersecting: true } as IntersectionObserverEntry
+
+		await act( async () => {
+			await observerCallback?.( [ entry ], result.current.observer! )
+		} )
+		
+		await act( async () => {
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			;( entry as any ).isIntersecting = false
+			await observerCallback?.( [ entry ], result.current.observer! )
+		} )
+
+		expect( onIntersectMock )
+			.toHaveBeenNthCalledWith( 1, {
+				entry,
+				observer: result.current.observer,
+				state: { isEntering: true, isExiting: false }
+			} )
+		
+		expect( onIntersectMock )
+			.toHaveBeenNthCalledWith( 2, {
+				entry,
+				observer: result.current.observer,
+				state: { isEntering: false, isExiting: true }
+			} )
+
+	} )
+
+
+	it( 'doesn\'t call onIntersect callback on initialization', async () => {
+
+		const onIntersectMock = jest.fn()
+		const options: UseInViewOptions = { onIntersect: onIntersectMock }
+		renderHook( () => useInView( mockRef, options ) )
+
+		expect( onIntersectMock ).toHaveBeenCalledTimes( 0 )
+
+	} )
+
+
+	it( 'calls onEnter when target is intersecting', async () => {
+
+		const onEnterMock = jest.fn()
+		const options: UseInViewOptions = { onEnter: onEnterMock }
 		const { result } = renderHook( () => useInView( mockRef, options ) )
 
 		const observerCallback = ( result.current.observer as MockedIntersectionObserver ).callback
@@ -262,16 +333,46 @@ describe( 'useInView', () => {
 			await observerCallback?.( [ entry ], result.current.observer! )
 		} )
 
-		expect( onStartMock )
-			.toHaveBeenCalledWith( entry, result.current.observer )
+		expect( onEnterMock )
+			.toHaveBeenCalledWith( {
+				entry,
+				observer: result.current.observer,
+			} )
+
+	} )
+	
+	
+	it( 'calls onExit when target enter then exit the viewport', async () => {
+
+		const onExitMock = jest.fn()
+		const options: UseInViewOptions = { onExit: onExitMock }
+		const { result } = renderHook( () => useInView( mockRef, options ) )
+	
+		const observerCallback = ( result.current.observer as MockedIntersectionObserver ).callback
+		const entry = { isIntersecting: true } as IntersectionObserverEntry
+	
+		await act( async () => {
+			await observerCallback?.( [ entry ], result.current.observer! )
+		} )
+		await act( async () => {
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			;( entry as any ).isIntersecting = false
+			await observerCallback?.( [ entry ], result.current.observer! )
+		} )
+	
+		expect( onExitMock )
+			.toHaveBeenCalledWith( {
+				entry,
+				observer: result.current.observer,
+			} )
 
 	} )
 
 
-	it( 'doesn\'t update state if Component did unmount after awaiting onStart', async () => {
+	it( 'doesn\'t update state if Component did unmount after awaiting onIntersect', async () => {
 
-		const onStartMock = jest.fn()
-		const options: UseInViewOptions = { onStart: onStartMock }
+		const onIntersectMock = jest.fn()
+		const options: UseInViewOptions = { onIntersect: onIntersectMock }
 		const { result, unmount } = renderHook( () => useInView( mockRef, options ) )
 
 		const observerCallback = ( result.current.observer as MockedIntersectionObserver ).callback
@@ -289,17 +390,17 @@ describe( 'useInView', () => {
 	} )
 	
 	
-	it( 'catches onStart callback errors without state updates', async () => {
+	it( 'catches onIntersect callback errors without state updates', async () => {
 
 		const consoleError = (
 			jest.spyOn( console, 'error' )
 				.mockImplementationOnce( () => {} ) // do not print to stdout.
 		)
 
-		const onStartMock = jest.fn( () => {
+		const onIntersectMock = jest.fn( () => {
 			throw new Error( 'For some reason' )
 		} )
-		const options: UseInViewOptions = { onStart: onStartMock }
+		const options: UseInViewOptions = { onIntersect: onIntersectMock }
 		const { result } = renderHook( () => useInView( mockRef, options ) )
 
 		const observerCallback = ( result.current.observer as MockedIntersectionObserver ).callback

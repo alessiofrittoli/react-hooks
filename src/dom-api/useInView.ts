@@ -269,7 +269,7 @@ export const useInView = (
 							isExiting.current = ! isInview && !! wasInView.current
 
 							if ( isInview && onEnter ) await onEnter( { entry, observer } )
-							if ( isExiting && onExit ) await onExit( { entry, observer } )
+							if ( isExiting.current && onExit ) await onExit( { entry, observer } )
 							
 							if ( onIntersect && ( isInview || ( ! isInview && wasInView.current != null ) ) ) {
 								/**
