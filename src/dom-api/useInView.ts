@@ -53,14 +53,7 @@ interface OnIntersectHandlerOptions
 }
 
 
-interface OnIntersectStateHandlerOptions extends OnIntersectHandlerOptions
-{
-	/**
-	 * An object defining current observed target entry state.
-	 * 
-	 */
-	state: IntersectionState
-}
+type OnIntersectStateHandlerOptions = OnIntersectHandlerOptions & IntersectionState
 
 
 /**
@@ -280,7 +273,7 @@ export const useInView = (
 									isEntering	: isInview,
 									isExiting	: isExiting.current,
 								} as IntersectionState
-								await onIntersect( { entry, observer, state } )
+								await onIntersect( { entry, observer, ...state } )
 							}
 
 							wasInView.current = isInview

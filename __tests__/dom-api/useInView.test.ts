@@ -295,15 +295,17 @@ describe( 'useInView', () => {
 		expect( onIntersectMock )
 			.toHaveBeenNthCalledWith( 1, {
 				entry,
-				observer: result.current.observer,
-				state: { isEntering: true, isExiting: false }
+				observer	: result.current.observer,
+				isEntering	: true,
+				isExiting	: false,
 			} )
 		
 		expect( onIntersectMock )
 			.toHaveBeenNthCalledWith( 2, {
 				entry,
-				observer: result.current.observer,
-				state: { isEntering: false, isExiting: true }
+				observer	: result.current.observer,
+				isEntering	: false,
+				isExiting	: true,
 			} )
 
 	} )
