@@ -10,6 +10,59 @@ export type MarginType = (
 )
 
 
+export type IntersectionState = (
+	| {
+		/**
+		 * Indicates whether the {@link IntersectionObserverEntry} is entering the viewport.
+		 * 
+		 */
+		isEntering: true
+		/**
+		 * Indicates whether the {@link IntersectionObserverEntry} is exiting the viewport.
+		 * 
+		 */
+		isExiting: false
+	}
+	| {
+		/**
+		 * Indicates whether the {@link IntersectionObserverEntry} is entering the viewport.
+		 * 
+		 */
+		isEntering: false
+		/**
+		 * Indicates whether the {@link IntersectionObserverEntry} is exiting the viewport.
+		 * 
+		 */
+		isExiting: true
+	}
+)
+
+
+interface OnIntersectHandlerOptions
+{
+	/**
+	 * The intersecting {@link IntersectionObserverEntry}.
+	 * 
+	 */
+	entry: IntersectionObserverEntry
+	/**
+	 * The current {@link IntersectionObserver} instance.
+	 * 
+	 */
+	observer: IntersectionObserver
+}
+
+
+interface OnIntersectStateHandlerOptions extends OnIntersectHandlerOptions
+{
+	/**
+	 * An object defining current observed target entry state.
+	 * 
+	 */
+	state: IntersectionState
+}
+
+
 /**
  * A custom callback executed when target element's visibility has crossed one or more thresholds.
  * 
@@ -19,10 +72,23 @@ export type MarginType = (
  * 
  * ⚠️ Wrap your callback with `useCallback` to avoid unnecessary `IntersectionObserver` recreation.
  * 
- * @param	entry		The intersecting {@link IntersectionObserverEntry}.
- * @param	observer	The current {@link IntersectionObserver} instance.
+ * @param options An object defining the current intersection entry and observer.
  */
-export type OnStartHandler = ( entry: IntersectionObserverEntry, observer: IntersectionObserver ) => void | Promise<void>
+export type OnIntersectHandler = ( options: OnIntersectHandlerOptions ) => void | Promise<void>
+
+
+/**
+ * A custom callback executed when target element's visibility has crossed one or more thresholds.
+ * 
+ * This callback is awaited before any state update.
+ * 
+ * If an error is thrown the React State update won't be fired.
+ * 
+ * ⚠️ Wrap your callback with `useCallback` to avoid unnecessary `IntersectionObserver` recreation.
+ * 
+ * @param options An object defining the current intersection entry, observer and entry state.
+ */
+export type OnIntersectStateHandler = ( options: OnIntersectStateHandlerOptions ) => void | Promise<void>
 
 
 export interface UseInViewOptions
@@ -60,9 +126,9 @@ export interface UseInViewOptions
 	 */
 	once?: boolean
 	/**
-	 * Initial value.
+	 * Initial value. This value is used while server rendering then will be updated in the client based on target visibility.
 	 * 
-	 * @default true
+	 * @default false
 	 */
 	initial?: boolean
 	/**
@@ -80,10 +146,33 @@ export interface UseInViewOptions
 	 * 
 	 * ⚠️ Wrap your callback with `useCallback` to avoid unnecessary `IntersectionObserver` recreation.
 	 * 
-	 * @param	entry		The intersecting {@link IntersectionObserverEntry}.
-	 * @param	observer	The current {@link IntersectionObserver} instance.
+	 * @param options An object defining the current intersection entry, observer and entry state.
 	 */
-	onStart?: OnStartHandler
+	onIntersect?: OnIntersectStateHandler
+	/**
+	 * A custom callback executed when target element is entering the viewport.
+	 * 
+	 * This callback is awaited before any state update.
+	 * 
+	 * If an error is thrown the React State update won't be fired.
+	 * 
+	 * ⚠️ Wrap your callback with `useCallback` to avoid unnecessary `IntersectionObserver` recreation.
+	 * 
+	 * @param options An object defining the current intersection entry and observer.
+	 */
+	onEnter?: OnIntersectHandler
+	/**
+	 * A custom callback executed when target element is exiting the viewport.
+	 * 
+	 * This callback is awaited before any state update.
+	 * 
+	 * If an error is thrown the React State update won't be fired.
+	 * 
+	 * ⚠️ Wrap your callback with `useCallback` to avoid unnecessary `IntersectionObserver` recreation.
+	 * 
+	 * @param options An object defining the current intersection entry and observer.
+	 */
+	onExit?: OnIntersectHandler
 }
 
 
@@ -94,6 +183,11 @@ export interface UseInViewReturnType
 	 * 
 	 */
 	inView: boolean
+	/**
+	 * Indicates whether the target Element is exiting the viewport.
+	 * 
+	 */
+	isExiting: boolean
 	/**
 	 * Indicates whether the target Element is being observed or not.
 	 * 
@@ -135,13 +229,19 @@ export const useInView = (
 
 	const {
 		initial = false, once,
-		amount, margin, root, enable = true, onStart,
+		amount, margin, root, enable = true,
 	} = options
+
+	const { onEnter, onExit, onIntersect } = options
 
 	const isMounted = useRef( true )
 
 	const [ inView, setInView ]		= useState( initial )
 	const [ enabled, setEnabled ]	= useState( enable )
+
+	const wasInView	= useRef<boolean | null>( null )
+	const isExiting	= useRef( false )
+
 
 	const observer = useMemo( () => {
 
@@ -166,9 +266,29 @@ export const useInView = (
 						const isInview = entry.isIntersecting
 
 						try {
-							await onStart?.( entry, observer )
+							isExiting.current = ! isInview && !! wasInView.current
+
+							if ( isInview && onEnter ) await onEnter( { entry, observer } )
+							if ( isExiting && onExit ) await onExit( { entry, observer } )
+							
+							if ( onIntersect && ( isInview || ( ! isInview && wasInView.current != null ) ) ) {
+								/**
+								 * Do not execute `onIntersect` if entry is never entered the viewport.
+								 * NOTE: this is recuird since `IntersectionObserver` calls the given `callback` when initialised.
+								 */
+								const state = {
+									isEntering	: isInview,
+									isExiting	: isExiting.current,
+								} as IntersectionState
+								await onIntersect( { entry, observer, state } )
+							}
+
+							wasInView.current = isInview
+
 							if ( ! isMounted.current ) return
+
 							setInView( isInview )
+
 						} catch ( error ) {
 							console.error( error )
 						}
@@ -187,7 +307,7 @@ export const useInView = (
 			console.error( error )
 		}
 
-	}, [ root, margin, amount, once, enabled, onStart ] )
+	}, [ root, margin, amount, once, enabled, onEnter, onExit, onIntersect ] )
 
 
 	useEffect( () => {
@@ -208,6 +328,6 @@ export const useInView = (
 	}, [ target, observer, enabled ] )
 
 
-	return { inView, enabled, observer, setInView, setEnabled }
+	return { inView, enabled, observer, isExiting: isExiting.current, setInView, setEnabled }
 
 }
