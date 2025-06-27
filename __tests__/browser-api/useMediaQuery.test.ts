@@ -1,5 +1,6 @@
-import { renderHook } from '@testing-library/react'
-import { useMediaQuery } from '@/browser-api/useMediaQuery'
+import { act, renderHook } from '@testing-library/react'
+import { EventEmitter } from '@alessiofrittoli/event-emitter'
+import { useMediaQuery, type OnChangeHandler } from '@/browser-api/useMediaQuery'
 
 
 describe( 'useMediaQuery', () => {
@@ -36,11 +37,15 @@ describe( 'useMediaQuery', () => {
 
 	it( 'updates the matches value when the media query changes', () => {
 
-		const mockAddEventListener		= jest.fn()
-		const mockRemoveEventListener	= jest.fn()
+		const emitter					= new EventEmitter()
+		const mockAddEventListener		= jest.fn( ( event: string, cb: ( matches: boolean ) => void ) => emitter.on( event, cb ) )
+		const mockRemoveEventListener	= jest.fn( ( event: string, cb: ( matches: boolean ) => void ) => emitter.off( event, cb ) )
+
+
+		let matches = true
 
 		window.matchMedia = jest.fn().mockImplementation( query => ( {
-			matches	: query === '(min-width: 768px)',
+			matches	: matches,
 			media	: query,
 			addEventListener	: mockAddEventListener,
 			removeEventListener	: mockRemoveEventListener,
@@ -50,14 +55,62 @@ describe( 'useMediaQuery', () => {
 			initialProps: { query: '(min-width: 768px)' },
 		} )
 
+		// expect hook to set the initial value.
 		expect( result.current ).toBe( true )
-
-		rerender( { query: '(max-width: 767px)' } )
-		expect( result.current ).toBe( false )
-
-		expect( mockRemoveEventListener ).toHaveBeenCalled()
+		// expect hook to listen for media query changes.
 		expect( mockAddEventListener ).toHaveBeenCalled()
+
+		// emit 'change' event so states get updated.
+		act( () => {
+			matches = false
+			emitter.emit( 'change' )
+		} )
+
+
+		expect( result.current ).toBe( false )
 		
+		// expect listeners to be removed on un-mount.
+		rerender( { query: '(min-width: 767px)' } )
+		expect( mockRemoveEventListener ).toHaveBeenCalled()
+
+	} )
+
+
+	it( 'doesn\'t dispatch React state updates if `updateState` is set to false', () => {
+
+		const emitter	= new EventEmitter()
+		const onChange	= jest.fn<void, Parameters<OnChangeHandler>>()
+
+
+		let matches = true
+
+		window.matchMedia = jest.fn().mockImplementation( query => ( {
+			matches	: matches,
+			media	: query,
+			addEventListener	: jest.fn( ( event: string, cb: ( matches: boolean ) => void ) => emitter.on( event, cb ) ),
+			removeEventListener	: jest.fn( ( event: string, cb: ( matches: boolean ) => void ) => emitter.off( event, cb ) ),
+		} ) )
+
+		const { result } = renderHook( ( { query } ) => useMediaQuery( query, { updateState: false, onChange } ), {
+			initialProps: { query: '(min-width: 768px)' },
+		} )
+
+		// expect hook to return void
+		expect( result.current ).toBe( undefined )
+		// expect hook to initially invoke `onChange` callback.
+		expect( onChange ).toHaveBeenCalledWith( true )
+
+		// emit 'change' event so `onChange` callback get invoked.
+		act( () => {
+			matches = false
+			emitter.emit( 'change' )
+		} )
+
+		// expect hook to not update returned state value.
+		expect( result.current ).toBe( undefined )
+		// expect hook invoke `onChange` callback.
+		expect( onChange ).toHaveBeenCalledWith( false )
+
 	} )
 
 } )

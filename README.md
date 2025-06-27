@@ -267,9 +267,13 @@ Get Document Media matches and listen for changes.
 
 <summary style="cursor:pointer">Parameters</summary>
 
-| Parameter | Type     | Description |
-|-----------|----------|-------------|
-| `query`   | `string` | A string specifying the media query to parse into a `MediaQueryList`. |
+| Parameter | Type     | Default | Description |
+|-----------|----------|---------|-------------|
+| `query`   | `string` | - | A string specifying the media query to parse into a `MediaQueryList`. |
+| `options` | `UseMediaQueryOptions\|UseMediaQueryStateOptions` | - | An object defining custom options. |
+| `options.updateState` | `boolean` | `true` | Indicates whether the hook will dispatch a React state update when the given `query` change event get dispatched. |
+| `options.onChange` | `OnChangeHandler` | - | A custom callback that will be invoked on initial page load and when the given `query` change event get dispatched. |
+| | | | This callback is required if `updateState` is set to `false`. |
 
 </details>
 
@@ -279,10 +283,10 @@ Get Document Media matches and listen for changes.
 
 <summary style="cursor:pointer">Returns</summary>
 
-Type: `boolean`
+Type: `boolean|void`
 
-- `true` if the document currently matches the media query list.
-- `false` otherwise.
+- `true` or `false` if the document currently matches the media query list or not.
+- `void` if `updateState` is set to `false`.
 
 </details>
 
@@ -298,6 +302,21 @@ Type: `boolean`
 import { useMediaQuery } from '@alessiofrittoli/react-hooks'
 
 const isDarkOS = useMediaQuery( '(prefers-color-scheme: dark)' )
+```
+
+---
+
+###### Listen changes with no state updates
+
+```tsx
+import { useMediaQuery } from '@alessiofrittoli/react-hooks'
+
+useMediaQuery( '(prefers-color-scheme: dark)', {
+  updateState: false,
+  onChange( matches ) {
+    console.log( 'is dark OS?', matches )
+  }
+} )
 ```
 
 </details>
