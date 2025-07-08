@@ -102,13 +102,10 @@ export interface UseInputOutput<I = unknown, O = I> extends InputState<I, O>
 
 
 /**
- * useInput custom hook.
+ * Handle input states with ease.
  * 
- * @param	validate		( Optional ) A validation callback used to validate the Input value accordingly.
- * @param	inputRef		( Optional ) A `React.RefObject` used in the `focus` method.
- * @param	initialValue	( Optional ) The Input default value.
- * 
- * @returns	An object ({@link UseInputOutput}) with the Input state and utility functions.
+ * @param props An object defining custom options. See {@link UseInputOptions} for more info.
+ * @returns	An object containing Input state and utility functions. See {@link UseInputOutput} for more info.
  */
 export const useInput = <I = unknown, O = I>( props: UseInputOptions<I, O> = {} ): UseInputOutput<I, O> => {
 
