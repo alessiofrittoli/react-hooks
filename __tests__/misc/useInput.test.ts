@@ -10,6 +10,7 @@ describe( 'useInput', () => {
 		const { result } = renderHook(() => useInput() )
 
 		expect( result.current.value ).toBeUndefined()
+		expect( result.current.isTouched ).toBe( false )
 		expect( result.current.isValid ).toBe( true )
 		expect( result.current.isEmpty ).toBe( true )
 		expect( result.current.hasError ).toBe( false )
