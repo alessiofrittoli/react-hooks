@@ -56,6 +56,18 @@ describe( 'useIntervalWhenVisible', () => {
 	} )
 
 
+	it( 'doesn\'t start the interval when document is not visible and autoplay is true', () => {
+
+		Object.defineProperty( document, 'hidden', { value: true } )
+
+		renderHook( () => useIntervalWhenVisible( jest.fn() ) )
+
+		expect( mockStart ).not.toHaveBeenCalled()
+		expect( mockStop ).not.toHaveBeenCalled()
+
+	} )
+	
+
 	it( 'starts the interval manually when start is called', () => {
 
 		const { result } = renderHook( () => (

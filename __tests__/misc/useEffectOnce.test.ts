@@ -27,6 +27,17 @@ describe( 'useEffectOnce', () => {
 	} )
 
 
+	it( 'doesn\'t call effect if not first render', () => {
+
+		useIsFirstRender.mockReturnValue( false )
+		
+		const effect = jest.fn()
+		renderHook( () => useEffectOnce( effect ) )
+		expect( effect ).toHaveBeenCalledTimes( 0 )
+
+	} )
+
+
 	it( 'doesn\'t call effect on subsequent renders', () => {
 
 		useIsFirstRender.mockReturnValue( true )
