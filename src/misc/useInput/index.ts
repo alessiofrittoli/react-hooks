@@ -104,16 +104,16 @@ export interface UseInputOutput<I = unknown, O = I> extends InputState<I, O>
 /**
  * Handle input states with ease.
  * 
- * @param props An object defining custom options. See {@link UseInputOptions} for more info.
+ * @param options An object defining custom options. See {@link UseInputOptions} for more info.
  * @returns	An object containing Input state and utility functions. See {@link UseInputOutput} for more info.
  */
-export const useInput = <I = unknown, O = I>( props: UseInputOptions<I, O> = {} ): UseInputOutput<I, O> => {
+export const useInput = <I = unknown, O = I>( options: UseInputOptions<I, O> = {} ): UseInputOutput<I, O> => {
 
-	const { inputRef }				= props
-	const { initialValue }			= props
-	const { touchTimeout = 600 }	= props
-	const { validate, parse }		= props
-	const { onChange }				= props
+	const { inputRef }				= options
+	const { initialValue }			= options
+	const { touchTimeout = 600 }	= options
+	const { validate, parse }		= options
+	const { onChange }				= options
 
 	const [ state, dispatch ] = useReducer( inputReducer,
 		{
