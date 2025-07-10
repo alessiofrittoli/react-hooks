@@ -1,4 +1,5 @@
 export * from './storage'
+export * from './useConnection'
 export * from './useDarkMode'
 export * from './useEventListener'
 export * from './useIsPortrait'
