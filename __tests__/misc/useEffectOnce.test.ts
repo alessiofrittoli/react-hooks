@@ -1,5 +1,5 @@
 import { renderHook } from '@testing-library/react'
-import { useEffectOnce } from '../../src/misc/useEffectOnce'
+import { useEffectOnce } from '@/misc'
 import { useIsFirstRender as _useIsFirstRender } from '@/misc/useIsFirstRender'
 
 

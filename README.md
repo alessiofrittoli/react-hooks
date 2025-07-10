@@ -323,6 +323,12 @@ useMediaQuery( '(prefers-color-scheme: dark)', {
 
 ---
 
+##### `useConnection`
+
+Docs coming soon
+
+---
+
 ##### `useDarkMode`
 
 Easily manage dark mode with full respect for user device preferences.
@@ -942,6 +948,20 @@ const AsyncStartExample: React.FC = () => {
 
 #### Miscellaneous
 
+---
+
+##### `useInput`
+
+Docs coming soon
+
+---
+
+##### `useEffectOnce`
+
+Docs coming soon
+
+---
+
 ##### `useIsClient`
 
 Check if the React Hook or Component where this hook is executed is running in a browser environment.
@@ -1116,6 +1136,12 @@ Get pagination informations based on the given options.
 This hook memoize the returned result of the [`paginate`](https://github.com/alessiofrittoli/math-utils/blob/master/docs/helpers/README.md#paginate) function imported from [`@alessiofrittoli/math-utils`](https://npmjs.com/package/@alessiofrittoli/math-utils).
 
 See [`paginate`](https://github.com/alessiofrittoli/math-utils/blob/master/docs/helpers/README.md#paginate) function Documentation for more information about it.
+
+---
+
+##### `useSelection`
+
+Docs coming soon
 
 ---
 
