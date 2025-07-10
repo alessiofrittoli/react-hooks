@@ -1,6 +1,6 @@
 {
 	"name": "@alessiofrittoli/react-hooks",
-	"version": "3.2.0-alpha.3",
+	"version": "3.2.0",
 	"description": "TypeScript React utility Hooks",
 	"author": {
 		"name": "Alessio Frittoli",
