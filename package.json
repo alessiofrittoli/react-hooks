@@ -64,7 +64,7 @@
 		"build:prod": "cross-env NODE_ENV=production tsup",
 		"build": "pnpm lint && pnpm test:ci && pnpm build:prod",
 		"lint": "eslint",
-		"release": "node scripts/publish.js --verbose --npm",
+		"release": "node scripts/release.js --verbose --npm",
 		"//2a": "*********************************************************************",
 		"//2b": "***************************** UNIT TESTS ****************************",
 		"//2c": "*********************************************************************",
@@ -89,23 +89,23 @@
 	},
 	"devDependencies": {
 		"@alessiofrittoli/event-emitter": "^1.5.0",
-		"@alessiofrittoli/node-scripts": "^2.6.0",
+		"@alessiofrittoli/node-scripts": "^3.0.0",
 		"@eslint/compat": "^1.3.1",
 		"@eslint/eslintrc": "^3.3.1",
-		"@eslint/js": "^9.30.1",
+		"@eslint/js": "^9.31.0",
 		"@jest/globals": "^30.0.4",
 		"@testing-library/dom": "^10.4.0",
 		"@testing-library/jest-dom": "^6.6.3",
 		"@testing-library/react": "^16.3.0",
 		"@testing-library/user-event": "^14.6.1",
 		"@types/jest": "^30.0.0",
-		"@types/node": "^24.0.10",
+		"@types/node": "^24.0.14",
 		"@types/react": "^19.1.8",
 		"@types/react-dom": "^19.1.6",
 		"concurrently": "^9.2.0",
 		"cross-env": "^7.0.3",
-		"dotenv": "^17.1.0",
-		"eslint": "^9.30.1",
+		"dotenv": "^17.2.0",
+		"eslint": "^9.31.0",
 		"eslint-plugin-react": "^7.37.5",
 		"eslint-plugin-react-hooks": "^5.2.0",
 		"globals": "^16.3.0",
@@ -118,12 +118,12 @@
 		"ts-node": "^10.9.2",
 		"tsup": "^8.5.0",
 		"typescript": "^5.8.3",
-		"typescript-eslint": "^8.36.0"
+		"typescript-eslint": "^8.37.0"
 	},
 	"dependencies": {
 		"@alessiofrittoli/math-utils": "^1.14.0",
 		"@alessiofrittoli/type-utils": "^1.8.0",
-		"@alessiofrittoli/web-utils": "^1.12.0"
+		"@alessiofrittoli/web-utils": "^1.15.0"
 	},
 	"peerDependencies": {
 		"@types/react": "^19",
