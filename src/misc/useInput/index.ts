@@ -1,4 +1,4 @@
-import { useCallback, useReducer } from 'react'
+import { useCallback, useMemo, useReducer } from 'react'
 import { useUpdateEffect } from '../useUpdateEffect'
 
 import { initialState, inputReducer, isEmptyValue } from './inputReducer'
@@ -94,7 +94,7 @@ export interface UseInputOutput<I = unknown, O = I> extends InputState<I, O>
 	 */
 	reset: () => void
 	/**
-	 * Call `focus` method to focus the Input Element. A ref object must be provided.
+	 * Call `focus` method to focus the Input Element. `inputRef` must be provided in the input options.
 	 * 
 	 */
 	focus: () => void
@@ -122,10 +122,16 @@ export const useInput = <I = unknown, O = I>( options: UseInputOptions<I, O> = {
 		}
 	)
 
-	const value			= parse ? parse( state.value as I ) : state.value as O
+	const value = useMemo( () => (
+		parse ? parse( state.value as I ) : state.value as O
+	), [ state.value, parse ] )
+	
+	const isValid = useMemo( () => (
+		typeof validate === 'function' ? validate( value ) : true
+	), [ value, validate ] )
+
 	const { isTouched }	= state
 	const isEmpty		= isEmptyValue( value )
-	const isValid		= typeof validate === 'function' ? validate( value ) : true
 	const hasError		= (
 		( ! isValid && isTouched ) ||
 		( !! initialValue && ! isValid )
