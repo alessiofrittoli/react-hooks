@@ -23,6 +23,7 @@
 
 - [Getting started](#getting-started)
 - [ESLint Configuration](#eslint-configuration)
+- [What's Changed](#whats-changed)
 - [API Reference](#api-reference)
   - [Browser API](#browser-api)
     - [`useStorage`](#usestorage)
@@ -36,6 +37,7 @@
     - [`useFocusTrap`](#usefocustrap)
     - [`useInView`](#useinview)
   - [Miscellaneous](#miscellaneous)
+    - [`useDeferCallback`](#usedefercallback)
     - [`useIsClient`](#useisclient)
     - [`useIsFirstRender`](#useisfirstrender)
     - [`useUpdateEffect`](#useupdateeffect)
@@ -85,6 +87,14 @@ const config = [
 
 export default config
 ```
+
+---
+
+### What's Changed
+
+#### Updates in the latest release 🎉
+
+- Add `useDeferCallback`. See [API Reference](#usedefercallback) for more info.
 
 ---
 
@@ -953,6 +963,74 @@ const AsyncStartExample: React.FC = () => {
 ##### `useInput`
 
 Docs coming soon
+
+---
+
+##### `useDeferCallback`
+
+`useDeferCallback` will return a memoized and deferred version of the callback that only changes if one of the `inputs` in the dependency list has changed.
+
+Since [`deferCallback`](https://npmjs.com/package/@alessiofrittoli/web-utils?activeTab=readme#deferCallback) returns a new function when called, it may cause your child components to uselessly re-validate when a state update occurs in the main component.
+To avoid these pitfalls you can memoize and defer your task with `useDeferCallback`.
+
+Take a look at [`deferTask`](https://npmjs.com/package/@alessiofrittoli/web-utils?activeTab=readme#deferTask) to defer single tasks in a function handler.
+
+<details>
+
+<summary style="cursor:pointer">Type Parameters</summary>
+
+| Parameter | Description                  |
+|-----------|------------------------------|
+| `T`       | The task function definition. `unknown` types will be inherited by your function type definition. |
+| `U`       | The task function arguments. `unknown` types will be inherited by your function type. |
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Parameters</summary>
+
+| Parameter | Type     | Description                 |
+|-----------|----------|-----------------------------|
+| `task`    | `T`      | The task callable function. |
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Returns</summary>
+
+Type: `( ...args: U ) => Promise<Awaited<ReturnType<T>>>`
+
+A new memoized handler which returns a new Promise that returns the `task` result once fulfilled.
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Usage</summary>
+
+```tsx
+const MyComponent: React.FC = () => {
+
+  const clickHandler = useDeferCallback<React.MouseEventHandler>(
+    event => { ... }, []
+  )
+
+  return (
+    <button onClick={ clickHandler }>Button</button>
+  )
+
+}
+```
+
+</details>
 
 ---
 

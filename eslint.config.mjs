@@ -15,7 +15,7 @@ const compat = new FlatCompat( {
 
 /** react-hooks/exhaustive-deps additional hooks. */
 const additionalHooks = [
-	'useUpdateEffect',
+	'useUpdateEffect', 'useDeferCallback',
 ]
 
 // Initial file generated with `npm lint -- --init`

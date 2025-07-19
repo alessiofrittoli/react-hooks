@@ -99,7 +99,7 @@
 		"@testing-library/react": "^16.3.0",
 		"@testing-library/user-event": "^14.6.1",
 		"@types/jest": "^30.0.0",
-		"@types/node": "^24.0.14",
+		"@types/node": "^24.0.15",
 		"@types/react": "^19.1.8",
 		"@types/react-dom": "^19.1.6",
 		"concurrently": "^9.2.0",
@@ -123,7 +123,7 @@
 	"dependencies": {
 		"@alessiofrittoli/math-utils": "^1.14.0",
 		"@alessiofrittoli/type-utils": "^1.8.0",
-		"@alessiofrittoli/web-utils": "^1.15.0"
+		"@alessiofrittoli/web-utils": "^1.16.1"
 	},
 	"peerDependencies": {
 		"@types/react": "^19",
