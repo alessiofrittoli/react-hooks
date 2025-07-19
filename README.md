@@ -970,8 +970,10 @@ Docs coming soon
 
 `useDeferCallback` will return a memoized and deferred version of the callback that only changes if one of the `inputs` in the dependency list has changed.
 
-Since `deferCallback` returns a new function when called, it may cause your child components to uselessly re-validate when a state update occurs in the main component.
+Since [`deferCallback`](https://npmjs.com/package/@alessiofrittoli/web-utils?activeTab=readme#deferCallback) returns a new function when called, it may cause your child components to uselessly re-validate when a state update occurs in the main component.
 To avoid these pitfalls you can memoize and defer your task with `useDeferCallback`.
+
+Take a look at [`deferTask`](https://npmjs.com/package/@alessiofrittoli/web-utils?activeTab=readme#deferTask) to defer single tasks in a function handler.
 
 <details>
 
