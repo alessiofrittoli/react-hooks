@@ -30,6 +30,7 @@
     - [`useLocalStorage`](#uselocalstorage)
     - [`useSessionStorage`](#usesessionstorage)
     - [`useMediaQuery`](#usemediaquery)
+    - [`useConnection`](#useconnection)
     - [`useDarkMode`](#usedarkmode)
     - [`useIsPortrait`](#useisportrait)
   - [DOM API](#dom-api)
@@ -37,6 +38,7 @@
     - [`useFocusTrap`](#usefocustrap)
     - [`useInView`](#useinview)
   - [Miscellaneous](#miscellaneous)
+    - [`useInput`](#useinput)
     - [`useDeferCallback`](#usedefercallback)
     - [`useIsClient`](#useisclient)
     - [`useIsFirstRender`](#useisfirstrender)
@@ -95,6 +97,8 @@ export default config
 #### Updates in the latest release 🎉
 
 - Add `useDeferCallback`. See [API Reference](#usedefercallback) for more info.
+- Add [`useConnection`](#useconnection) API Reference.
+- Add [`useInput`](#useinput) API Reference.
 
 ---
 
@@ -335,7 +339,21 @@ useMediaQuery( '(prefers-color-scheme: dark)', {
 
 ##### `useConnection`
 
-Docs coming soon
+Get states about Internet Connection.
+
+<details>
+
+<summary style="cursor:pointer">Returns</summary>
+
+Type: `UseConnectionReturnType`
+
+An object with the following properties:
+
+- `connection`: `online | offline` - Indicates the connections status.
+- `isOnline`: `boolean` - Indicates whether the current device is online.
+- `isOffline`: `boolean` - Indicates whether the current device is offline.
+
+</details>
 
 ---
 
@@ -962,7 +980,164 @@ const AsyncStartExample: React.FC = () => {
 
 ##### `useInput`
 
-Docs coming soon
+Handle input states with ease.
+
+<details>
+
+<summary style="cursor:pointer">Type Parameters</summary>
+
+| Parameter | Description            |
+|-----------|------------------------|
+| `I`       | The input value type.  |
+| `O`       | The output value type. |
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Parameters</summary>
+
+| Parameter | Type     | Default | Description                 |
+|-----------|----------|---------|-----------------------------|
+| `options` | `UseInputOptions<I, O>` | `{}` | An object defining custom options. |
+| `options.inputRef` | `React.RefObject<InputType>` | - | (Optional) The React HTML input element ref. |
+| `options.initialValue` | `O\|null` | - | (Optional) The input initial value. |
+| `options.touchTimeout` | `number` | 600 | (Optional) A timeout in milliseconds which will be used to define the input as "touched" thus validations are triggered and errors can be displayed. |
+| `options.validate` | `ValidateValueHandler<O>` | - | (Optional) Value validation handler. If `parse` callback is given, the `value` will be parsed before validation. |
+| `options.parse` | `ParseValueHandler<I, O>` | - | (Optional) Parse value. |
+| `options.onChange` | `ChangeHandler<O>` | - | (Optional) A callable function executed when the `ChangeEvent` is dispatched on the HTML input element. |
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Returns</summary>
+
+Type: `UseInputOutput<I, O>`
+
+An object containing the following properties:
+
+| Property        | Type | Description |
+|-----------------|------|-------------|
+| `isEmpty`       | `boolean` | Indicates whether the Input is empty or not. |
+| `hasError`      | `boolean` | Indicates whether the input has error or not. |
+| | | It will return true if the Input does not pass the validation checks and it has been touched. |
+| | | Please refer to the `isValid` property to check the Input validity regardless of whether it has been touched or not. |
+| `changeHandler` | `React.ChangeEventHandler<InputType>` | Change handler callback used to handle Input change events. |
+| `blurHandler`   | `() => void` | Blur handler callback used to handle Input blur events. |
+| `setValue`      | `( value: O ) => void` | Call `setValue` method to update input value. |
+| `submit`        | `() => void` | Call `submit` method to re-run validations and ensure error state is updated successfully. |
+| `reset`         | `() => void` | Call `reset` method to reset the Input state. |
+| `focus`         | `() => void` | Call `focus` method to focus the Input Element. `inputRef` must be provided in the input options. |
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Usage</summary>
+
+###### Basic usage
+
+```tsx
+const MyComponent: React.FC = () => {
+
+  const input = useInput<string>()
+
+  return (
+    <input
+      type='text'
+      value={ input.value || '' }
+      onChange={ input.changeHandler }
+      onBlur={ input.blurHandler }
+    />
+  )
+
+}
+```
+
+---
+
+###### Displaying custom error messages
+
+```tsx
+import { useInput, type ValidateValueHandler } from '@alessiofrittoli/react-hooks'
+
+const isNotEmpty: ValidateValueHandler<string> = value => (
+  ! value ? false : value.trim().length > 0
+)
+
+const MyComponent: React.FC = () => {
+
+  const input = useInput<string>( {
+    validate: isNotEmpty,
+  } )
+
+  return (
+    <>
+      <input
+        value={ input.value || '' }
+        onChange={ input.changeHandler }
+        onBlur={ input.blurHandler }
+      />
+      { input.hasError && (
+        <span>The input cannot be empty.</span>
+      ) }
+    </>
+  )
+
+}
+```
+
+---
+
+###### Parsing and validating parsed value
+
+```tsx
+import { formatDate, isValidDate } from '@alessiofrittoli/date-utils'
+import { useInput, type ValidateValueHandler, type ParseValueHandler } from '@alessiofrittoli/react-hooks'
+
+const parseStringToDate: ParseValueHandler<string, Date> = value => (
+  value ? new Date( value ) : undefined
+)
+
+
+const validateInputDate: ValidateValueHandler<Date> = value => (
+  isValidDate( value ) && value.getTime() > Date.now()
+)
+
+
+const MyComponent: React.FC = () => {
+
+  const input = useInput<string, Date>( {
+    parse     : parseStringToDate,
+    validate  : validateInputDate,
+  } )
+  
+
+  return (
+    <>
+      <input
+        type='datetime-local'
+        value={ input.value ? formatDate( input.value, 'Y-m-dTH:i' ) : '' }
+        onChange={ input.changeHandler }
+        onBlur={ input.blurHandler }
+      />
+      { input.hasError && (
+        <span>Please choose a date no earlier than today</span>
+      ) }
+    </>
+  )
+
+}
+```
+
+</details>
 
 ---
 
