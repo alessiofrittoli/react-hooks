@@ -7,7 +7,7 @@ interface ESLintConfiguration
 
 /** react-hooks/exhaustive-deps additional hooks. */
 const additionalHooks = [
-	'useUpdateEffect',
+	'useUpdateEffect', 'useDeferCallback'
 ]
 
 /**
