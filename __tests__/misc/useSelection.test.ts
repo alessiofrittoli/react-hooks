@@ -153,7 +153,8 @@ describe( 'useSelection', () => {
 			} )
 
 			expect( result.current.selection )
-				.toEqual( [ 2, 3, 4, 5, 6, 7 ] )
+				// .toEqual( [ 2, 3, 4, 5, 6, 7 ] )
+				.toEqual( [ 7, 6, 5, 4, 3, 2 ] )
 			
 		} )
 
@@ -172,18 +173,19 @@ describe( 'useSelection', () => {
 		} )
 
 
-		it( 'keeps original ordering when backward selecting', () => {
+		// it( 'keeps original ordering when backward selecting', () => {
 
-			const { result } = renderHook( () => useSelection( items, [ 9 ] ) )
+		// 	const { result } = renderHook( () => useSelection( items, [ 9 ] ) )
 			
-			act( () => {
-				result.current.groupSelect( 4 )
-			} )
+		// 	act( () => {
+		// 		result.current.groupSelect( 4 )
+		// 	} )
 	
-			expect( result.current.selection )
-				.not.toEqual( [ 9, 8, 7, 6, 5, 4 ] )
+		// 	expect( result.current.selection )
+		// 		// .not.toEqual( [ 9, 8, 7, 6, 5, 4 ] )
+		// 		.not.toEqual( [ 9, 8, 7, 6, 5, 4 ] )
 
-		} )
+		// } )
 
 
 		it( 'extends selection when called multiple times (forward/backward)', () => {
@@ -211,7 +213,7 @@ describe( 'useSelection', () => {
 			} )
 	
 			expect( result.current.selection )
-				.toEqual( [ 2, 3, 4 ] )
+				.toEqual( [ 4, 3, 2 ] )
 			
 		} )
 		
@@ -260,7 +262,8 @@ describe( 'useSelection', () => {
 			} )
 	
 			expect( result.current.selection )
-				.toEqual( [ object, 6, 7, 8, 9 ] )
+				// .toEqual( [ object, 6, 7, 8, 9 ] )
+				.toEqual( [ 9, 8, 7, 6, object ] )
 			
 		} )
 

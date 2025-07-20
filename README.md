@@ -29,21 +29,31 @@
     - [`useStorage`](#usestorage)
     - [`useLocalStorage`](#uselocalstorage)
     - [`useSessionStorage`](#usesessionstorage)
-    - [`useMediaQuery`](#usemediaquery)
     - [`useConnection`](#useconnection)
     - [`useDarkMode`](#usedarkmode)
+    - [`useEventListener`](#useeventlistener)
     - [`useIsPortrait`](#useisportrait)
+    - [`useMediaQuery`](#usemediaquery)
   - [DOM API](#dom-api)
-    - [`useScrollBlock`](#usescrollblock)
     - [`useFocusTrap`](#usefocustrap)
     - [`useInView`](#useinview)
+    - [`useScrollBlock`](#usescrollblock)
   - [Miscellaneous](#miscellaneous)
     - [`useInput`](#useinput)
     - [`useDeferCallback`](#usedefercallback)
+    - [`useEffectOnce`](#useeffectonce)
+    - [`useUpdateEffect`](#useupdateeffect)
     - [`useIsClient`](#useisclient)
     - [`useIsFirstRender`](#useisfirstrender)
-    - [`useUpdateEffect`](#useupdateeffect)
     - [`usePagination`](#usepagination)
+    - [`useSelection`](#useselection)
+  - [Timers](#timers)
+    - [`useDebounce`](#usedebounce)
+    - [`useInterval`](#useinterval)
+    - [`useIntervalWhenVisible`](#useintervalwhenvisible)
+    - [`useLightInterval`](#uselightinterval)
+    - [`useTimeout`](#usetimeout)
+    - [`useLightTimeout`](#uselighttimeout)
 - [Development](#development)
   - [Install depenendencies](#install-depenendencies)
   - [Build the source code](#build-the-source-code)
@@ -97,8 +107,7 @@ export default config
 #### Updates in the latest release 🎉
 
 - Add `useDeferCallback`. See [API Reference](#usedefercallback) for more info.
-- Add [`useConnection`](#useconnection) API Reference.
-- Add [`useInput`](#useinput) API Reference.
+- Add missing API Referefence sections.
 
 ---
 
@@ -273,70 +282,6 @@ Applies the same API Reference.
 
 ---
 
-##### `useMediaQuery`
-
-Get Document Media matches and listen for changes.
-
-<details>
-
-<summary style="cursor:pointer">Parameters</summary>
-
-| Parameter | Type     | Default | Description |
-|-----------|----------|---------|-------------|
-| `query`   | `string` | - | A string specifying the media query to parse into a `MediaQueryList`. |
-| `options` | `UseMediaQueryOptions\|UseMediaQueryStateOptions` | - | An object defining custom options. |
-| `options.updateState` | `boolean` | `true` | Indicates whether the hook will dispatch a React state update when the given `query` change event get dispatched. |
-| `options.onChange` | `OnChangeHandler` | - | A custom callback that will be invoked on initial page load and when the given `query` change event get dispatched. |
-| | | | This callback is required if `updateState` is set to `false`. |
-
-</details>
-
----
-
-<details>
-
-<summary style="cursor:pointer">Returns</summary>
-
-Type: `boolean|void`
-
-- `true` or `false` if the document currently matches the media query list or not.
-- `void` if `updateState` is set to `false`.
-
-</details>
-
----
-
-<details>
-
-<summary style="cursor:pointer">Usage</summary>
-
-###### Check if user device prefers dark color scheme
-
-```tsx
-import { useMediaQuery } from '@alessiofrittoli/react-hooks'
-
-const isDarkOS = useMediaQuery( '(prefers-color-scheme: dark)' )
-```
-
----
-
-###### Listen changes with no state updates
-
-```tsx
-import { useMediaQuery } from '@alessiofrittoli/react-hooks'
-
-useMediaQuery( '(prefers-color-scheme: dark)', {
-  updateState: false,
-  onChange( matches ) {
-    console.log( 'is dark OS?', matches )
-  }
-} )
-```
-
-</details>
-
----
-
 ##### `useConnection`
 
 Get states about Internet Connection.
@@ -356,6 +301,7 @@ An object with the following properties:
 </details>
 
 ---
+
 
 ##### `useDarkMode`
 
@@ -510,6 +456,254 @@ Just make sure to define both `light` and `dark` theme-color tags in your docume
 
 ---
 
+##### `useEventListener`
+
+Attach a new Event listener to the `Window`, `Document`, `MediaQueryList` or an `HTMLElement`.
+
+<details>
+
+<summary style="cursor:pointer">Parameters</summary>
+
+<details>
+
+<summary style="cursor:pointer">Window events</summary>
+
+| Parameter | Type     | Description |
+|-----------|----------|-------------|
+| `type`    | `K\|K[]` | The `Window` event name or an array of event names. |
+| `options` | `WindowListenerOptions<K>` | An object defining init options. |
+| `options.listener` | `WindowEventListener<K>` | The Window Event listener. |
+| `options.onLoad` | `() => void` | A custom callback executed before event listener get attached. |
+| `options.onCleanUp` | `() => void` | A custom callback executed after event listener get removed. |
+| `options.options` | `ListenerOptions` | Specifies characteristics about the event listener. See [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#options). |
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Document events</summary>
+
+| Parameter | Type     | Description |
+|-----------|----------|-------------|
+| `type`    | `K\|K[]` | The `Document` event name or an array of event names. |
+| `options` | `DocumentListenerOptions<K>` | An object defining init options. |
+| `options.target` | `Document\|null\|React.RefObject<Document\|null>` | The `Document` reference or a React RefObject of the `Document`. |
+| `options.listener` | `DocumentEventListener<K>` | The Document Event listener. |
+| `options.onLoad` | `() => void` | A custom callback executed before event listener get attached. |
+| `options.onCleanUp` | `() => void` | A custom callback executed after event listener get removed. |
+| `options.options` | `ListenerOptions` | Specifies characteristics about the event listener. See [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#options). |
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">HTMLElement events</summary>
+
+| Parameter | Type     | Description |
+|-----------|----------|-------------|
+| `type`    | `K\|K[]` | The `HTMLElement` event name or an array of event names. |
+| `options` | `ElementListenerOptions<K>` | An object defining init options. |
+| `options.target` | `T\|React.RefObject<T\| null>` | The React RefObject of the target where the listener get attached to. |
+| `options.listener` | `ElementEventListener<K>` | The HTMLElement Event listener. |
+| `options.onLoad` | `() => void` | A custom callback executed before event listener get attached. |
+| `options.onCleanUp` | `() => void` | A custom callback executed after event listener get removed. |
+| `options.options` | `ListenerOptions` | Specifies characteristics about the event listener. See [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#options). |
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">MediaQuery events</summary>
+
+| Parameter | Type     | Description |
+|-----------|----------|-------------|
+| `type`    | `change` | The `MediaQueryList` event name. |
+| `options` | `MediaQueryListenerOptions` | An object defining init options. |
+| `options.query` | `string` | The Media Query string to check. |
+| `options.listener` | `MediaQueryChangeListener` | The MediaQueryList Event listener. |
+| `options.onLoad` | `() => void` | A custom callback executed before event listener get attached. |
+| `options.onCleanUp` | `() => void` | A custom callback executed after event listener get removed. |
+| `options.options` | `ListenerOptions` | Specifies characteristics about the event listener. See [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#options). |
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Custom events</summary>
+
+| Parameter | Type     | Description |
+|-----------|----------|-------------|
+| `type`    | `K\|K[]` | The custom event name or an array of event names. |
+| `options` | `CustomEventListenerOptions<T, K>` | An object defining init options. |
+| `options.target` | `Document\|HTMLElement\|null\|React.RefObject<Document\|HTMLElement\|null>` | (Optional) The target where the listener get attached to. If not set, the listener will get attached to the `Window` object. |
+| `options.listener` | `( event: T[ K ] ) => void` | The Event listener. |
+| `options.onLoad` | `() => void` | A custom callback executed before event listener get attached. |
+| `options.onCleanUp` | `() => void` | A custom callback executed after event listener get removed. |
+| `options.options` | `ListenerOptions` | Specifies characteristics about the event listener. See [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#options). |
+
+</details>
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Usage</summary>
+
+###### Attach listeners to the Window object
+
+```tsx
+'use client'
+
+import { useCallback } from 'react'
+import { useEventListener } from '@alessiofrittoli/react-hooks'
+
+export const MyComponent: React.FC = () => {
+
+  useEventListener( 'popstate', {
+    listener: useCallback( event => {
+      ...
+    }, [] ),
+  } )
+
+}
+```
+
+---
+
+###### Attach listeners to the Document object
+
+```tsx
+'use client'
+
+import { useCallback } from 'react'
+import { useEventListener } from '@alessiofrittoli/react-hooks'
+
+export const MyComponent: React.FC = () => {
+
+  useEventListener( 'click', {
+    target    : typeof document !== 'undefined' ? document : null,
+    listener  : useCallback( event => {
+      ...
+    }, [] ),
+  } )
+
+}
+```
+
+---
+
+###### Attach listeners to an HTMLElement
+
+```tsx
+'use client'
+
+import { useCallback, useRef } from 'react'
+import { useEventListener } from '@alessiofrittoli/react-hooks'
+
+export const MyComponent: React.FC = () => {
+
+  const buttonRef = useRef<HTMLButtonElement>( null )
+
+  useEventListener( 'click', {
+    target: buttonRef,
+    listener: useCallback( event => {
+      ...
+    }, [] ),
+  } )
+
+  return (
+    <button ref={ buttonRef }>Button</button>
+  )
+
+}
+```
+
+---
+
+###### Attach listeners to a MediaQueryList
+
+```tsx
+import { useCallback } from 'react'
+import { useEventListener } from '@alessiofrittoli/react-hooks'
+
+export const MyComponent: React.FC = () => {
+
+  useEventListener( 'change', {
+    query     : '(max-width: 768px)',
+    listener  : useCallback( event => {
+      if ( event.matches ) {
+        ...
+      }
+    }, [] )
+  } )
+
+}
+```
+
+---
+
+###### Listen dispatched custom events
+
+```tsx
+import { useCallback } from 'react'
+import { useEventListener } from '@alessiofrittoli/react-hooks'
+
+class CustomEvent extends Event
+{
+  isCustom: boolean
+
+  constructor( type: string, eventInitDict?: EventInit )
+  {
+    super( type, eventInitDict )
+    this.isCustom = true
+  }
+}
+
+
+type CustomEventMap = {
+  customEventName: CustomEvent
+}
+
+
+export const MyComponent: React.FC = () => {
+
+  const clickHandler = useCallback( () => {
+    document.dispatchEvent( new CustomEvent( 'customEventName' ) )
+  }, [] )
+
+  useEventListener<CustomEventMap>( 'customEventName', {
+    target    : typeof document !== 'undefined' ? document : null,
+    listener  : useCallback( event => {
+      if ( event.isCustom ) {
+        ...
+      }
+    }, [] )
+  } )
+
+
+  return (
+    <button onClick={ clickHandler }>Click me to dispatch custom event</button>
+  )
+
+}
+```
+
+---
+
+</details>
+
+---
+
 ##### `useIsPortrait`
 
 Check if device is portrait oriented.
@@ -545,19 +739,21 @@ const isLandscape = ! useIsPortrait()
 
 ---
 
-#### DOM API
+##### `useMediaQuery`
 
-##### `useScrollBlock`
-
-Prevent Element overflow.
+Get Document Media matches and listen for changes.
 
 <details>
 
 <summary style="cursor:pointer">Parameters</summary>
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `target`  | `React.RefObject<HTMLElement\|null>` | `Document.documentElement` | (Optional) The React RefObject target HTMLElement. |
+| Parameter | Type     | Default | Description |
+|-----------|----------|---------|-------------|
+| `query`   | `string` | - | A string specifying the media query to parse into a `MediaQueryList`. |
+| `options` | `UseMediaQueryOptions\|UseMediaQueryStateOptions` | - | An object defining custom options. |
+| `options.updateState` | `boolean` | `true` | Indicates whether the hook will dispatch a React state update when the given `query` change event get dispatched. |
+| `options.onChange` | `OnChangeHandler` | - | A custom callback that will be invoked on initial page load and when the given `query` change event get dispatched. |
+| | | | This callback is required if `updateState` is set to `false`. |
 
 </details>
 
@@ -567,9 +763,10 @@ Prevent Element overflow.
 
 <summary style="cursor:pointer">Returns</summary>
 
-Type: `[ () => void, () => void ]`
+Type: `boolean|void`
 
-A tuple with block and restore scroll callbacks.
+- `true` or `false` if the document currently matches the media query list or not.
+- `void` if `updateState` is set to `false`.
 
 </details>
 
@@ -579,51 +776,34 @@ A tuple with block and restore scroll callbacks.
 
 <summary style="cursor:pointer">Usage</summary>
 
-###### Block Document Overflow
+###### Check if user device prefers dark color scheme
 
 ```tsx
-import { useScrollBlock } from '@alessiofrittoli/react-hooks'
+import { useMediaQuery } from '@alessiofrittoli/react-hooks'
 
-const [ blockScroll, restoreScroll ] = useScrollBlock()
-
-const openPopUpHandler = useCallback( () => {
-  ...
-  blockScroll()
-}, [ blockScroll ] )
-
-const closePopUpHandler = useCallback( () => {
-  ...
-  restoreScroll()
-}, [ restoreScroll ] )
-
-...
+const isDarkOS = useMediaQuery( '(prefers-color-scheme: dark)' )
 ```
 
 ---
 
-###### Block HTML Element Overflow
+###### Listen changes with no state updates
 
 ```tsx
-const elementRef = useRef<HTMLDivElement>( null )
+import { useMediaQuery } from '@alessiofrittoli/react-hooks'
 
-const [ blockScroll, restoreScroll ] = useScrollBlock( elementRef )
-
-const scrollBlockHandler = useCallback( () => {
-  ...
-  blockScroll()
-}, [ blockScroll ] )
-
-const scrollRestoreHandler = useCallback( () => {
-  ...
-  restoreScroll()
-}, [ restoreScroll ] )
-
-...
+useMediaQuery( '(prefers-color-scheme: dark)', {
+  updateState: false,
+  onChange( matches ) {
+    console.log( 'is dark OS?', matches )
+  }
+} )
 ```
 
 </details>
 
 ---
+
+#### DOM API
 
 ##### `useFocusTrap`
 
@@ -974,9 +1154,85 @@ const AsyncStartExample: React.FC = () => {
 
 ---
 
-#### Miscellaneous
+##### `useScrollBlock`
+
+Prevent Element overflow.
+
+<details>
+
+<summary style="cursor:pointer">Parameters</summary>
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `target`  | `React.RefObject<HTMLElement\|null>` | `Document.documentElement` | (Optional) The React RefObject target HTMLElement. |
+
+</details>
 
 ---
+
+<details>
+
+<summary style="cursor:pointer">Returns</summary>
+
+Type: `[ () => void, () => void ]`
+
+A tuple with block and restore scroll callbacks.
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Usage</summary>
+
+###### Block Document Overflow
+
+```tsx
+import { useScrollBlock } from '@alessiofrittoli/react-hooks'
+
+const [ blockScroll, restoreScroll ] = useScrollBlock()
+
+const openPopUpHandler = useCallback( () => {
+  ...
+  blockScroll()
+}, [ blockScroll ] )
+
+const closePopUpHandler = useCallback( () => {
+  ...
+  restoreScroll()
+}, [ restoreScroll ] )
+
+...
+```
+
+---
+
+###### Block HTML Element Overflow
+
+```tsx
+const elementRef = useRef<HTMLDivElement>( null )
+
+const [ blockScroll, restoreScroll ] = useScrollBlock( elementRef )
+
+const scrollBlockHandler = useCallback( () => {
+  ...
+  blockScroll()
+}, [ blockScroll ] )
+
+const scrollRestoreHandler = useCallback( () => {
+  ...
+  restoreScroll()
+}, [ restoreScroll ] )
+
+...
+```
+
+</details>
+
+---
+
+#### Miscellaneous
 
 ##### `useInput`
 
@@ -1211,7 +1467,119 @@ const MyComponent: React.FC = () => {
 
 ##### `useEffectOnce`
 
-Docs coming soon
+Modified version of `useEffect` that only run once on intial load.
+
+<details>
+
+<summary style="cursor:pointer">Parameters</summary>
+
+| Parameter | Type                   | Description |
+|-----------|------------------------|-------------|
+| `effect`  | `React.EffectCallback` | Imperative function that can return a cleanup function. |
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Usage</summary>
+
+```tsx
+'use client'
+
+import { useEffect, useState } from 'react'
+import { useEffectOnce } from '@alessiofrittoli/react-hooks'
+
+export const ClientComponent: React.FC = () => {
+
+  const [ count, setCount ] = useState( 0 )
+
+  useEffect( () => {
+    const intv = setInterval( () => {
+      setCount( prev => prev + 1 ) // update state each 1s
+    }, 1000 )
+    return () => clearInterval( intv )
+  }, [] )
+
+  useEffectOnce( () => {
+    console.log( 'Component did mount' )
+    return () => {
+      console.log( 'Component did unmount' )
+    }
+  } )
+
+  return (
+    <div>{ count }</div>
+  )
+
+}
+```
+
+</details>
+
+---
+
+##### `useUpdateEffect`
+
+Modified version of `useEffect` that skips the first render.
+
+<details>
+
+<summary style="cursor:pointer">Parameters</summary>
+
+| Parameter | Type                   | Description |
+|-----------|------------------------|-------------|
+| `effect`  | `React.EffectCallback` | Imperative function that can return a cleanup function. |
+| `deps`    | `React.DependencyList` | If present, effect will only activate if the values in the list change. |
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Usage</summary>
+
+```tsx
+'use client'
+
+import { useEffect, useState } from 'react'
+import { useUpdateEffect } from '@alessiofrittoli/react-hooks'
+
+export const ClientComponent: React.FC = () => {
+
+  const [ count, setCount ] = useState( 0 )
+
+  useEffect( () => {
+    const intv = setInterval( () => {
+      setCount( prev => prev + 1 )
+    }, 1000 )
+    return () => clearInterval( intv )
+  }, [] )
+
+  useEffect( () => {
+    console.log( 'useEffect', count ) // starts from 0
+    return () => {
+      console.log( 'useEffect - clean up', count ) // starts from 0
+    }
+  }, [ count ] )
+
+  useUpdateEffect( () => {
+    console.log( 'useUpdateEffect', count ) // starts from 1
+    return () => {
+      console.log( 'useUpdateEffect - clean up', count ) // starts from 1
+    }
+  }, [ count ] )
+
+  return (
+    <div>{ count }</div>
+  )
+
+}
+```
+
+</details>
 
 ---
 
@@ -1237,8 +1605,6 @@ Type: `boolean`
 <details>
 
 <summary style="cursor:pointer">Usage</summary>
-
-###### Basic usage
 
 ```tsx
 'use client'
@@ -1283,8 +1649,6 @@ Note that if the React Hook/Component has no state updates, `useIsFirstRender` w
 
 <summary style="cursor:pointer">Usage</summary>
 
-###### Basic usage
-
 ```tsx
 'use client'
 
@@ -1317,71 +1681,6 @@ export const ClientComponent: React.FC = () => {
 
 ---
 
-##### `useUpdateEffect`
-
-Modified version of `useEffect` that skips the first render.
-
-<details>
-
-<summary style="cursor:pointer">Parameters</summary>
-
-| Parameter | Type                   | Description |
-|-----------|------------------------|-------------|
-| `effect`  | `React.EffectCallback` | Imperative function that can return a cleanup function. |
-| `deps`    | `React.DependencyList` | If present, effect will only activate if the values in the list change. |
-
-</details>
-
----
-
-<details>
-
-<summary style="cursor:pointer">Usage</summary>
-
-###### Basic usage
-
-```tsx
-'use client'
-
-import { useEffect, useState } from 'react'
-import { useUpdateEffect } from '@alessiofrittoli/react-hooks'
-
-export const ClientComponent: React.FC = () => {
-
-  const [ count, setCount ] = useState( 0 )
-
-  useEffect( () => {
-    const intv = setInterval( () => {
-      setCount( prev => prev + 1 )
-    }, 1000 )
-    return () => clearInterval( intv )
-  }, [] )
-
-  useEffect( () => {
-    console.log( 'useEffect', count ) // starts from 0
-    return () => {
-      console.log( 'useEffect - clean up', count ) // starts from 0
-    }
-  }, [ count ] )
-
-  useUpdateEffect( () => {
-    console.log( 'useUpdateEffect', count ) // starts from 1
-    return () => {
-      console.log( 'useUpdateEffect - clean up', count ) // starts from 1
-    }
-  }, [ count ] )
-
-  return (
-    <div>{ count }</div>
-  )
-
-}
-```
-
-</details>
-
----
-
 ##### `usePagination`
 
 Get pagination informations based on the given options.
@@ -1394,7 +1693,597 @@ See [`paginate`](https://github.com/alessiofrittoli/math-utils/blob/master/docs/
 
 ##### `useSelection`
 
-Docs coming soon
+A React hook for managing selection states in an array.
+
+Provides functionality for single and group selection, as well as resetting the selection.
+
+<details>
+
+<summary style="cursor:pointer">Type Parameters</summary>
+
+| Parameter | Description                  |
+|-----------|------------------------------|
+| `V`       | The type of the values in the `array`. |
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Parameters</summary>
+
+| Parameter | Type  | Default | Description                  |
+|-----------|-------|---------|-----------------------------|
+| `array`   | `V[]` | -      | The array of items to manage selection for. |
+| `initial` | `V[]` | []     | The initial selection state. |
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Returns</summary>
+
+An object containing the selection state and handlers.
+
+- `selection`: `V[]` - The current selected items.
+- `hasSelection`: `boolean` - Indicates whether `selection` is not empty. Short-hand for `selection.length > 0`.
+- `isSelected`: `IsSelectedHandler<V>` - Check if the given `entry` is in the selection.
+- `setSelection`: `SetSelectionHandler<V>` - A React Dispatch SetStateAction that allows custom selection update.
+- `select`: `SelectHandler<V>` - Update selection by adding a new `entry` or removing the given `entry` if already exists in the selection.
+- `groupSelect`: `GroupSelectHandler<V>` - Select all items from the given `array` starting from the first item in the selection up to the given `entry`.
+- `selectAll`: `SelectAllHandler` - Add all entries from the given `array` to the selection.
+- `resetSelection`: `ResetSelectionHandler` - Removes all entries from the selection.
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Usage</summary>
+
+```tsx
+'use client'
+
+import { useCallback, useMemo } from 'react'
+import { useSelection } from '@alessiofrittoli/react-hooks'
+
+interface Item
+{
+  id    : number
+  name  : string
+}
+
+const items: Item[] = [
+  {
+    id    : 1,
+    name  : 'item-1',
+  },
+  {
+    id    : 2,
+    name  : 'item-2',
+  },
+  {
+    id    : 3,
+    name  : 'item-3',
+  },
+  {
+    id    : 4,
+    name  : 'item-4',
+  },
+  {
+    id    : 5,
+    name  : 'item-5',
+  },
+]
+
+
+const MyComponent: React.FC = () => {
+
+  const {
+    setSelection, select, groupSelect, isSelected
+  } = useSelection( useMemo( () => items.map( item => item.id ), [] ) )
+
+  const clickHandler = useCallback( ( id: Item[ 'id' ] ) => (
+    ( event: React.MouseEvent<HTMLButtonElement> ) => {
+      if ( event.shiftKey ) {
+        return groupSelect( id ) // group select
+      }
+      if ( event.metaKey || event.ctrlKey ) {
+        return select( id ) // toggle single item in selection
+      }
+      setSelection( prev => (
+        prev.includes( id ) ? [] : [ id ] // toggle single item selection
+      ) )
+    }
+  ), [ select, groupSelect, setSelection ] )
+
+  return (
+    <ul>
+      { items.map( item => (
+        <li key={ item.id }>
+          <button
+            onClick={ clickHandler( item.id ) }
+            style={ {
+              border: isSelected( item.id ) ? '1px solid red' : ' 1px solid black'
+            } }
+          >{ item.name }</button>
+        </li>
+      ) ) }
+    </ul>
+  )
+
+}
+```
+
+</details>
+
+---
+
+#### Timers
+
+#### `useDebounce`
+
+Debounce a value by a specified delay.
+
+This hook returns a debounced version of the input value, which only updates
+after the specified delay has passed without any changes to the input value.
+
+It is useful for scenarios like search input fields or other cases where
+frequent updates should be minimized.
+
+The `Timeout` automatically restarts when the given `value` changes.
+
+<details>
+
+<summary style="cursor:pointer">Type Parameters</summary>
+
+| Parameter | Description              |
+|-----------|--------------------------|
+| `T`       | The type of the `value`. |
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Parameters</summary>
+
+| Parameter | Type     | Default | Description                 |
+|-----------|----------|---------|-----------------------------|
+| `value`   | `T`      | -       | The value to debounce. This can be of any type. |
+| `delay`   | `number` | 500     | The debounce delay in milliseconds. |
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Returns</summary>
+
+Type: `T`
+
+The debounced value, which updates only after the delay has passed.
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Usage</summary>
+
+```tsx
+'use client'
+
+import { useEffect, useState } from 'react'
+import { useDebounce } from '@alessiofrittoli/react-hooks'
+
+const MyComponent: React.FC = () => {
+
+  const [ query, setQuery ] = useState( '' )
+  const debouncedQuery = useDebounce( query )
+
+  useEffect( () => {
+    if ( ! debouncedQuery ) return
+
+    fetch( '...', {
+      // ...
+      body: JSON.stringify( { query: debouncedQuery } )
+    } )
+
+  }, [ debouncedQuery ] )
+
+  return (
+    <input
+      onChange={ event => setQuery( event.target.value ) }
+    />
+  )
+
+}
+```
+
+</details>
+
+---
+
+#### `useInterval`
+
+Schedules repeated execution of `callback` every `delay` milliseconds.
+
+When `delay` is larger than `2147483647` or less than `1` or `NaN`, the `delay` will be set to `1`. Non-integer delays are truncated to an integer.
+If `callback` is not a function, a `TypeError` will be thrown.
+
+The `Timeout` is automatically cancelled on unmount.
+
+<details>
+
+<summary style="cursor:pointer">Type Parameters</summary>
+
+| Parameter | Description              |
+|-----------|--------------------------|
+| `T`       | An Array defining optional arguments passed to the `callback`. |
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Parameters</summary>
+
+| Parameter | Type     | Default | Description                 |
+|-----------|----------|---------|-----------------------------|
+| `callback`| `TimerHandler<T>` | - | The function to call when the timer elapses. |
+| `options` | `TimerOptions<T>` | - | (Optional) An object defining custom timer options. |
+| `options.delay` | `number` | `1` | The number of milliseconds to wait before calling the `callback`. |
+| `options.args` | `T` | - | Optional arguments to pass when the `callback` is called. |
+| `options.autoplay` | `boolean` | `true` | Indicates whether auto start the timer. |
+| `options.updateState` | `boolean` | `false` | Whether to update React state about Timer running status. |
+| `options.runOnStart` | `boolean` | `false` | Indicates whether to execute the callback when timer starts. |
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Returns</summary>
+
+Type: `TimerReturnType | StateTimerReturnType`
+
+An object with timer utilities.
+
+- start: `StartTimer` - Manually start the timer.
+- stop: `StopTimer` - Manually stop the timer.
+
+If `updateState` is set to `true` then the following property is added in the returned object.
+
+- isActive: `boolean` - Indicates whether the timer is active.
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Usage</summary>
+
+##### Basic usage
+
+```tsx
+'use client'
+
+import { useCallback } from 'react'
+import { useInterval } from '@alessiofrittoli/react-hooks'
+
+const MyComponent: React.FC = () => {
+
+  const { stop } = useInterval( useCallback( () => {
+    console.log( 'tick timer' )
+  }, [] ), { delay: 1000 } )
+
+  return (
+    <button onClick={ stop }>Stop timer</button>
+  )
+
+}
+```
+
+---
+
+##### Rely on state updates
+
+```tsx
+'use client'
+
+import { useCallback } from 'react'
+import { useInterval } from '@alessiofrittoli/react-hooks'
+
+const MyComponent: React.FC = () => {
+
+  const { isActive, start, stop } = useInterval( useCallback( () => {
+    console.log( 'tick timer' )
+  }, [] ), {
+    delay       : 1000,
+    autoplay    : false,
+    runOnStart  : true,
+    updateState : true,
+  } )
+
+  return (
+    <>
+      { ! isActive && (
+        <button onClick={ start }>Start timer</button>
+      ) }
+      { isActive && (
+        <button onClick={ stop }>Stop timer</button>
+      ) }
+    </>
+  )
+
+}
+```
+
+</details>
+
+---
+
+#### `useIntervalWhenVisible`
+
+Schedules repeated execution of `callback` every `delay` milliseconds when `Document` is visible.
+
+This hook automatically starts and stops the interval based on the `Document` visibility.
+
+This hook has the same API of [`useInterval`](#useinterval) and automatically starts and stops timers based on `Document` visibility.
+Refer to [`useInterval`](#useinterval) API Reference for more info.
+
+---
+
+#### `useLightInterval`
+
+Schedules repeated execution of `callback` every `delay` milliseconds.
+
+This is a lighter version of [`useInterval`](#useinterval) and is suggested to use when a basic functionality is enough (no manual start/stop or state updates).
+
+<details>
+
+<summary style="cursor:pointer">Type Parameters</summary>
+
+| Parameter | Description              |
+|-----------|--------------------------|
+| `T`       | An Array defining optional arguments passed to the `callback`. |
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Parameters</summary>
+
+| Parameter | Type     | Default | Description                 |
+|-----------|----------|---------|-----------------------------|
+| `callback`| `TimerHandler<T>` | - | The function to call when the timer elapses. |
+| `options` | `BasicTimerOptions<T>` | - | (Optional) An object defining custom timer options. |
+| `options.delay` | `number` | `1` | The number of milliseconds to wait before calling the `callback`. |
+| `options.args` | `T` | - | Optional arguments to pass when the `callback` is called. |
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Usage</summary>
+
+```tsx
+'use client'
+
+import { useCallback } from 'react'
+import { useLightInterval } from '@alessiofrittoli/react-hooks'
+
+const MyComponent: React.FC = () => {
+
+  useLightInterval( useCallback( () => {
+    console.log( 'tick timer' )
+  }, [] ), { delay: 1000 } )
+
+}
+```
+
+</details>
+
+---
+
+#### `useTimeout`
+
+Schedules execution of a one-time `callback` after `delay` milliseconds.
+
+The `callback` will likely not be invoked in precisely `delay` milliseconds.
+
+Node.js makes no guarantees about the exact timing of when callbacks will fire,
+nor of their ordering. The callback will be called as close as possible to the
+time specified.
+
+When `delay` is larger than `2147483647` or less than `1` or `NaN`, the `delay`
+will be set to `1`. Non-integer delays are truncated to an integer.
+
+If `callback` is not a function, a `TypeError` will be thrown.
+
+The `Timeout` is automatically cancelled on unmount.
+
+<details>
+
+<summary style="cursor:pointer">Type Parameters</summary>
+
+| Parameter | Description              |
+|-----------|--------------------------|
+| `T`       | An Array defining optional arguments passed to the `callback`. |
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Parameters</summary>
+
+| Parameter | Type     | Default | Description                 |
+|-----------|----------|---------|-----------------------------|
+| `callback`| `TimerHandler<T>` | - | The function to call when the timer elapses. |
+| `options` | `TimerOptions<T>` | - | (Optional) An object defining custom timer options. |
+| `options.delay` | `number` | `1` | The number of milliseconds to wait before calling the `callback`. |
+| `options.args` | `T` | - | Optional arguments to pass when the `callback` is called. |
+| `options.autoplay` | `boolean` | `true` | Indicates whether auto start the timer. |
+| `options.updateState` | `boolean` | `false` | Whether to update React state about Timer running status. |
+| `options.runOnStart` | `boolean` | `false` | Indicates whether to execute the callback when timer starts. |
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Returns</summary>
+
+Type: `TimerReturnType | StateTimerReturnType`
+
+An object with timer utilities.
+
+- start: `StartTimer` - Manually start the timer.
+- stop: `StopTimer` - Manually stop the timer.
+
+If `updateState` is set to `true` then the following property is added in the returned object.
+
+- isActive: `boolean` - Indicates whether the timer is active.
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Usage</summary>
+
+##### Basic usage
+
+```tsx
+'use client'
+
+import { useCallback } from 'react'
+import { useTimeout } from '@alessiofrittoli/react-hooks'
+
+const MyComponent: React.FC = () => {
+
+  const { stop } = useTimeout( useCallback( () => {
+    console.log( 'tick timer' )
+  }, [] ), { delay: 1000 } )
+
+  return (
+    <button onClick={ stop }>Stop timer</button>
+  )
+
+}
+```
+
+---
+
+##### Rely on state updates
+
+```tsx
+'use client'
+
+import { useCallback } from 'react'
+import { useTimeout } from '@alessiofrittoli/react-hooks'
+
+const MyComponent: React.FC = () => {
+
+  const { isActive, start, stop } = useTimeout( useCallback( () => {
+    console.log( 'tick timer' )
+  }, [] ), {
+    delay       : 1000,
+    autoplay    : false,
+    runOnStart  : true,
+    updateState : true,
+  } )
+
+  return (
+    <>
+      { ! isActive && (
+        <button onClick={ start }>Start timer</button>
+      ) }
+      { isActive && (
+        <button onClick={ stop }>Stop timer</button>
+      ) }
+    </>
+  )
+
+}
+```
+
+</details>
+
+---
+
+#### `useLightTimeout`
+
+Schedules execution of a one-time `callback` after `delay` milliseconds.
+
+This is a lighter version of [`useTimeout`](#usetimeout) and is suggested to use when a basic functionality is enough (no manual start/stop or state updates).
+
+<details>
+
+<summary style="cursor:pointer">Type Parameters</summary>
+
+| Parameter | Description              |
+|-----------|--------------------------|
+| `T`       | An Array defining optional arguments passed to the `callback`. |
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Parameters</summary>
+
+| Parameter | Type     | Default | Description                 |
+|-----------|----------|---------|-----------------------------|
+| `callback`| `TimerHandler<T>` | - | The function to call when the timer elapses. |
+| `options` | `BasicTimerOptions<T>` | - | (Optional) An object defining custom timer options. |
+| `options.delay` | `number` | `1` | The number of milliseconds to wait before calling the `callback`. |
+| `options.args` | `T` | - | Optional arguments to pass when the `callback` is called. |
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Usage</summary>
+
+```tsx
+'use client'
+
+import { useCallback } from 'react'
+import { useLightTimeout } from '@alessiofrittoli/react-hooks'
+
+const MyComponent: React.FC = () => {
+
+  useLightTimeout( useCallback( () => {
+    console.log( 'tick timer' )
+  }, [] ), { delay: 1000 } )
+
+}
+```
+
+</details>
 
 ---
 

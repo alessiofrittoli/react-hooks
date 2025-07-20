@@ -5,7 +5,7 @@ import type { BasicTimerOptions, TimerHandler } from './types'
 /**
  * Schedules repeated execution of `callback` every `delay` milliseconds.
  *
- * This is a lighter version of [`useInterval`](./useInterval.ts), suggested to use when
+ * This is a lighter version of [`useInterval`](./useInterval.ts) and is suggested to use when
  * a basic functionality is enough (no manual start/stop or state updates).
  * 
  * When `delay` is larger than `2147483647` or less than `1` or `NaN`, the `delay`
