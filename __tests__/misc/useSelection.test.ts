@@ -173,19 +173,19 @@ describe( 'useSelection', () => {
 		} )
 
 
-		// it( 'keeps original ordering when backward selecting', () => {
+		it( 'doesn\'t keep original ordering when backward selecting', () => {
 
-		// 	const { result } = renderHook( () => useSelection( items, [ 9 ] ) )
+			const { result } = renderHook( () => useSelection( items, [ 9 ] ) )
 			
-		// 	act( () => {
-		// 		result.current.groupSelect( 4 )
-		// 	} )
-	
-		// 	expect( result.current.selection )
-		// 		// .not.toEqual( [ 9, 8, 7, 6, 5, 4 ] )
-		// 		.not.toEqual( [ 9, 8, 7, 6, 5, 4 ] )
+			act( () => {
+				result.current.groupSelect( 4 )
+			} )
 
-		// } )
+			// reverse selected items aren't `.reverse()` again before being returned
+			expect( result.current.selection )
+				.not.toEqual( [ 4, 5, 6, 7, 8, 9 ] )
+
+		} )
 
 
 		it( 'extends selection when called multiple times (forward/backward)', () => {
