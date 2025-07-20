@@ -6,8 +6,10 @@ import { useCallback, useState } from 'react'
  * @template V The `entry` type.
  * 
  * @param value The `entry` to check.
+ * 
+ * @return `true` if the given `entry` is in `selection`, `false` otherwise.
  */
-export type IsSelectedHandler<V> = ( entry: V ) => void
+export type IsSelectedHandler<V> = ( entry: V ) => boolean
 
 
 /**
@@ -59,18 +61,20 @@ export interface UseSelectionReturnType<V>
 	 * The current selected items.
 	 * 
 	 */
-    selection: V[]
+	selection: V[]
 	/**
 	 * Indicates whether `selection` is not empty. Short-hand for `selection.length > 0`.
 	 * 
 	 */
-    hasSelection: boolean
+	hasSelection: boolean
 	/**
 	 * Check if the given `entry` is in the selection.
 	 * 
 	 * @template V The `entry` type.
 	 * 
 	 * @param value The `entry` to check.
+	 * 
+	 * @return `true` if the given `entry` is in `selection`, `false` otherwise.
 	 */
 	isSelected: IsSelectedHandler<V>
 	/**
@@ -80,7 +84,7 @@ export interface UseSelectionReturnType<V>
 	 * 
 	 * @param value The React.SetStateAction<V[]> value.
 	 */
-    setSelection: SetSelectionHandler<V>
+	setSelection: SetSelectionHandler<V>
 	/**
 	 * Update selection by adding a new `entry` or removing the given `entry` if already exists in the selection.
 	 * 
@@ -96,7 +100,7 @@ export interface UseSelectionReturnType<V>
 	 * 
 	 * @param entry The final entry the selection will be updated to.
 	 */
-    groupSelect: GroupSelectHandler<V>
+	groupSelect: GroupSelectHandler<V>
 	/**
 	 * Add all entries from the given `array` to the selection.
 	 * 
@@ -107,7 +111,7 @@ export interface UseSelectionReturnType<V>
 	 * 
 	 * @param initial If set to `true` will reset selection to the `initial` given value. Will empty the selection otherwise.
 	 */
-    resetSelection: ResetSelectionHandler
+	resetSelection: ResetSelectionHandler
 }
 
 
@@ -116,7 +120,7 @@ export interface UseSelectionReturnType<V>
  * 
  * Provides functionality for single and group selection, as well as resetting the selection.
  * 
- * @template V The type of the values in the `array` (defaults to the value type of `T`).
+ * @template V The type of the values in the `array`.
  *
  * @param	array	The array of items to manage selection for.
  * @param	initial	The initial selection state (defaults to an empty array).
@@ -167,7 +171,6 @@ export const useSelection = <V>( array: V[], initial: V[] = [] ): UseSelectionRe
 				return (
 					reversed
 						.slice( firstIndex, lastIndex + 1 )
-						.reverse()
 				)
 			}
 
@@ -198,28 +201,3 @@ export const useSelection = <V>( array: V[], initial: V[] = [] ): UseSelectionRe
 	}
 
 }
-
-
-// /**
-//  * Update `array` by adding a new `entry` or removing the given `entry` if already exists in the given `array`.
-//  * 
-//  * @template V The type of the values in the `array`.
-//  * 
-//  * @param	array An array where `entry` will be added/removed from.
-//  * @param	entry The `entry` to add/remove from the given `array`.
-//  * 
-//  * @returns The newly updated `array`.
-//  */
-// const toggleEntry = <V>( array: V[], entry: V ) => {
-
-// 	const selected = new Set( array )
-
-// 	if ( ! selected.has( entry ) ) {
-// 		selected.add( entry )
-// 	} else {
-// 		selected.delete( entry )
-// 	}
-
-// 	return Array.from( selected.values() )
-
-// }

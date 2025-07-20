@@ -145,7 +145,7 @@ export interface CommonListenerOptions
 	 * 
 	 * [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#options)
 	 */
-	options?: ListenerOptions,
+	options?: ListenerOptions
 }
 
 
@@ -158,7 +158,7 @@ export interface WindowListenerOptions<
 	 * 
 	 * @param event The event object that implements the [`Event`](https://developer.mozilla.org/en-US/docs/Web/API/Event) interface.
 	 */
-	listener: WindowEventListener<K>,
+	listener: WindowEventListener<K>
 }
 
 
@@ -177,22 +177,6 @@ export interface DocumentListenerOptions<
 	 * @param event The event object that implements the [`Event`](https://developer.mozilla.org/en-US/docs/Web/API/Event) interface.
 	 */
 	listener: DocumentEventListener<K>,
-}
-
-
-export interface MediaQueryListenerOptions extends CommonListenerOptions
-{
-	/**
-	 * The Media Query string to check.
-	 * 
-	 */
-	query: string,
-	/**
-	 * The MediaQueryList Event listener.
-	 * 
-	 * @param event The [`MediaQueryListEvent`](https://developer.mozilla.org/en-US/docs/Web/API/MediaQueryListEvent) object.
-	 */
-	listener: MediaQueryChangeListener,
 }
 
 
@@ -215,6 +199,22 @@ export interface ElementListenerOptions<
 }
 
 
+export interface MediaQueryListenerOptions extends CommonListenerOptions
+{
+	/**
+	 * The Media Query string to check.
+	 * 
+	 */
+	query: string,
+	/**
+	 * The MediaQueryList Event listener.
+	 * 
+	 * @param event The [`MediaQueryListEvent`](https://developer.mozilla.org/en-US/docs/Web/API/MediaQueryListEvent) object.
+	 */
+	listener: MediaQueryChangeListener,
+}
+
+
 export interface CustomEventListenerOptions<
 	T extends Record<string, Event>,
 	K extends keyof T = keyof T,
@@ -225,7 +225,7 @@ export interface CustomEventListenerOptions<
 	 * 
 	 * If not set, the listener will get attached to the `Window` object.
 	 */
-	target?: Document | HTMLElement | null | React.RefObject<Document | HTMLElement | null>,
+	target?: Document | HTMLElement | null | React.RefObject<Document | HTMLElement | null>
 	/**
 	 * The Event listener.
 	 * 
@@ -380,7 +380,7 @@ export function useEventListener<
 /**
  * Listen MediaQuery changes.
  * 
- * @param type		The `MediaQueryList` event name or an array of event names.
+ * @param type		The `MediaQueryList` event name.
  * @param options	An object defining init options. See {@link MediaQueryListenerOptions} for more info.
  * 
  * @example
