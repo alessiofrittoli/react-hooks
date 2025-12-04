@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 type SetFocusTrap = ( target?: HTMLElement ) => void
 type RestoreFocusTrap = () => void
@@ -23,6 +23,8 @@ export const useFocusTrap = (
 	target?: React.RefObject<HTMLElement | null>
 ): readonly [ SetFocusTrap, RestoreFocusTrap ] => {
 
+	const _target = useMemo( () => target?.current, [ target ] )
+
 	const [ focusTrap, setFocusTrapDispatch ] = (
 		useState<HTMLElement | false>( false )
 	)
@@ -36,13 +38,13 @@ export const useFocusTrap = (
 	const setFocusTrap = useCallback<SetFocusTrap>( onDemandTarget => {
 
 		lastActiveElement.current	= document.activeElement as HTMLElement
-		const focusTrap				= onDemandTarget || target?.current || false
+		const focusTrap				= onDemandTarget || _target || false
 		
 		if ( ! focusTrap ) return
 
 		return setFocusTrapDispatch( focusTrap )
 	
-	}, [ target ] )
+	}, [ _target ] )
 
 
 	/**
