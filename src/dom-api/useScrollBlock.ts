@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 import {
 	blockScroll as blockScrollHandler,
 	restoreScroll as restoreScrollHandler
@@ -11,13 +11,15 @@ import {
  * @param target (Optional) The React RefObject target HTMLElement. Default: `Document.documentElement`.
  */
 export const useScrollBlock = ( target?: React.RefObject<HTMLElement | null> ) => {
+
+	const _target = useMemo( () => target?.current, [ target ] )
 	
 	/**
 	 * Block scroll.
 	 * 
 	 */
 	const blockScroll = useCallback(
-		() => blockScrollHandler( target?.current || undefined ), [ target ]
+		() => blockScrollHandler( _target || undefined ), [ _target ]
 	)
 
 
@@ -26,7 +28,7 @@ export const useScrollBlock = ( target?: React.RefObject<HTMLElement | null> ) =
 	 * 
 	 */
 	const restoreScroll = useCallback(
-		() => restoreScrollHandler( target?.current || undefined ), [ target ]
+		() => restoreScrollHandler( _target || undefined ), [ _target ]
 	)
 
 	
