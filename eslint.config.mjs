@@ -39,9 +39,9 @@ const config = [
 	{ files: [ 'src/**/*.{js,jsx,mjs,cjs,ts,tsx}' ] },
 	{ ignores: [ 'dist', 'scripts', 'coverage' ] },
 	{ rules: {
+		'@typescript-eslint/no-namespace': 'off',
 		'react-hooks/set-state-in-effect': 'warn',
 		'react-hooks/refs': 'warn',
-		'@typescript-eslint/no-namespace': 'off',
 		'react/react-in-jsx-scope': 'off',
 		'react/prop-types': 'off',
 		'react-hooks/exhaustive-deps': [
