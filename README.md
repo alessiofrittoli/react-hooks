@@ -34,6 +34,7 @@
     - [`useIsPortrait`](#useisportrait)
     - [`useMediaQuery`](#usemediaquery)
     - [`useDocumentVisibility`](#usedocumentvisibility)
+    - [`useWakeLock`](#usewakelock)
   - [DOM API](#dom-api)
     - [`useFocusTrap`](#usefocustrap)
     - [`useInView`](#useinview)
@@ -105,8 +106,9 @@ export default config;
 
 #### Updates in the latest release 🎉
 
-- Add `useDocumentVisibility`. See [API Reference](#usedocumentvisibility) for more info.
-- Add `useDeferCallback`. See [API Reference](#usedefercallback) for more info.
+- Added `useDocumentVisibility`. See [API Reference](#usedocumentvisibility) for more info.
+- Added `useWakeLock`. See [API Reference](#usewakelock) for more info.
+- Added `useDeferCallback`. See [API Reference](#usedefercallback) for more info.
 
 ---
 
@@ -857,6 +859,104 @@ const onVisibilityChange = useCallback<VisibilityChangeHandler>((isVisible) => {
   // ... do something
 }, []);
 useDocumentVisibility({ updateState: false, onVisibilityChange });
+```
+
+</details>
+
+---
+
+##### `useWakeLock`
+
+Easily manage the [Screen Wake Lock API](https://developer.mozilla.org/en-US/docs/Web/API/Screen_Wake_Lock_API) to prevent the device screen from dimming or locking while your app is in use.
+
+<details>
+
+<summary style="cursor:pointer">Parameters</summary>
+
+| Parameter         | Type                     | Default | Description                                                      |
+| ----------------- | ------------------------ | ------- | ---------------------------------------------------------------- |
+| `options`         | `UseWakeLockOptions`     | -       | (Optional) An object defining hook options.                      |
+| `options.onMount` | `boolean`                | `true`  | Indicates whether to request the screen WakeLock on mount.       |
+| `options.onError` | `OnWakeLockRequestError` | -       | A custom callback executed when a screen WakeLock request fails. |
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Returns</summary>
+
+Type: `UseWakeLock`
+
+An object returning The current `WakeLockSentinel` instance or `null` if not enabled and utility functions.
+
+- `wakeLock`: `WakeLockSentinel | null` — The current Wake Lock instance, or null if not enabled.
+- `enabled`: `boolean` — Whether the Wake Lock is currently active.
+- `requestWakeLock`: `() => Promise<void>` — Manually request the Wake Lock.
+- `releaseWakeLock`: `() => Promise<void>` — Manually release the Wake Lock.
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Usage</summary>
+
+###### Enable Wake Lock on mount
+
+```tsx
+import { useWakeLock } from "@alessiofrittoli/react-hooks";
+
+useWakeLock();
+```
+
+---
+
+###### Manually enable and disable Wake Lock
+
+```tsx
+import { useWakeLock } from "@alessiofrittoli/react-hooks";
+
+export const WakeLockButton: React.FC = () => {
+  const { enabled, requestWakeLock, releaseWakeLock } = useWakeLock({
+    enableOnLoad: false,
+  });
+
+  return (
+    <>
+      <h1>Wakelock enabled: {enabled.toString()}</h1>
+      <button onClick={requestWakeLock}>Enable wakelock</button>
+      <button onClick={releaseWakeLock}>Disable wakelock</button>
+    </>
+  );
+};
+```
+
+---
+
+###### Handling Wake Lock errors
+
+```tsx
+import {
+  useWakeLock,
+  type OnWakeLockRequestError,
+} from "@alessiofrittoli/react-hooks";
+
+const onError: OnWakeLockRequestError = (error) => {
+  alert("Could not enable Wake Lock: " + error.message);
+};
+
+export const WakeLockWithError: React.FC = () => {
+  const { enabled, requestWakeLock } = useWakeLock({ onError });
+
+  return (
+    <button onClick={requestWakeLock}>
+      {enabled ? "Wake Lock enabled" : "Enable Wake Lock"}
+    </button>
+  );
+};
 ```
 
 </details>
