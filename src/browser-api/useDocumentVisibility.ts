@@ -1,6 +1,11 @@
 import { useEffectOnce } from '@/misc'
 import { useCallback, useEffect, useState } from 'react'
 
+/**
+ * Handle Document visibility changes.
+ * 
+ * @param isVisible Indicates whether the Document is visible or not.
+ */
 export type VisibilityChangeHandler = ( isVisible: boolean ) => void
 
 
@@ -32,11 +37,11 @@ export interface StateDisabledUseDocumentVisibilityOptions extends UseDocumentVi
 
 
 /**
- * Track the visibility state of the document (i.e., whether the page is visible or hidden).
+ * Track the visibility state of the Document (i.e., whether the page is visible or hidden).
  *
  * @param options (Optional) Configuration options for the hook.
  * @param options.updateState If `true` (default), the hook manages and returns the visibility state. If `false`, the hook does not manage state and only calls `onVisibilityChange`.
- * @param options.onVisibilityChange Optional callback invoked whenever the document's visibility changes. Receives the new visibility state as a boolean.
+ * @param options.onVisibilityChange Optional callback invoked whenever the Document's visibility changes. Receives the new visibility state as a boolean.
  *
  * @remarks
  * - Uses the Page Visibility API (`document.hidden` and `visibilitychange` event).
@@ -46,13 +51,13 @@ export function useDocumentVisibility( otpions: StateDisabledUseDocumentVisibili
 
 
 /**
- * Track the visibility state of the document (i.e., whether the page is visible or hidden).
+ * Track the visibility state of the Document (i.e., whether the page is visible or hidden).
  *
  * @param options (Optional) Configuration options for the hook.
  * @param options.updateState The hook will manage and return the visibility state.
- * @param options.onVisibilityChange Optional callback invoked whenever the document's visibility changes. Receives the new visibility state as a boolean.
+ * @param options.onVisibilityChange Optional callback invoked whenever the Document's visibility changes. Receives the new visibility state as a boolean.
  * 
- * @returns Returns `true` if the document is visible, `false` otherwise.
+ * @returns Returns `true` if the Document is visible, `false` otherwise.
  *
  * @remarks
  * - Uses the Page Visibility API (`document.hidden` and `visibilitychange` event).
@@ -62,13 +67,13 @@ export function useDocumentVisibility( otpions?: UseDocumentVisibilityOptions ):
 
 
 /**
- * Track the visibility state of the document (i.e., whether the page is visible or hidden).
+ * Track the visibility state of the Document (i.e., whether the page is visible or hidden).
  *
  * @param options (Optional) Configuration options for the hook.
  * @param options.updateState If `true` (default), the hook manages and returns the visibility state. If `false`, the hook does not manage state and only calls `onVisibilityChange`.
- * @param options.onVisibilityChange Optional callback invoked whenever the document's visibility changes. Receives the new visibility state as a boolean.
+ * @param options.onVisibilityChange Optional callback invoked whenever the Document's visibility changes. Receives the new visibility state as a boolean.
  * 
- * @returns Returns `true` if the document is visible, `false` if hidden, or `void` if `updateState` is set to `false`.
+ * @returns Returns `true` if the Document is visible, `false` if hidden, or `void` if `updateState` is set to `false`.
  *
  * @remarks
  * - Uses the Page Visibility API (`document.hidden` and `visibilitychange` event).
