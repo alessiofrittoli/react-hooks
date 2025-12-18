@@ -1,6 +1,7 @@
 export * from './storage'
 export * from './useConnection'
 export * from './useDarkMode'
+export * from './useDocumentVisibility'
 export * from './useEventListener'
 export * from './useIsPortrait'
 export * from './useMediaQuery'
