@@ -13,7 +13,6 @@
 [downloads-badge]: https://img.shields.io/npm/dm/%40alessiofrittoli%2Freact-hooks.svg
 [deps-badge]: https://img.shields.io/librariesio/release/npm/%40alessiofrittoli%2Freact-hooks
 [deps-url]: https://libraries.io/npm/%40alessiofrittoli%2Freact-hooks
-
 [sponsor-badge]: https://img.shields.io/static/v1?label=Fund%20this%20package&message=%E2%9D%A4&logo=GitHub&color=%23DB61A2
 [sponsor-url]: https://github.com/sponsors/alessiofrittoli
 
@@ -34,6 +33,7 @@
     - [`useEventListener`](#useeventlistener)
     - [`useIsPortrait`](#useisportrait)
     - [`useMediaQuery`](#usemediaquery)
+    - [`useDocumentVisibility`](#usedocumentvisibility)
   - [DOM API](#dom-api)
     - [`useFocusTrap`](#usefocustrap)
     - [`useInView`](#useinview)
@@ -88,16 +88,15 @@ This library may define and exports hooks that requires additional ESLint config
 Simply imports recommended configuration from `@alessiofrittoli/react-hooks/eslint` and add them to your ESLint configuration like so:
 
 ```mjs
-import { config as AFReactHooksEslint } from '@alessiofrittoli/react-hooks/eslint'
+import { config as AFReactHooksEslint } from "@alessiofrittoli/react-hooks/eslint";
 
 /** @type {import('eslint').Linter.Config[]} */
 const config = [
   ...AFReactHooksEslint.recommended,
   // ... other configurations
-]
+];
 
-
-export default config
+export default config;
 ```
 
 ---
@@ -106,8 +105,8 @@ export default config
 
 #### Updates in the latest release 🎉
 
+- Add `useDocumentVisibility`. See [API Reference](#usedocumentvisibility) for more info.
 - Add `useDeferCallback`. See [API Reference](#usedefercallback) for more info.
-- Add missing API Referefence sections.
 
 ---
 
@@ -127,8 +126,8 @@ Easly handle Local or Session Storage State.
 
 <summary style="cursor:pointer">Type parameters</summary>
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
+| Parameter | Type  | Default  | Description                               |
+| --------- | ----- | -------- | ----------------------------------------- |
 | `T`       | `any` | `string` | A custom type applied to the stored item. |
 
 </details>
@@ -139,11 +138,11 @@ Easly handle Local or Session Storage State.
 
 <summary style="cursor:pointer">Parameters</summary>
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
-| `key`     | `string`           | - | The storage item key. |
-| `initial` | `T`                | - | The storage item initial value. |
-| `type`    | `local\|session`   | local | (Optional) The storage API to use. |
+| Parameter | Type             | Default | Description                        |
+| --------- | ---------------- | ------- | ---------------------------------- |
+| `key`     | `string`         | -       | The storage item key.              |
+| `initial` | `T`              | -       | The storage item initial value.    |
+| `type`    | `local\|session` | local   | (Optional) The storage API to use. |
 
 </details>
 
@@ -169,8 +168,10 @@ A tuple with the stored item value or initial value and the setter function.
 
 ```tsx
 import {
-  useStorage, useLocalStorage, useSessionStorage
-} from '@alessiofrittoli/react-hooks'
+  useStorage,
+  useLocalStorage,
+  useSessionStorage,
+} from "@alessiofrittoli/react-hooks";
 ```
 
 ---
@@ -302,7 +303,6 @@ An object with the following properties:
 
 ---
 
-
 ##### `useDarkMode`
 
 Easily manage dark mode with full respect for user device preferences.
@@ -317,11 +317,11 @@ This hook is user-oriented and built to honor system-level color scheme settings
 
 <summary style="cursor:pointer">Parameters</summary>
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `options` | `UseDarkModeOptions` | (Optional) Configuration object for the hook. |
-| `options.initial` | `boolean` | (Optional) The fallback value to use if no preference is saved in `localStorage`. Defaults to `true` if the device prefers dark mode. |
-| `options.docClassNames` | `[dark: string, light: string]` | (Optional) Array of class names to toggle on the `<html>` element, e.g. `['dark', 'light']`. |
+| Parameter               | Type                            | Description                                                                                                                           |
+| ----------------------- | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `options`               | `UseDarkModeOptions`            | (Optional) Configuration object for the hook.                                                                                         |
+| `options.initial`       | `boolean`                       | (Optional) The fallback value to use if no preference is saved in `localStorage`. Defaults to `true` if the device prefers dark mode. |
+| `options.docClassNames` | `[dark: string, light: string]` | (Optional) Array of class names to toggle on the `<html>` element, e.g. `['dark', 'light']`.                                          |
 
 </details>
 
@@ -352,17 +352,15 @@ An object containing utilities for managing dark mode:
 ###### Basic usage
 
 ```tsx
-'use client'
+"use client";
 
-import { useDarkMode } from '@alessiofrittoli/react-hooks'
+import { useDarkMode } from "@alessiofrittoli/react-hooks";
 
 export const Component: React.FC = () => {
-  const { isDarkMode } = useDarkMode()
+  const { isDarkMode } = useDarkMode();
 
-  return (
-    <div>{ isDarkMode ? 'Dark mode enabled' : 'Dark mode disabled' }</div>
-  )
-}
+  return <div>{isDarkMode ? "Dark mode enabled" : "Dark mode disabled"}</div>;
+};
 ```
 
 ---
@@ -371,19 +369,17 @@ export const Component: React.FC = () => {
 
 ```tsx
 // Component.tsx
-'use client'
+"use client";
 
-import { useDarkMode } from '@alessiofrittoli/react-hooks'
+import { useDarkMode } from "@alessiofrittoli/react-hooks";
 
 export const Component: React.FC = () => {
-  const { isDarkMode } = useDarkMode( {
-    docClassNames: [ 'dark', 'light' ],
-  } )
+  const { isDarkMode } = useDarkMode({
+    docClassNames: ["dark", "light"],
+  });
 
-  return (
-    <div>{ isDarkMode ? 'Dark mode enabled' : 'Dark mode disabled' }</div>
-  )
-}
+  return <div>{isDarkMode ? "Dark mode enabled" : "Dark mode disabled"}</div>;
+};
 ```
 
 ```css
@@ -396,15 +392,13 @@ export const Component: React.FC = () => {
   color-scheme: dark;
 }
 
-.light body
-{
-  color     : black;
+.light body {
+  color: black;
   background: white;
 }
 
-.dark body
-{
-  color     : white;
+.dark body {
+  color: white;
   background: black;
 }
 ```
@@ -414,19 +408,15 @@ export const Component: React.FC = () => {
 ###### Custom theme switcher
 
 ```tsx
-'use client'
+"use client";
 
-import { useDarkMode } from '@alessiofrittoli/react-hooks'
+import { useDarkMode } from "@alessiofrittoli/react-hooks";
 
 export const ThemeSwitcher: React.FC = () => {
-  const { isDarkMode, toggleDarkMode } = useDarkMode()
+  const { isDarkMode, toggleDarkMode } = useDarkMode();
 
-  return (
-    <button onClick={ toggleDarkMode }>
-      { isDarkMode ? '🌙' : '☀️' }
-    </button>
-  )
-}
+  return <button onClick={toggleDarkMode}>{isDarkMode ? "🌙" : "☀️"}</button>;
+};
 ```
 
 ---
@@ -436,10 +426,10 @@ export const ThemeSwitcher: React.FC = () => {
 Browsers automatically apply colorization using:
 
 ```html
-<meta name='theme-color' media='(prefers-color-scheme: dark)' />
+<meta name="theme-color" media="(prefers-color-scheme: dark)" />
 ```
 
-This works based on the OS preference — *not your site theme*. That can cause mismatches if, for example, the system is in dark mode but the user disabled dark mode via a web toggle.
+This works based on the OS preference — _not your site theme_. That can cause mismatches if, for example, the system is in dark mode but the user disabled dark mode via a web toggle.
 
 To ensure consistency, `useDarkMode` updates these meta tags dynamically based on the actual mode.
 
@@ -447,8 +437,16 @@ Just make sure to define both `light` and `dark` theme-color tags in your docume
 
 ```html
 <head>
-  <meta name='theme-color' media='(prefers-color-scheme: light)' content='lime'>
-  <meta name='theme-color' media='(prefers-color-scheme: dark)' content='aqua'>
+  <meta
+    name="theme-color"
+    media="(prefers-color-scheme: light)"
+    content="lime"
+  />
+  <meta
+    name="theme-color"
+    media="(prefers-color-scheme: dark)"
+    content="aqua"
+  />
 </head>
 ```
 
@@ -468,14 +466,14 @@ Attach a new Event listener to the `Window`, `Document`, `MediaQueryList` or an 
 
 <summary style="cursor:pointer">Window events</summary>
 
-| Parameter | Type     | Description |
-|-----------|----------|-------------|
-| `type`    | `K\|K[]` | The `Window` event name or an array of event names. |
-| `options` | `WindowListenerOptions<K>` | An object defining init options. |
-| `options.listener` | `WindowEventListener<K>` | The Window Event listener. |
-| `options.onLoad` | `() => void` | A custom callback executed before event listener get attached. |
-| `options.onCleanUp` | `() => void` | A custom callback executed after event listener get removed. |
-| `options.options` | `ListenerOptions` | Specifies characteristics about the event listener. See [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#options). |
+| Parameter           | Type                       | Description                                                                                                                                                     |
+| ------------------- | -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `type`              | `K\|K[]`                   | The `Window` event name or an array of event names.                                                                                                             |
+| `options`           | `WindowListenerOptions<K>` | An object defining init options.                                                                                                                                |
+| `options.listener`  | `WindowEventListener<K>`   | The Window Event listener.                                                                                                                                      |
+| `options.onLoad`    | `() => void`               | A custom callback executed before event listener get attached.                                                                                                  |
+| `options.onCleanUp` | `() => void`               | A custom callback executed after event listener get removed.                                                                                                    |
+| `options.options`   | `ListenerOptions`          | Specifies characteristics about the event listener. See [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#options). |
 
 </details>
 
@@ -485,15 +483,15 @@ Attach a new Event listener to the `Window`, `Document`, `MediaQueryList` or an 
 
 <summary style="cursor:pointer">Document events</summary>
 
-| Parameter | Type     | Description |
-|-----------|----------|-------------|
-| `type`    | `K\|K[]` | The `Document` event name or an array of event names. |
-| `options` | `DocumentListenerOptions<K>` | An object defining init options. |
-| `options.target` | `Document\|null\|React.RefObject<Document\|null>` | The `Document` reference or a React RefObject of the `Document`. |
-| `options.listener` | `DocumentEventListener<K>` | The Document Event listener. |
-| `options.onLoad` | `() => void` | A custom callback executed before event listener get attached. |
-| `options.onCleanUp` | `() => void` | A custom callback executed after event listener get removed. |
-| `options.options` | `ListenerOptions` | Specifies characteristics about the event listener. See [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#options). |
+| Parameter           | Type                                              | Description                                                                                                                                                     |
+| ------------------- | ------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `type`              | `K\|K[]`                                          | The `Document` event name or an array of event names.                                                                                                           |
+| `options`           | `DocumentListenerOptions<K>`                      | An object defining init options.                                                                                                                                |
+| `options.target`    | `Document\|null\|React.RefObject<Document\|null>` | The `Document` reference or a React RefObject of the `Document`.                                                                                                |
+| `options.listener`  | `DocumentEventListener<K>`                        | The Document Event listener.                                                                                                                                    |
+| `options.onLoad`    | `() => void`                                      | A custom callback executed before event listener get attached.                                                                                                  |
+| `options.onCleanUp` | `() => void`                                      | A custom callback executed after event listener get removed.                                                                                                    |
+| `options.options`   | `ListenerOptions`                                 | Specifies characteristics about the event listener. See [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#options). |
 
 </details>
 
@@ -503,15 +501,15 @@ Attach a new Event listener to the `Window`, `Document`, `MediaQueryList` or an 
 
 <summary style="cursor:pointer">HTMLElement events</summary>
 
-| Parameter | Type     | Description |
-|-----------|----------|-------------|
-| `type`    | `K\|K[]` | The `HTMLElement` event name or an array of event names. |
-| `options` | `ElementListenerOptions<K>` | An object defining init options. |
-| `options.target` | `T\|React.RefObject<T\| null>` | The React RefObject of the target where the listener get attached to. |
-| `options.listener` | `ElementEventListener<K>` | The HTMLElement Event listener. |
-| `options.onLoad` | `() => void` | A custom callback executed before event listener get attached. |
-| `options.onCleanUp` | `() => void` | A custom callback executed after event listener get removed. |
-| `options.options` | `ListenerOptions` | Specifies characteristics about the event listener. See [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#options). |
+| Parameter           | Type                           | Description                                                                                                                                                     |
+| ------------------- | ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `type`              | `K\|K[]`                       | The `HTMLElement` event name or an array of event names.                                                                                                        |
+| `options`           | `ElementListenerOptions<K>`    | An object defining init options.                                                                                                                                |
+| `options.target`    | `T\|React.RefObject<T\| null>` | The React RefObject of the target where the listener get attached to.                                                                                           |
+| `options.listener`  | `ElementEventListener<K>`      | The HTMLElement Event listener.                                                                                                                                 |
+| `options.onLoad`    | `() => void`                   | A custom callback executed before event listener get attached.                                                                                                  |
+| `options.onCleanUp` | `() => void`                   | A custom callback executed after event listener get removed.                                                                                                    |
+| `options.options`   | `ListenerOptions`              | Specifies characteristics about the event listener. See [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#options). |
 
 </details>
 
@@ -521,15 +519,15 @@ Attach a new Event listener to the `Window`, `Document`, `MediaQueryList` or an 
 
 <summary style="cursor:pointer">MediaQuery events</summary>
 
-| Parameter | Type     | Description |
-|-----------|----------|-------------|
-| `type`    | `change` | The `MediaQueryList` event name. |
-| `options` | `MediaQueryListenerOptions` | An object defining init options. |
-| `options.query` | `string` | The Media Query string to check. |
-| `options.listener` | `MediaQueryChangeListener` | The MediaQueryList Event listener. |
-| `options.onLoad` | `() => void` | A custom callback executed before event listener get attached. |
-| `options.onCleanUp` | `() => void` | A custom callback executed after event listener get removed. |
-| `options.options` | `ListenerOptions` | Specifies characteristics about the event listener. See [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#options). |
+| Parameter           | Type                        | Description                                                                                                                                                     |
+| ------------------- | --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `type`              | `change`                    | The `MediaQueryList` event name.                                                                                                                                |
+| `options`           | `MediaQueryListenerOptions` | An object defining init options.                                                                                                                                |
+| `options.query`     | `string`                    | The Media Query string to check.                                                                                                                                |
+| `options.listener`  | `MediaQueryChangeListener`  | The MediaQueryList Event listener.                                                                                                                              |
+| `options.onLoad`    | `() => void`                | A custom callback executed before event listener get attached.                                                                                                  |
+| `options.onCleanUp` | `() => void`                | A custom callback executed after event listener get removed.                                                                                                    |
+| `options.options`   | `ListenerOptions`           | Specifies characteristics about the event listener. See [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#options). |
 
 </details>
 
@@ -539,15 +537,15 @@ Attach a new Event listener to the `Window`, `Document`, `MediaQueryList` or an 
 
 <summary style="cursor:pointer">Custom events</summary>
 
-| Parameter | Type     | Description |
-|-----------|----------|-------------|
-| `type`    | `K\|K[]` | The custom event name or an array of event names. |
-| `options` | `CustomEventListenerOptions<T, K>` | An object defining init options. |
-| `options.target` | `Document\|HTMLElement\|null\|React.RefObject<Document\|HTMLElement\|null>` | (Optional) The target where the listener get attached to. If not set, the listener will get attached to the `Window` object. |
-| `options.listener` | `( event: T[ K ] ) => void` | The Event listener. |
-| `options.onLoad` | `() => void` | A custom callback executed before event listener get attached. |
-| `options.onCleanUp` | `() => void` | A custom callback executed after event listener get removed. |
-| `options.options` | `ListenerOptions` | Specifies characteristics about the event listener. See [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#options). |
+| Parameter           | Type                                                                        | Description                                                                                                                                                     |
+| ------------------- | --------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `type`              | `K\|K[]`                                                                    | The custom event name or an array of event names.                                                                                                               |
+| `options`           | `CustomEventListenerOptions<T, K>`                                          | An object defining init options.                                                                                                                                |
+| `options.target`    | `Document\|HTMLElement\|null\|React.RefObject<Document\|HTMLElement\|null>` | (Optional) The target where the listener get attached to. If not set, the listener will get attached to the `Window` object.                                    |
+| `options.listener`  | `( event: T[ K ] ) => void`                                                 | The Event listener.                                                                                                                                             |
+| `options.onLoad`    | `() => void`                                                                | A custom callback executed before event listener get attached.                                                                                                  |
+| `options.onCleanUp` | `() => void`                                                                | A custom callback executed after event listener get removed.                                                                                                    |
+| `options.options`   | `ListenerOptions`                                                           | Specifies characteristics about the event listener. See [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#options). |
 
 </details>
 
@@ -730,9 +728,9 @@ Type: `boolean`
 ###### Check if user device is in landscape
 
 ```tsx
-import { useIsPortrait } from '@alessiofrittoli/react-hooks'
+import { useIsPortrait } from "@alessiofrittoli/react-hooks";
 
-const isLandscape = ! useIsPortrait()
+const isLandscape = !useIsPortrait();
 ```
 
 </details>
@@ -747,13 +745,13 @@ Get Document Media matches and listen for changes.
 
 <summary style="cursor:pointer">Parameters</summary>
 
-| Parameter | Type     | Default | Description |
-|-----------|----------|---------|-------------|
-| `query`   | `string` | - | A string specifying the media query to parse into a `MediaQueryList`. |
-| `options` | `UseMediaQueryOptions\|UseMediaQueryStateOptions` | - | An object defining custom options. |
-| `options.updateState` | `boolean` | `true` | Indicates whether the hook will dispatch a React state update when the given `query` change event get dispatched. |
-| `options.onChange` | `OnChangeHandler` | - | A custom callback that will be invoked on initial page load and when the given `query` change event get dispatched. |
-| | | | This callback is required if `updateState` is set to `false`. |
+| Parameter             | Type                                              | Default | Description                                                                                                         |
+| --------------------- | ------------------------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------- |
+| `query`               | `string`                                          | -       | A string specifying the media query to parse into a `MediaQueryList`.                                               |
+| `options`             | `UseMediaQueryOptions\|UseMediaQueryStateOptions` | -       | An object defining custom options.                                                                                  |
+| `options.updateState` | `boolean`                                         | `true`  | Indicates whether the hook will dispatch a React state update when the given `query` change event get dispatched.   |
+| `options.onChange`    | `OnChangeHandler`                                 | -       | A custom callback that will be invoked on initial page load and when the given `query` change event get dispatched. |
+|                       |                                                   |         | This callback is required if `updateState` is set to `false`.                                                       |
 
 </details>
 
@@ -779,9 +777,9 @@ Type: `boolean|void`
 ###### Check if user device prefers dark color scheme
 
 ```tsx
-import { useMediaQuery } from '@alessiofrittoli/react-hooks'
+import { useMediaQuery } from "@alessiofrittoli/react-hooks";
 
-const isDarkOS = useMediaQuery( '(prefers-color-scheme: dark)' )
+const isDarkOS = useMediaQuery("(prefers-color-scheme: dark)");
 ```
 
 ---
@@ -789,14 +787,76 @@ const isDarkOS = useMediaQuery( '(prefers-color-scheme: dark)' )
 ###### Listen changes with no state updates
 
 ```tsx
-import { useMediaQuery } from '@alessiofrittoli/react-hooks'
+import { useMediaQuery } from "@alessiofrittoli/react-hooks";
 
-useMediaQuery( '(prefers-color-scheme: dark)', {
+useMediaQuery("(prefers-color-scheme: dark)", {
   updateState: false,
-  onChange( matches ) {
-    console.log( 'is dark OS?', matches )
-  }
-} )
+  onChange(matches) {
+    console.log("is dark OS?", matches);
+  },
+});
+```
+
+</details>
+
+---
+
+##### `useDocumentVisibility`
+
+Track the visibility state of the document (i.e., whether the page is visible or hidden).
+
+<details>
+
+<summary style="cursor:pointer">Parameters</summary>
+
+| Parameter                    | Type                                                                      | Default | Description                                                           |
+| ---------------------------- | ------------------------------------------------------------------------- | ------- | --------------------------------------------------------------------- |
+| `options`                    | `UseDocumentVisibilityOptions\|StateDisabledUseDocumentVisibilityOptions` | -       | Configuration options for the hook.                                   |
+| `options.updateState`        | `boolean`                                                                 | `true`  | Whether to update React state about Document visibility state or not. |
+| `options.onVisibilityChange` | `VisibilityChangeHandler`                                                 | -       | A custom callback executed when Document visiblity sate changes.      |
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Returns</summary>
+
+Type: `boolean | void`
+
+Returns `true` if the document is visible, `false` if hidden, or `void` if `updateState` is set to `false`.
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Usage</summary>
+
+###### Simple usage
+
+```tsx
+import { useDocumentVisibility } from "@alessiofrittoli/react-hooks";
+
+const isDocumentVisible = useDocumentVisibility();
+```
+
+---
+
+###### Disable state updates and listen visibility changes
+
+```tsx
+import {
+  useDocumentVisibility,
+  type VisibilityChangeHandler,
+} from "@alessiofrittoli/react-hooks";
+
+const onVisibilityChange = useCallback<VisibilityChangeHandler>((isVisible) => {
+  // ... do something
+}, []);
+useDocumentVisibility({ updateState: false, onVisibilityChange });
 ```
 
 </details>
@@ -815,10 +875,10 @@ This comes pretty handy when rendering a modal that shouldn't be closed without 
 
 <summary style="cursor:pointer">Parameters</summary>
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `target`  | `React.RefObject<HTMLElement\|null>` | The target HTMLElement React RefObject to trap focus within. |
-|           |      | If no target is given, you must provide the target HTMLElement when calling `setFocusTrap`. |
+| Parameter | Type                                 | Description                                                                                 |
+| --------- | ------------------------------------ | ------------------------------------------------------------------------------------------- |
+| `target`  | `React.RefObject<HTMLElement\|null>` | The target HTMLElement React RefObject to trap focus within.                                |
+|           |                                      | If no target is given, you must provide the target HTMLElement when calling `setFocusTrap`. |
 
 </details>
 
@@ -846,22 +906,22 @@ A tuple containing:
 ###### Defining the target on hook initialization
 
 ```tsx
-import { useFocusTrap } from '@alessiofrittoli/react-hooks'
+import { useFocusTrap } from "@alessiofrittoli/react-hooks";
 
-const modalRef = useRef<HTMLDivElement>( null )
-const [ setFocusTrap, restoreFocusTrap ] = useFocusTrap( modalRef )
+const modalRef = useRef<HTMLDivElement>(null);
+const [setFocusTrap, restoreFocusTrap] = useFocusTrap(modalRef);
 
-const modalOpenHandler = useCallback( () => {
-  if ( ! modalRef.current ) return
+const modalOpenHandler = useCallback(() => {
+  if (!modalRef.current) return;
   // ... open modal
-  setFocusTrap()
-  modalRef.current.focus() // focus the dialog so next tab will focus the next element inside the modal
-}, [ setFocusTrap ] )
+  setFocusTrap();
+  modalRef.current.focus(); // focus the dialog so next tab will focus the next element inside the modal
+}, [setFocusTrap]);
 
-const modalCloseHandler = useCallback( () => {
+const modalCloseHandler = useCallback(() => {
   // ... close modal
-  restoreFocusTrap() // cancel focus trap and restore focus to the last active element before enablig the focus trap
-}, [ restoreFocusTrap ] )
+  restoreFocusTrap(); // cancel focus trap and restore focus to the last active element before enablig the focus trap
+}, [restoreFocusTrap]);
 ```
 
 ---
@@ -869,25 +929,25 @@ const modalCloseHandler = useCallback( () => {
 ###### Defining the target ondemand
 
 ```tsx
-import { useFocusTrap } from '@alessiofrittoli/react-hooks'
+import { useFocusTrap } from "@alessiofrittoli/react-hooks";
 
-const modalRef = useRef<HTMLDivElement>( null )
-const modal2Ref = useRef<HTMLDivElement>( null )
-const [ setFocusTrap, restoreFocusTrap ] = useFocusTrap()
+const modalRef = useRef<HTMLDivElement>(null);
+const modal2Ref = useRef<HTMLDivElement>(null);
+const [setFocusTrap, restoreFocusTrap] = useFocusTrap();
 
-const modalOpenHandler = useCallback( () => {
-  if ( ! modalRef.current ) return
+const modalOpenHandler = useCallback(() => {
+  if (!modalRef.current) return;
   // ... open modal
-  setFocusTrap( modalRef.current )
-  modalRef.current.focus()
-}, [ setFocusTrap ] )
+  setFocusTrap(modalRef.current);
+  modalRef.current.focus();
+}, [setFocusTrap]);
 
-const modal2OpenHandler = useCallback( () => {
-  if ( ! modal2Ref.current ) return
+const modal2OpenHandler = useCallback(() => {
+  if (!modal2Ref.current) return;
   // ... open modal
-  setFocusTrap( modal2Ref.current )
-  modal2Ref.current.focus()
-}, [ setFocusTrap ] )
+  setFocusTrap(modal2Ref.current);
+  modal2Ref.current.focus();
+}, [setFocusTrap]);
 ```
 
 </details>
@@ -902,33 +962,33 @@ Check if the given target Element is intersecting with an ancestor Element or wi
 
 <summary style="cursor:pointer">Parameters</summary>
 
-| Parameter | Type | Description |
-|-----------|------|-------------|
-| `target`  | `React.RefObject<Element\|null>` | The React.RefObject of the target Element to observe. |
-| `options` | `UseInViewOptions` | (Optional) An object defining custom `IntersectionObserver` options. |
-| `options.root` | `Element\|Document\|false\|null` | (Optional) Identifies the `Element` or `Document` whose bounds are treated as the bounding box of the viewport for the Element which is the observer's target. |
-| `options.margin` | `MarginType` | (Optional) A string, formatted similarly to the CSS margin property's value, which contains offsets for one or more sides of the root's bounding box. |
-| `options.amount` | `'all'\|'some'\|number\|number[]` | (Optional) The intersecting target thresholds. |
-| | | Threshold can be set to: |
-| | | - `all` - `1` will be used. |
-| | | - `some` - `0.5` will be used. |
-| | | - `number` |
-| | | - `number[]` |
-| `options.once` | `boolean` | (Optional) By setting this to `true` the observer will be disconnected after the target Element enters the viewport. |
-| `options.initial` | `boolean` | (Optional) Initial value. This value is used while server rendering then will be updated in the client based on target visibility. Default: `false`. |
-| `options.enable` | `boolean` | (Optional) Defines the initial observation activity. Use the returned `setEnabled` to update this state. Default: `true`. |
-| `options.onIntersect` | `OnIntersectStateHandler` | (Optional) A custom callback executed when target element's visibility has crossed one or more thresholds. |
-| | | This callback is awaited before any state update. |
-| | | If an error is thrown the React State update won't be fired. |
-| | | ⚠️ Wrap your callback with `useCallback` to avoid unnecessary `IntersectionObserver` recreation. |
-| `options.onEnter` | `OnIntersectHandler` | (Optional) A custom callback executed when target element's visibility has crossed one or more thresholds. |
-| | | This callback is awaited before any state update. |
-| | | If an error is thrown the React State update won't be fired. |
-| | | ⚠️ Wrap your callback with `useCallback` to avoid unnecessary `IntersectionObserver` recreation. |
-| `options.onExit` | `OnIntersectHandler` | (Optional) A custom callback executed when target element's visibility has crossed one or more thresholds. |
-| | | This callback is awaited before any state update. |
-| | | If an error is thrown the React State update won't be fired. |
-| | | ⚠️ Wrap your callback with `useCallback` to avoid unnecessary `IntersectionObserver` recreation. |
+| Parameter             | Type                              | Description                                                                                                                                                    |
+| --------------------- | --------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `target`              | `React.RefObject<Element\|null>`  | The React.RefObject of the target Element to observe.                                                                                                          |
+| `options`             | `UseInViewOptions`                | (Optional) An object defining custom `IntersectionObserver` options.                                                                                           |
+| `options.root`        | `Element\|Document\|false\|null`  | (Optional) Identifies the `Element` or `Document` whose bounds are treated as the bounding box of the viewport for the Element which is the observer's target. |
+| `options.margin`      | `MarginType`                      | (Optional) A string, formatted similarly to the CSS margin property's value, which contains offsets for one or more sides of the root's bounding box.          |
+| `options.amount`      | `'all'\|'some'\|number\|number[]` | (Optional) The intersecting target thresholds.                                                                                                                 |
+|                       |                                   | Threshold can be set to:                                                                                                                                       |
+|                       |                                   | - `all` - `1` will be used.                                                                                                                                    |
+|                       |                                   | - `some` - `0.5` will be used.                                                                                                                                 |
+|                       |                                   | - `number`                                                                                                                                                     |
+|                       |                                   | - `number[]`                                                                                                                                                   |
+| `options.once`        | `boolean`                         | (Optional) By setting this to `true` the observer will be disconnected after the target Element enters the viewport.                                           |
+| `options.initial`     | `boolean`                         | (Optional) Initial value. This value is used while server rendering then will be updated in the client based on target visibility. Default: `false`.           |
+| `options.enable`      | `boolean`                         | (Optional) Defines the initial observation activity. Use the returned `setEnabled` to update this state. Default: `true`.                                      |
+| `options.onIntersect` | `OnIntersectStateHandler`         | (Optional) A custom callback executed when target element's visibility has crossed one or more thresholds.                                                     |
+|                       |                                   | This callback is awaited before any state update.                                                                                                              |
+|                       |                                   | If an error is thrown the React State update won't be fired.                                                                                                   |
+|                       |                                   | ⚠️ Wrap your callback with `useCallback` to avoid unnecessary `IntersectionObserver` recreation.                                                               |
+| `options.onEnter`     | `OnIntersectHandler`              | (Optional) A custom callback executed when target element's visibility has crossed one or more thresholds.                                                     |
+|                       |                                   | This callback is awaited before any state update.                                                                                                              |
+|                       |                                   | If an error is thrown the React State update won't be fired.                                                                                                   |
+|                       |                                   | ⚠️ Wrap your callback with `useCallback` to avoid unnecessary `IntersectionObserver` recreation.                                                               |
+| `options.onExit`      | `OnIntersectHandler`              | (Optional) A custom callback executed when target element's visibility has crossed one or more thresholds.                                                     |
+|                       |                                   | This callback is awaited before any state update.                                                                                                              |
+|                       |                                   | If an error is thrown the React State update won't be fired.                                                                                                   |
+|                       |                                   | ⚠️ Wrap your callback with `useCallback` to avoid unnecessary `IntersectionObserver` recreation.                                                               |
 
 </details>
 
@@ -959,46 +1019,44 @@ An object containing:
 ###### Basic usage
 
 ```tsx
-'use client'
+"use client";
 
-import { useRef } from 'react'
-import { useInView } from '@alessiofrittoli/react-hooks'
+import { useRef } from "react";
+import { useInView } from "@alessiofrittoli/react-hooks";
 
 const UseInViewExample: React.FC = () => {
+  const targetRef = useRef<HTMLDivElement>(null);
+  const { inView } = useInView(ref);
 
-  const targetRef   = useRef<HTMLDivElement>( null )
-  const { inView }  = useInView( ref )
-
-  return (
-    Array.from( Array( 6 ) ).map( ( value, index ) => (
+  return Array.from(Array(6)).map((value, index) => (
+    <div
+      key={index}
+      style={{
+        height: "50vh",
+        border: "1px solid red",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
       <div
-        key={ index }
-        style={ {
-          height          : '50vh',
-          border          : '1px solid red',
-          display         : 'flex',
-          alignItems      : 'center',
-          justifyContent  : 'center',
-        } }
+        ref={index === 2 ? targetRef : undefined}
+        style={{
+          width: 150,
+          height: 150,
+          borderRadius: 12,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          background: inView ? "#51AF83" : "#201A1B",
+          color: inView ? "#201A1B" : "#FFFFFF",
+        }}
       >
-        <div
-          ref={ index === 2 ? targetRef : undefined }
-          style={ {
-            width           : 150,
-            height          : 150,
-            borderRadius    : 12,
-            display         : 'flex',
-            alignItems      : 'center',
-            justifyContent  : 'center',
-            background      : inView ? '#51AF83' : '#201A1B',
-            color           : inView ? '#201A1B' : '#FFFFFF',
-          } }
-        >{ index + 1 }</div>
+        {index + 1}
       </div>
-    ) )
-  )
-
-}
+    </div>
+  ));
+};
 ```
 
 ---
@@ -1006,34 +1064,30 @@ const UseInViewExample: React.FC = () => {
 ###### Disconnect observer after target enters the viewport
 
 ```tsx
-'use client'
+"use client";
 
-import { useRef } from 'react'
-import { useInView } from '@alessiofrittoli/react-hooks'
+import { useRef } from "react";
+import { useInView } from "@alessiofrittoli/react-hooks";
 
 const OnceExample: React.FC = () => {
+  const targetRef = useRef<HTMLDivElement>(null);
+  const { inView } = useInView(targetRef, { once: true });
 
-  const targetRef   = useRef<HTMLDivElement>( null )
-  const { inView }  = useInView( targetRef, { once: true } )
-
-  useEffect( () => {
-
-    if ( ! inView ) return
-    console.count( 'Fired only once: element entered viewport.' )
-
-  }, [ inView ] )
+  useEffect(() => {
+    if (!inView) return;
+    console.count("Fired only once: element entered viewport.");
+  }, [inView]);
 
   return (
     <div
-      ref={ targetRef }
-      style={ {
-        height      : 200,
-        background  : inView ? 'lime' : 'gray',
-      } }
+      ref={targetRef}
+      style={{
+        height: 200,
+        background: inView ? "lime" : "gray",
+      }}
     />
-  )
-
-}
+  );
+};
 ```
 
 ---
@@ -1041,35 +1095,33 @@ const OnceExample: React.FC = () => {
 ###### Observe target only when needed
 
 ```tsx
-'use client'
+"use client";
 
-import { useRef } from 'react'
-import { useInView } from '@alessiofrittoli/react-hooks'
+import { useRef } from "react";
+import { useInView } from "@alessiofrittoli/react-hooks";
 
 const OnDemandObservation: React.FC = () => {
-
-  const targetRef = useRef<HTMLDivElement>( null )
-  const {
-    inView, enabled, setEnabled
-  } = useInView( targetRef, { enable: false } )
+  const targetRef = useRef<HTMLDivElement>(null);
+  const { inView, enabled, setEnabled } = useInView(targetRef, {
+    enable: false,
+  });
 
   return (
     <div>
-      <button onClick={ () => setEnabled( prev => ! prev ) }>
-        { enabled ? 'Disconnect observer' : 'Observe' }
+      <button onClick={() => setEnabled((prev) => !prev)}>
+        {enabled ? "Disconnect observer" : "Observe"}
       </button>
       <div
-        ref={ targetRef }
-        style={ {
-          height      : 200,
-          marginTop   : 50,
-          background  : inView ? 'lime' : 'gray',
-        } }
+        ref={targetRef}
+        style={{
+          height: 200,
+          marginTop: 50,
+          background: inView ? "lime" : "gray",
+        }}
       />
     </div>
-  )
-
-}
+  );
+};
 ```
 
 ---
@@ -1077,42 +1129,44 @@ const OnDemandObservation: React.FC = () => {
 ###### Execute custom callback when intersection occurs
 
 ```tsx
-'use client'
+"use client";
 
-import { useRef } from 'react'
-import { useInView, type OnIntersectStateHandler } from '@alessiofrittoli/react-hooks'
-
+import { useRef } from "react";
+import {
+  useInView,
+  type OnIntersectStateHandler,
+} from "@alessiofrittoli/react-hooks";
 
 const AsyncStartExample: React.FC = () => {
+  const targetRef = useRef<HTMLDivElement>(null);
+  const onIntersect = useCallback<OnIntersectStateHandler>(
+    async ({ entry, isEntering }) => {
+      if (isEntering) {
+        console.log("Delaying state update...");
+        await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate delay
+        console.log("Async task completed. `inView` will now be updated.");
+        return;
+      }
 
-  const targetRef = useRef<HTMLDivElement>( null )
-  const onIntersect   = useCallback<OnIntersectStateHandler>( async ( { entry, isEntering } ) => {
+      console.log("Delaying state update...");
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate delay
+      console.log("Async task completed. `inView` will now be updated.");
+    },
+    []
+  );
 
-    if ( isEntering ) {
-      console.log( 'Delaying state update...' )
-      await new Promise( resolve => setTimeout( resolve, 1000 ) ) // Simulate delay
-      console.log( 'Async task completed. `inView` will now be updated.' )
-      return
-    }
-    
-    console.log( 'Delaying state update...' )
-    await new Promise( resolve => setTimeout( resolve, 1000 ) ) // Simulate delay
-    console.log( 'Async task completed. `inView` will now be updated.' )
-  
-  }, [] )
-
-  const { inView } = useInView( targetRef, { onIntersect } )
+  const { inView } = useInView(targetRef, { onIntersect });
 
   return (
     <div
-      ref={ targetRef }
-      style={ {
-        height      : 200,
-        background  : inView ? 'lime' : 'gray',
-      } }
+      ref={targetRef}
+      style={{
+        height: 200,
+        background: inView ? "lime" : "gray",
+      }}
     />
-  )
-}
+  );
+};
 ```
 
 ---
@@ -1120,34 +1174,35 @@ const AsyncStartExample: React.FC = () => {
 ###### Execute custom callback when `onEnter` and `onExit`
 
 ```tsx
-'use client'
+"use client";
 
-import { useRef } from 'react'
-import { useInView, type OnIntersectHandler } from '@alessiofrittoli/react-hooks'
-
+import { useRef } from "react";
+import {
+  useInView,
+  type OnIntersectHandler,
+} from "@alessiofrittoli/react-hooks";
 
 const AsyncStartExample: React.FC = () => {
+  const targetRef = useRef<HTMLDivElement>(null);
+  const onEnter = useCallback<OnIntersectHandler>(async ({ entry }) => {
+    console.log("In viewport - ", entry);
+  }, []);
+  const onExit = useCallback<OnIntersectHandler>(async ({ entry }) => {
+    console.log("Exited viewport - ", entry);
+  }, []);
 
-  const targetRef = useRef<HTMLDivElement>( null )
-  const onEnter = useCallback<OnIntersectHandler>( async ( { entry } ) => {
-    console.log( 'In viewport - ', entry )
-  }, [] )
-  const onExit = useCallback<OnIntersectHandler>( async ( { entry } ) => {
-    console.log( 'Exited viewport - ', entry )
-  }, [] )
-
-  const { inView } = useInView( targetRef, { onEnter, onExit } )
+  const { inView } = useInView(targetRef, { onEnter, onExit });
 
   return (
     <div
-      ref={ targetRef }
-      style={ {
-        height      : 200,
-        background  : inView ? 'lime' : 'gray',
-      } }
+      ref={targetRef}
+      style={{
+        height: 200,
+        background: inView ? "lime" : "gray",
+      }}
     />
-  )
-}
+  );
+};
 ```
 
 </details>
@@ -1162,8 +1217,8 @@ Prevent Element overflow.
 
 <summary style="cursor:pointer">Parameters</summary>
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
+| Parameter | Type                                 | Default                    | Description                                        |
+| --------- | ------------------------------------ | -------------------------- | -------------------------------------------------- |
 | `target`  | `React.RefObject<HTMLElement\|null>` | `Document.documentElement` | (Optional) The React RefObject target HTMLElement. |
 
 </details>
@@ -1243,7 +1298,7 @@ Handle input states with ease.
 <summary style="cursor:pointer">Type Parameters</summary>
 
 | Parameter | Description            |
-|-----------|------------------------|
+| --------- | ---------------------- |
 | `I`       | The input value type.  |
 | `O`       | The output value type. |
 
@@ -1255,15 +1310,15 @@ Handle input states with ease.
 
 <summary style="cursor:pointer">Parameters</summary>
 
-| Parameter | Type     | Default | Description                 |
-|-----------|----------|---------|-----------------------------|
-| `options` | `UseInputOptions<I, O>` | `{}` | An object defining custom options. |
-| `options.inputRef` | `React.RefObject<InputType>` | - | (Optional) The React HTML input element ref. |
-| `options.initialValue` | `O\|null` | - | (Optional) The input initial value. |
-| `options.touchTimeout` | `number` | 600 | (Optional) A timeout in milliseconds which will be used to define the input as "touched" thus validations are triggered and errors can be displayed. |
-| `options.validate` | `ValidateValueHandler<O>` | - | (Optional) Value validation handler. If `parse` callback is given, the `value` will be parsed before validation. |
-| `options.parse` | `ParseValueHandler<I, O>` | - | (Optional) Parse value. |
-| `options.onChange` | `ChangeHandler<O>` | - | (Optional) A callable function executed when the `ChangeEvent` is dispatched on the HTML input element. |
+| Parameter              | Type                         | Default | Description                                                                                                                                          |
+| ---------------------- | ---------------------------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `options`              | `UseInputOptions<I, O>`      | `{}`    | An object defining custom options.                                                                                                                   |
+| `options.inputRef`     | `React.RefObject<InputType>` | -       | (Optional) The React HTML input element ref.                                                                                                         |
+| `options.initialValue` | `O\|null`                    | -       | (Optional) The input initial value.                                                                                                                  |
+| `options.touchTimeout` | `number`                     | 600     | (Optional) A timeout in milliseconds which will be used to define the input as "touched" thus validations are triggered and errors can be displayed. |
+| `options.validate`     | `ValidateValueHandler<O>`    | -       | (Optional) Value validation handler. If `parse` callback is given, the `value` will be parsed before validation.                                     |
+| `options.parse`        | `ParseValueHandler<I, O>`    | -       | (Optional) Parse value.                                                                                                                              |
+| `options.onChange`     | `ChangeHandler<O>`           | -       | (Optional) A callable function executed when the `ChangeEvent` is dispatched on the HTML input element.                                              |
 
 </details>
 
@@ -1277,18 +1332,18 @@ Type: `UseInputOutput<I, O>`
 
 An object containing the following properties:
 
-| Property        | Type | Description |
-|-----------------|------|-------------|
-| `isEmpty`       | `boolean` | Indicates whether the Input is empty or not. |
-| `hasError`      | `boolean` | Indicates whether the input has error or not. |
-| | | It will return true if the Input does not pass the validation checks and it has been touched. |
-| | | Please refer to the `isValid` property to check the Input validity regardless of whether it has been touched or not. |
-| `changeHandler` | `React.ChangeEventHandler<InputType>` | Change handler callback used to handle Input change events. |
-| `blurHandler`   | `() => void` | Blur handler callback used to handle Input blur events. |
-| `setValue`      | `( value: O ) => void` | Call `setValue` method to update input value. |
-| `submit`        | `() => void` | Call `submit` method to re-run validations and ensure error state is updated successfully. |
-| `reset`         | `() => void` | Call `reset` method to reset the Input state. |
-| `focus`         | `() => void` | Call `focus` method to focus the Input Element. `inputRef` must be provided in the input options. |
+| Property        | Type                                  | Description                                                                                                          |
+| --------------- | ------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| `isEmpty`       | `boolean`                             | Indicates whether the Input is empty or not.                                                                         |
+| `hasError`      | `boolean`                             | Indicates whether the input has error or not.                                                                        |
+|                 |                                       | It will return true if the Input does not pass the validation checks and it has been touched.                        |
+|                 |                                       | Please refer to the `isValid` property to check the Input validity regardless of whether it has been touched or not. |
+| `changeHandler` | `React.ChangeEventHandler<InputType>` | Change handler callback used to handle Input change events.                                                          |
+| `blurHandler`   | `() => void`                          | Blur handler callback used to handle Input blur events.                                                              |
+| `setValue`      | `( value: O ) => void`                | Call `setValue` method to update input value.                                                                        |
+| `submit`        | `() => void`                          | Call `submit` method to re-run validations and ensure error state is updated successfully.                           |
+| `reset`         | `() => void`                          | Call `reset` method to reset the Input state.                                                                        |
+| `focus`         | `() => void`                          | Call `focus` method to focus the Input Element. `inputRef` must be provided in the input options.                    |
 
 </details>
 
@@ -1302,19 +1357,17 @@ An object containing the following properties:
 
 ```tsx
 const MyComponent: React.FC = () => {
-
-  const input = useInput<string>()
+  const input = useInput<string>();
 
   return (
     <input
-      type='text'
-      value={ input.value || '' }
-      onChange={ input.changeHandler }
-      onBlur={ input.blurHandler }
+      type="text"
+      value={input.value || ""}
+      onChange={input.changeHandler}
+      onBlur={input.blurHandler}
     />
-  )
-
-}
+  );
+};
 ```
 
 ---
@@ -1322,32 +1375,30 @@ const MyComponent: React.FC = () => {
 ###### Displaying custom error messages
 
 ```tsx
-import { useInput, type ValidateValueHandler } from '@alessiofrittoli/react-hooks'
+import {
+  useInput,
+  type ValidateValueHandler,
+} from "@alessiofrittoli/react-hooks";
 
-const isNotEmpty: ValidateValueHandler<string> = value => (
-  ! value ? false : value.trim().length > 0
-)
+const isNotEmpty: ValidateValueHandler<string> = (value) =>
+  !value ? false : value.trim().length > 0;
 
 const MyComponent: React.FC = () => {
-
-  const input = useInput<string>( {
+  const input = useInput<string>({
     validate: isNotEmpty,
-  } )
+  });
 
   return (
     <>
       <input
-        value={ input.value || '' }
-        onChange={ input.changeHandler }
-        onBlur={ input.blurHandler }
+        value={input.value || ""}
+        onChange={input.changeHandler}
+        onBlur={input.blurHandler}
       />
-      { input.hasError && (
-        <span>The input cannot be empty.</span>
-      ) }
+      {input.hasError && <span>The input cannot be empty.</span>}
     </>
-  )
-
-}
+  );
+};
 ```
 
 ---
@@ -1355,42 +1406,39 @@ const MyComponent: React.FC = () => {
 ###### Parsing and validating parsed value
 
 ```tsx
-import { formatDate, isValidDate } from '@alessiofrittoli/date-utils'
-import { useInput, type ValidateValueHandler, type ParseValueHandler } from '@alessiofrittoli/react-hooks'
+import { formatDate, isValidDate } from "@alessiofrittoli/date-utils";
+import {
+  useInput,
+  type ValidateValueHandler,
+  type ParseValueHandler,
+} from "@alessiofrittoli/react-hooks";
 
-const parseStringToDate: ParseValueHandler<string, Date> = value => (
-  value ? new Date( value ) : undefined
-)
+const parseStringToDate: ParseValueHandler<string, Date> = (value) =>
+  value ? new Date(value) : undefined;
 
-
-const validateInputDate: ValidateValueHandler<Date> = value => (
-  isValidDate( value ) && value.getTime() > Date.now()
-)
-
+const validateInputDate: ValidateValueHandler<Date> = (value) =>
+  isValidDate(value) && value.getTime() > Date.now();
 
 const MyComponent: React.FC = () => {
-
-  const input = useInput<string, Date>( {
-    parse     : parseStringToDate,
-    validate  : validateInputDate,
-  } )
-  
+  const input = useInput<string, Date>({
+    parse: parseStringToDate,
+    validate: validateInputDate,
+  });
 
   return (
     <>
       <input
-        type='datetime-local'
-        value={ input.value ? formatDate( input.value, 'Y-m-dTH:i' ) : '' }
-        onChange={ input.changeHandler }
-        onBlur={ input.blurHandler }
+        type="datetime-local"
+        value={input.value ? formatDate(input.value, "Y-m-dTH:i") : ""}
+        onChange={input.changeHandler}
+        onBlur={input.blurHandler}
       />
-      { input.hasError && (
+      {input.hasError && (
         <span>Please choose a date no earlier than today</span>
-      ) }
+      )}
     </>
-  )
-
-}
+  );
+};
 ```
 
 </details>
@@ -1410,10 +1458,10 @@ Take a look at [`deferTask`](https://npmjs.com/package/@alessiofrittoli/web-util
 
 <summary style="cursor:pointer">Type Parameters</summary>
 
-| Parameter | Description                  |
-|-----------|------------------------------|
+| Parameter | Description                                                                                       |
+| --------- | ------------------------------------------------------------------------------------------------- |
 | `T`       | The task function definition. `unknown` types will be inherited by your function type definition. |
-| `U`       | The task function arguments. `unknown` types will be inherited by your function type. |
+| `U`       | The task function arguments. `unknown` types will be inherited by your function type.             |
 
 </details>
 
@@ -1423,9 +1471,9 @@ Take a look at [`deferTask`](https://npmjs.com/package/@alessiofrittoli/web-util
 
 <summary style="cursor:pointer">Parameters</summary>
 
-| Parameter | Type     | Description                 |
-|-----------|----------|-----------------------------|
-| `task`    | `T`      | The task callable function. |
+| Parameter | Type | Description                 |
+| --------- | ---- | --------------------------- |
+| `task`    | `T`  | The task callable function. |
 
 </details>
 
@@ -1473,8 +1521,8 @@ Modified version of `useEffect` that only run once on intial load.
 
 <summary style="cursor:pointer">Parameters</summary>
 
-| Parameter | Type                   | Description |
-|-----------|------------------------|-------------|
+| Parameter | Type                   | Description                                             |
+| --------- | ---------------------- | ------------------------------------------------------- |
 | `effect`  | `React.EffectCallback` | Imperative function that can return a cleanup function. |
 
 </details>
@@ -1486,34 +1534,30 @@ Modified version of `useEffect` that only run once on intial load.
 <summary style="cursor:pointer">Usage</summary>
 
 ```tsx
-'use client'
+"use client";
 
-import { useEffect, useState } from 'react'
-import { useEffectOnce } from '@alessiofrittoli/react-hooks'
+import { useEffect, useState } from "react";
+import { useEffectOnce } from "@alessiofrittoli/react-hooks";
 
 export const ClientComponent: React.FC = () => {
+  const [count, setCount] = useState(0);
 
-  const [ count, setCount ] = useState( 0 )
+  useEffect(() => {
+    const intv = setInterval(() => {
+      setCount((prev) => prev + 1); // update state each 1s
+    }, 1000);
+    return () => clearInterval(intv);
+  }, []);
 
-  useEffect( () => {
-    const intv = setInterval( () => {
-      setCount( prev => prev + 1 ) // update state each 1s
-    }, 1000 )
-    return () => clearInterval( intv )
-  }, [] )
-
-  useEffectOnce( () => {
-    console.log( 'Component did mount' )
+  useEffectOnce(() => {
+    console.log("Component did mount");
     return () => {
-      console.log( 'Component did unmount' )
-    }
-  } )
+      console.log("Component did unmount");
+    };
+  });
 
-  return (
-    <div>{ count }</div>
-  )
-
-}
+  return <div>{count}</div>;
+};
 ```
 
 </details>
@@ -1528,9 +1572,9 @@ Modified version of `useEffect` that skips the first render.
 
 <summary style="cursor:pointer">Parameters</summary>
 
-| Parameter | Type                   | Description |
-|-----------|------------------------|-------------|
-| `effect`  | `React.EffectCallback` | Imperative function that can return a cleanup function. |
+| Parameter | Type                   | Description                                                             |
+| --------- | ---------------------- | ----------------------------------------------------------------------- |
+| `effect`  | `React.EffectCallback` | Imperative function that can return a cleanup function.                 |
 | `deps`    | `React.DependencyList` | If present, effect will only activate if the values in the list change. |
 
 </details>
@@ -1542,41 +1586,37 @@ Modified version of `useEffect` that skips the first render.
 <summary style="cursor:pointer">Usage</summary>
 
 ```tsx
-'use client'
+"use client";
 
-import { useEffect, useState } from 'react'
-import { useUpdateEffect } from '@alessiofrittoli/react-hooks'
+import { useEffect, useState } from "react";
+import { useUpdateEffect } from "@alessiofrittoli/react-hooks";
 
 export const ClientComponent: React.FC = () => {
+  const [count, setCount] = useState(0);
 
-  const [ count, setCount ] = useState( 0 )
+  useEffect(() => {
+    const intv = setInterval(() => {
+      setCount((prev) => prev + 1);
+    }, 1000);
+    return () => clearInterval(intv);
+  }, []);
 
-  useEffect( () => {
-    const intv = setInterval( () => {
-      setCount( prev => prev + 1 )
-    }, 1000 )
-    return () => clearInterval( intv )
-  }, [] )
-
-  useEffect( () => {
-    console.log( 'useEffect', count ) // starts from 0
+  useEffect(() => {
+    console.log("useEffect", count); // starts from 0
     return () => {
-      console.log( 'useEffect - clean up', count ) // starts from 0
-    }
-  }, [ count ] )
+      console.log("useEffect - clean up", count); // starts from 0
+    };
+  }, [count]);
 
-  useUpdateEffect( () => {
-    console.log( 'useUpdateEffect', count ) // starts from 1
+  useUpdateEffect(() => {
+    console.log("useUpdateEffect", count); // starts from 1
     return () => {
-      console.log( 'useUpdateEffect - clean up', count ) // starts from 1
-    }
-  }, [ count ] )
+      console.log("useUpdateEffect - clean up", count); // starts from 1
+    };
+  }, [count]);
 
-  return (
-    <div>{ count }</div>
-  )
-
-}
+  return <div>{count}</div>;
+};
 ```
 
 </details>
@@ -1607,19 +1647,15 @@ Type: `boolean`
 <summary style="cursor:pointer">Usage</summary>
 
 ```tsx
-'use client'
+"use client";
 
-import { useIsClient } from '@alessiofrittoli/react-hooks'
+import { useIsClient } from "@alessiofrittoli/react-hooks";
 
 export const ClientComponent: React.FC = () => {
+  const isClient = useIsClient();
 
-  const isClient = useIsClient()
-
-  return (
-    <div>Running { ! isClient ? 'server' : 'client' }-side</div>
-  )
-
-}
+  return <div>Running {!isClient ? "server" : "client"}-side</div>;
+};
 ```
 
 </details>
@@ -1650,31 +1686,29 @@ Note that if the React Hook/Component has no state updates, `useIsFirstRender` w
 <summary style="cursor:pointer">Usage</summary>
 
 ```tsx
-'use client'
+"use client";
 
-import { useIsFirstRender } from '@alessiofrittoli/react-hooks'
+import { useIsFirstRender } from "@alessiofrittoli/react-hooks";
 
 export const ClientComponent: React.FC = () => {
+  const isFirstRender = useIsFirstRender();
+  const [counter, setCounter] = useState(0);
 
-  const isFirstRender = useIsFirstRender()
-  const [ counter, setCounter ] = useState( 0 )
-
-  useEffect( () => {
-    const intv = setInterval( () => {
-      setCounter( prev => prev + 1 )
-    }, 1000 )
-    return () => clearInterval( intv )
-  }, [] )
+  useEffect(() => {
+    const intv = setInterval(() => {
+      setCounter((prev) => prev + 1);
+    }, 1000);
+    return () => clearInterval(intv);
+  }, []);
 
   return (
     <div>
-      { isFirstRender ? 'First render' : 'Subsequent render' }
+      {isFirstRender ? "First render" : "Subsequent render"}
       <hr />
-      { counter }
+      {counter}
     </div>
-  )
-
-}
+  );
+};
 ```
 
 </details>
@@ -1701,8 +1735,8 @@ Provides functionality for single and group selection, as well as resetting the 
 
 <summary style="cursor:pointer">Type Parameters</summary>
 
-| Parameter | Description                  |
-|-----------|------------------------------|
+| Parameter | Description                            |
+| --------- | -------------------------------------- |
 | `V`       | The type of the values in the `array`. |
 
 </details>
@@ -1713,10 +1747,10 @@ Provides functionality for single and group selection, as well as resetting the 
 
 <summary style="cursor:pointer">Parameters</summary>
 
-| Parameter | Type  | Default | Description                  |
-|-----------|-------|---------|-----------------------------|
-| `array`   | `V[]` | -      | The array of items to manage selection for. |
-| `initial` | `V[]` | []     | The initial selection state. |
+| Parameter | Type  | Default | Description                                 |
+| --------- | ----- | ------- | ------------------------------------------- |
+| `array`   | `V[]` | -       | The array of items to manage selection for. |
+| `initial` | `V[]` | []      | The initial selection state.                |
 
 </details>
 
@@ -1746,77 +1780,78 @@ An object containing the selection state and handlers.
 <summary style="cursor:pointer">Usage</summary>
 
 ```tsx
-'use client'
+"use client";
 
-import { useCallback, useMemo } from 'react'
-import { useSelection } from '@alessiofrittoli/react-hooks'
+import { useCallback, useMemo } from "react";
+import { useSelection } from "@alessiofrittoli/react-hooks";
 
-interface Item
-{
-  id    : number
-  name  : string
+interface Item {
+  id: number;
+  name: string;
 }
 
 const items: Item[] = [
   {
-    id    : 1,
-    name  : 'item-1',
+    id: 1,
+    name: "item-1",
   },
   {
-    id    : 2,
-    name  : 'item-2',
+    id: 2,
+    name: "item-2",
   },
   {
-    id    : 3,
-    name  : 'item-3',
+    id: 3,
+    name: "item-3",
   },
   {
-    id    : 4,
-    name  : 'item-4',
+    id: 4,
+    name: "item-4",
   },
   {
-    id    : 5,
-    name  : 'item-5',
+    id: 5,
+    name: "item-5",
   },
-]
-
+];
 
 const MyComponent: React.FC = () => {
+  const { setSelection, select, groupSelect, isSelected } = useSelection(
+    useMemo(() => items.map((item) => item.id), [])
+  );
 
-  const {
-    setSelection, select, groupSelect, isSelected
-  } = useSelection( useMemo( () => items.map( item => item.id ), [] ) )
-
-  const clickHandler = useCallback( ( id: Item[ 'id' ] ) => (
-    ( event: React.MouseEvent<HTMLButtonElement> ) => {
-      if ( event.shiftKey ) {
-        return groupSelect( id ) // group select
+  const clickHandler = useCallback(
+    (id: Item["id"]) => (event: React.MouseEvent<HTMLButtonElement>) => {
+      if (event.shiftKey) {
+        return groupSelect(id); // group select
       }
-      if ( event.metaKey || event.ctrlKey ) {
-        return select( id ) // toggle single item in selection
+      if (event.metaKey || event.ctrlKey) {
+        return select(id); // toggle single item in selection
       }
-      setSelection( prev => (
-        prev.includes( id ) ? [] : [ id ] // toggle single item selection
-      ) )
-    }
-  ), [ select, groupSelect, setSelection ] )
+      setSelection(
+        (prev) => (prev.includes(id) ? [] : [id]) // toggle single item selection
+      );
+    },
+    [select, groupSelect, setSelection]
+  );
 
   return (
     <ul>
-      { items.map( item => (
-        <li key={ item.id }>
+      {items.map((item) => (
+        <li key={item.id}>
           <button
-            onClick={ clickHandler( item.id ) }
-            style={ {
-              border: isSelected( item.id ) ? '1px solid red' : ' 1px solid black'
-            } }
-          >{ item.name }</button>
+            onClick={clickHandler(item.id)}
+            style={{
+              border: isSelected(item.id)
+                ? "1px solid red"
+                : " 1px solid black",
+            }}
+          >
+            {item.name}
+          </button>
         </li>
-      ) ) }
+      ))}
     </ul>
-  )
-
-}
+  );
+};
 ```
 
 </details>
@@ -1842,7 +1877,7 @@ The `Timeout` automatically restarts when the given `value` changes.
 <summary style="cursor:pointer">Type Parameters</summary>
 
 | Parameter | Description              |
-|-----------|--------------------------|
+| --------- | ------------------------ |
 | `T`       | The type of the `value`. |
 
 </details>
@@ -1853,10 +1888,10 @@ The `Timeout` automatically restarts when the given `value` changes.
 
 <summary style="cursor:pointer">Parameters</summary>
 
-| Parameter | Type     | Default | Description                 |
-|-----------|----------|---------|-----------------------------|
+| Parameter | Type     | Default | Description                                     |
+| --------- | -------- | ------- | ----------------------------------------------- |
 | `value`   | `T`      | -       | The value to debounce. This can be of any type. |
-| `delay`   | `number` | 500     | The debounce delay in milliseconds. |
+| `delay`   | `number` | 500     | The debounce delay in milliseconds.             |
 
 </details>
 
@@ -1879,33 +1914,26 @@ The debounced value, which updates only after the delay has passed.
 <summary style="cursor:pointer">Usage</summary>
 
 ```tsx
-'use client'
+"use client";
 
-import { useEffect, useState } from 'react'
-import { useDebounce } from '@alessiofrittoli/react-hooks'
+import { useEffect, useState } from "react";
+import { useDebounce } from "@alessiofrittoli/react-hooks";
 
 const MyComponent: React.FC = () => {
+  const [query, setQuery] = useState("");
+  const debouncedQuery = useDebounce(query);
 
-  const [ query, setQuery ] = useState( '' )
-  const debouncedQuery = useDebounce( query )
+  useEffect(() => {
+    if (!debouncedQuery) return;
 
-  useEffect( () => {
-    if ( ! debouncedQuery ) return
-
-    fetch( '...', {
+    fetch("...", {
       // ...
-      body: JSON.stringify( { query: debouncedQuery } )
-    } )
+      body: JSON.stringify({ query: debouncedQuery }),
+    });
+  }, [debouncedQuery]);
 
-  }, [ debouncedQuery ] )
-
-  return (
-    <input
-      onChange={ event => setQuery( event.target.value ) }
-    />
-  )
-
-}
+  return <input onChange={(event) => setQuery(event.target.value)} />;
+};
 ```
 
 </details>
@@ -1925,8 +1953,8 @@ The `Timeout` is automatically cancelled on unmount.
 
 <summary style="cursor:pointer">Type Parameters</summary>
 
-| Parameter | Description              |
-|-----------|--------------------------|
+| Parameter | Description                                                    |
+| --------- | -------------------------------------------------------------- |
 | `T`       | An Array defining optional arguments passed to the `callback`. |
 
 </details>
@@ -1937,15 +1965,15 @@ The `Timeout` is automatically cancelled on unmount.
 
 <summary style="cursor:pointer">Parameters</summary>
 
-| Parameter | Type     | Default | Description                 |
-|-----------|----------|---------|-----------------------------|
-| `callback`| `TimerHandler<T>` | - | The function to call when the timer elapses. |
-| `options` | `TimerOptions<T>` | - | (Optional) An object defining custom timer options. |
-| `options.delay` | `number` | `1` | The number of milliseconds to wait before calling the `callback`. |
-| `options.args` | `T` | - | Optional arguments to pass when the `callback` is called. |
-| `options.autoplay` | `boolean` | `true` | Indicates whether auto start the timer. |
-| `options.updateState` | `boolean` | `false` | Whether to update React state about Timer running status. |
-| `options.runOnStart` | `boolean` | `false` | Indicates whether to execute the callback when timer starts. |
+| Parameter             | Type              | Default | Description                                                       |
+| --------------------- | ----------------- | ------- | ----------------------------------------------------------------- |
+| `callback`            | `TimerHandler<T>` | -       | The function to call when the timer elapses.                      |
+| `options`             | `TimerOptions<T>` | -       | (Optional) An object defining custom timer options.               |
+| `options.delay`       | `number`          | `1`     | The number of milliseconds to wait before calling the `callback`. |
+| `options.args`        | `T`               | -       | Optional arguments to pass when the `callback` is called.         |
+| `options.autoplay`    | `boolean`         | `true`  | Indicates whether auto start the timer.                           |
+| `options.updateState` | `boolean`         | `false` | Whether to update React state about Timer running status.         |
+| `options.runOnStart`  | `boolean`         | `false` | Indicates whether to execute the callback when timer starts.      |
 
 </details>
 
@@ -1977,22 +2005,21 @@ If `updateState` is set to `true` then the following property is added in the re
 ##### Basic usage
 
 ```tsx
-'use client'
+"use client";
 
-import { useCallback } from 'react'
-import { useInterval } from '@alessiofrittoli/react-hooks'
+import { useCallback } from "react";
+import { useInterval } from "@alessiofrittoli/react-hooks";
 
 const MyComponent: React.FC = () => {
+  const { stop } = useInterval(
+    useCallback(() => {
+      console.log("tick timer");
+    }, []),
+    { delay: 1000 }
+  );
 
-  const { stop } = useInterval( useCallback( () => {
-    console.log( 'tick timer' )
-  }, [] ), { delay: 1000 } )
-
-  return (
-    <button onClick={ stop }>Stop timer</button>
-  )
-
-}
+  return <button onClick={stop}>Stop timer</button>;
+};
 ```
 
 ---
@@ -2000,34 +2027,31 @@ const MyComponent: React.FC = () => {
 ##### Rely on state updates
 
 ```tsx
-'use client'
+"use client";
 
-import { useCallback } from 'react'
-import { useInterval } from '@alessiofrittoli/react-hooks'
+import { useCallback } from "react";
+import { useInterval } from "@alessiofrittoli/react-hooks";
 
 const MyComponent: React.FC = () => {
-
-  const { isActive, start, stop } = useInterval( useCallback( () => {
-    console.log( 'tick timer' )
-  }, [] ), {
-    delay       : 1000,
-    autoplay    : false,
-    runOnStart  : true,
-    updateState : true,
-  } )
+  const { isActive, start, stop } = useInterval(
+    useCallback(() => {
+      console.log("tick timer");
+    }, []),
+    {
+      delay: 1000,
+      autoplay: false,
+      runOnStart: true,
+      updateState: true,
+    }
+  );
 
   return (
     <>
-      { ! isActive && (
-        <button onClick={ start }>Start timer</button>
-      ) }
-      { isActive && (
-        <button onClick={ stop }>Stop timer</button>
-      ) }
+      {!isActive && <button onClick={start}>Start timer</button>}
+      {isActive && <button onClick={stop}>Stop timer</button>}
     </>
-  )
-
-}
+  );
+};
 ```
 
 </details>
@@ -2055,8 +2079,8 @@ This is a lighter version of [`useInterval`](#useinterval) and is suggested to u
 
 <summary style="cursor:pointer">Type Parameters</summary>
 
-| Parameter | Description              |
-|-----------|--------------------------|
+| Parameter | Description                                                    |
+| --------- | -------------------------------------------------------------- |
 | `T`       | An Array defining optional arguments passed to the `callback`. |
 
 </details>
@@ -2067,12 +2091,12 @@ This is a lighter version of [`useInterval`](#useinterval) and is suggested to u
 
 <summary style="cursor:pointer">Parameters</summary>
 
-| Parameter | Type     | Default | Description                 |
-|-----------|----------|---------|-----------------------------|
-| `callback`| `TimerHandler<T>` | - | The function to call when the timer elapses. |
-| `options` | `BasicTimerOptions<T>` | - | (Optional) An object defining custom timer options. |
-| `options.delay` | `number` | `1` | The number of milliseconds to wait before calling the `callback`. |
-| `options.args` | `T` | - | Optional arguments to pass when the `callback` is called. |
+| Parameter       | Type                   | Default | Description                                                       |
+| --------------- | ---------------------- | ------- | ----------------------------------------------------------------- |
+| `callback`      | `TimerHandler<T>`      | -       | The function to call when the timer elapses.                      |
+| `options`       | `BasicTimerOptions<T>` | -       | (Optional) An object defining custom timer options.               |
+| `options.delay` | `number`               | `1`     | The number of milliseconds to wait before calling the `callback`. |
+| `options.args`  | `T`                    | -       | Optional arguments to pass when the `callback` is called.         |
 
 </details>
 
@@ -2083,18 +2107,19 @@ This is a lighter version of [`useInterval`](#useinterval) and is suggested to u
 <summary style="cursor:pointer">Usage</summary>
 
 ```tsx
-'use client'
+"use client";
 
-import { useCallback } from 'react'
-import { useLightInterval } from '@alessiofrittoli/react-hooks'
+import { useCallback } from "react";
+import { useLightInterval } from "@alessiofrittoli/react-hooks";
 
 const MyComponent: React.FC = () => {
-
-  useLightInterval( useCallback( () => {
-    console.log( 'tick timer' )
-  }, [] ), { delay: 1000 } )
-
-}
+  useLightInterval(
+    useCallback(() => {
+      console.log("tick timer");
+    }, []),
+    { delay: 1000 }
+  );
+};
 ```
 
 </details>
@@ -2122,8 +2147,8 @@ The `Timeout` is automatically cancelled on unmount.
 
 <summary style="cursor:pointer">Type Parameters</summary>
 
-| Parameter | Description              |
-|-----------|--------------------------|
+| Parameter | Description                                                    |
+| --------- | -------------------------------------------------------------- |
 | `T`       | An Array defining optional arguments passed to the `callback`. |
 
 </details>
@@ -2134,15 +2159,15 @@ The `Timeout` is automatically cancelled on unmount.
 
 <summary style="cursor:pointer">Parameters</summary>
 
-| Parameter | Type     | Default | Description                 |
-|-----------|----------|---------|-----------------------------|
-| `callback`| `TimerHandler<T>` | - | The function to call when the timer elapses. |
-| `options` | `TimerOptions<T>` | - | (Optional) An object defining custom timer options. |
-| `options.delay` | `number` | `1` | The number of milliseconds to wait before calling the `callback`. |
-| `options.args` | `T` | - | Optional arguments to pass when the `callback` is called. |
-| `options.autoplay` | `boolean` | `true` | Indicates whether auto start the timer. |
-| `options.updateState` | `boolean` | `false` | Whether to update React state about Timer running status. |
-| `options.runOnStart` | `boolean` | `false` | Indicates whether to execute the callback when timer starts. |
+| Parameter             | Type              | Default | Description                                                       |
+| --------------------- | ----------------- | ------- | ----------------------------------------------------------------- |
+| `callback`            | `TimerHandler<T>` | -       | The function to call when the timer elapses.                      |
+| `options`             | `TimerOptions<T>` | -       | (Optional) An object defining custom timer options.               |
+| `options.delay`       | `number`          | `1`     | The number of milliseconds to wait before calling the `callback`. |
+| `options.args`        | `T`               | -       | Optional arguments to pass when the `callback` is called.         |
+| `options.autoplay`    | `boolean`         | `true`  | Indicates whether auto start the timer.                           |
+| `options.updateState` | `boolean`         | `false` | Whether to update React state about Timer running status.         |
+| `options.runOnStart`  | `boolean`         | `false` | Indicates whether to execute the callback when timer starts.      |
 
 </details>
 
@@ -2174,22 +2199,21 @@ If `updateState` is set to `true` then the following property is added in the re
 ##### Basic usage
 
 ```tsx
-'use client'
+"use client";
 
-import { useCallback } from 'react'
-import { useTimeout } from '@alessiofrittoli/react-hooks'
+import { useCallback } from "react";
+import { useTimeout } from "@alessiofrittoli/react-hooks";
 
 const MyComponent: React.FC = () => {
+  const { stop } = useTimeout(
+    useCallback(() => {
+      console.log("tick timer");
+    }, []),
+    { delay: 1000 }
+  );
 
-  const { stop } = useTimeout( useCallback( () => {
-    console.log( 'tick timer' )
-  }, [] ), { delay: 1000 } )
-
-  return (
-    <button onClick={ stop }>Stop timer</button>
-  )
-
-}
+  return <button onClick={stop}>Stop timer</button>;
+};
 ```
 
 ---
@@ -2197,34 +2221,31 @@ const MyComponent: React.FC = () => {
 ##### Rely on state updates
 
 ```tsx
-'use client'
+"use client";
 
-import { useCallback } from 'react'
-import { useTimeout } from '@alessiofrittoli/react-hooks'
+import { useCallback } from "react";
+import { useTimeout } from "@alessiofrittoli/react-hooks";
 
 const MyComponent: React.FC = () => {
-
-  const { isActive, start, stop } = useTimeout( useCallback( () => {
-    console.log( 'tick timer' )
-  }, [] ), {
-    delay       : 1000,
-    autoplay    : false,
-    runOnStart  : true,
-    updateState : true,
-  } )
+  const { isActive, start, stop } = useTimeout(
+    useCallback(() => {
+      console.log("tick timer");
+    }, []),
+    {
+      delay: 1000,
+      autoplay: false,
+      runOnStart: true,
+      updateState: true,
+    }
+  );
 
   return (
     <>
-      { ! isActive && (
-        <button onClick={ start }>Start timer</button>
-      ) }
-      { isActive && (
-        <button onClick={ stop }>Stop timer</button>
-      ) }
+      {!isActive && <button onClick={start}>Start timer</button>}
+      {isActive && <button onClick={stop}>Stop timer</button>}
     </>
-  )
-
-}
+  );
+};
 ```
 
 </details>
@@ -2241,8 +2262,8 @@ This is a lighter version of [`useTimeout`](#usetimeout) and is suggested to use
 
 <summary style="cursor:pointer">Type Parameters</summary>
 
-| Parameter | Description              |
-|-----------|--------------------------|
+| Parameter | Description                                                    |
+| --------- | -------------------------------------------------------------- |
 | `T`       | An Array defining optional arguments passed to the `callback`. |
 
 </details>
@@ -2253,12 +2274,12 @@ This is a lighter version of [`useTimeout`](#usetimeout) and is suggested to use
 
 <summary style="cursor:pointer">Parameters</summary>
 
-| Parameter | Type     | Default | Description                 |
-|-----------|----------|---------|-----------------------------|
-| `callback`| `TimerHandler<T>` | - | The function to call when the timer elapses. |
-| `options` | `BasicTimerOptions<T>` | - | (Optional) An object defining custom timer options. |
-| `options.delay` | `number` | `1` | The number of milliseconds to wait before calling the `callback`. |
-| `options.args` | `T` | - | Optional arguments to pass when the `callback` is called. |
+| Parameter       | Type                   | Default | Description                                                       |
+| --------------- | ---------------------- | ------- | ----------------------------------------------------------------- |
+| `callback`      | `TimerHandler<T>`      | -       | The function to call when the timer elapses.                      |
+| `options`       | `BasicTimerOptions<T>` | -       | (Optional) An object defining custom timer options.               |
+| `options.delay` | `number`               | `1`     | The number of milliseconds to wait before calling the `callback`. |
+| `options.args`  | `T`                    | -       | Optional arguments to pass when the `callback` is called.         |
 
 </details>
 
@@ -2269,18 +2290,19 @@ This is a lighter version of [`useTimeout`](#usetimeout) and is suggested to use
 <summary style="cursor:pointer">Usage</summary>
 
 ```tsx
-'use client'
+"use client";
 
-import { useCallback } from 'react'
-import { useLightTimeout } from '@alessiofrittoli/react-hooks'
+import { useCallback } from "react";
+import { useLightTimeout } from "@alessiofrittoli/react-hooks";
 
 const MyComponent: React.FC = () => {
-
-  useLightTimeout( useCallback( () => {
-    console.log( 'tick timer' )
-  }, [] ), { delay: 1000 } )
-
-}
+  useLightTimeout(
+    useCallback(() => {
+      console.log("tick timer");
+    }, []),
+    { delay: 1000 }
+  );
+};
 ```
 
 </details>
