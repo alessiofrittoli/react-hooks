@@ -32,6 +32,7 @@
     - [`useDarkMode`](#usedarkmode)
     - [`useEventListener`](#useeventlistener)
     - [`useIsPortrait`](#useisportrait)
+    - [`useIsTouchDevice`](#useistouchdevice)
     - [`useMediaQuery`](#usemediaquery)
     - [`useDocumentVisibility`](#usedocumentvisibility)
     - [`useWakeLock`](#usewakelock)
@@ -733,6 +734,37 @@ Type: `boolean`
 import { useIsPortrait } from "@alessiofrittoli/react-hooks";
 
 const isLandscape = !useIsPortrait();
+```
+
+</details>
+
+---
+
+##### `useIsTouchDevice`
+
+Detects if the current device supports touch events.
+
+<details>
+
+<summary style="cursor:pointer">Returns</summary>
+
+Type: `boolean`
+
+- `true` if the device is touch device.
+- `false` otherwise.
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Usage</summary>
+
+```tsx
+import { useIsTouchDevice } from "@alessiofrittoli/react-hooks";
+
+const isTouchDevice = useIsTouchDevice();
 ```
 
 </details>
