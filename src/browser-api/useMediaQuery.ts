@@ -20,6 +20,11 @@ export interface UseMediaQueryOptions extends CommonOptions
 	 * 
 	 */
 	updateState: false
+	/**
+	 * A custom callback that will be invoked on initial page load and when the given `query` change event get dispatched.
+	 * 
+	 * @param matches Whether the document currently matches the media query list.
+	 */
 	onChange: OnChangeHandler
 }
 
@@ -29,6 +34,7 @@ export interface UseMediaQueryStateOptions extends CommonOptions
 	/**
 	 * Indicates whether the hook will dispatch a React state update when the given `query` change event get dispatched.
 	 * 
+	 * @default true
 	 */
 	updateState?: true
 }
