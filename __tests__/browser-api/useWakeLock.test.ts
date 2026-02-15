@@ -83,9 +83,11 @@ describe( 'useWakeLock', () => {
 
 		const { result } = renderHook( () => useWakeLock( { onMount: false } ) )
 
-		expect( mockRequest ).not.toHaveBeenCalled()
-		expect( result.current.enabled ).toBe( false )
-		expect( result.current.wakeLock ).toBeNull()
+		await waitFor( () => {
+			expect( mockRequest ).not.toHaveBeenCalled()
+			expect( result.current.enabled ).toBe( false )
+			expect( result.current.wakeLock ).toBeNull()
+		} )
 
 	} )
 
@@ -210,7 +212,7 @@ describe( 'useWakeLock', () => {
 
 	it( 'releases WakeLock when Document is no longer visible', async () => {
 
-		await act( () => renderHook( () => useWakeLock() ) )
+		renderHook( () => useWakeLock() )
 
 		// Get the onVisibilityChange handler passed to useDocumentVisibility
 		const { onVisibilityChange } = useDocumentVisibility.mock.calls[ 0 ][ 0 ]
