@@ -123,9 +123,10 @@ export function useIntervalWhenVisible<T extends readonly unknown[]>(
 
 	useEffect( () => {
 
-		if ( ! autoplay ) return
+		if ( autoplay ) {
+			start()
+		}
 
-		start()
 
 		return () => stop()
 

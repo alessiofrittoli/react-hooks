@@ -131,9 +131,9 @@ export function useInterval<T extends readonly unknown[]>(
 
 	useEffect( () => {
 
-		if ( ! autoplay ) return
-		
-		start()
+		if ( autoplay ) {
+			start()
+		}
 
 		return () => stop()
 
