@@ -127,7 +127,7 @@ export function useIntervalWhenVisible<T extends readonly unknown[]>(
 
 		start()
 
-		return stop
+		return () => stop()
 
 	}, [ autoplay, start, stop ] )
 
