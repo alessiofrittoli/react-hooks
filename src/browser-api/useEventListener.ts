@@ -16,6 +16,11 @@ type CommonEventHandler<
 ) ) => void
 
 
+export type EventListenerTarget = (
+	| Document | HTMLElement | EventTarget | null | undefined
+)
+
+
 /**
  * Specifies characteristics about the event listener.
  * 
@@ -170,7 +175,7 @@ export interface DocumentListenerOptions<
 	 * The `Document` reference or a React RefObject of the `Document`.
 	 * 
 	 */
-	target: Document | null | React.RefObject<Document | null>,
+	target?: Document | null | React.RefObject<Document | null | undefined>,
 	/**
 	 * The Document Event listener.
 	 * 
@@ -180,18 +185,31 @@ export interface DocumentListenerOptions<
 }
 
 
-export interface ElementListenerOptions<
-	T extends HTMLElement,
-	K extends keyof HTMLElementEventMap,
+export interface EventTargetListenerOptions<
+	T extends EventTarget, K extends keyof HTMLElementEventMap
 > extends CommonListenerOptions
 {
 	/**
 	 * The React RefObject of the target where the listener get attached to.
 	 * 
 	 */
-	target: T | React.RefObject<T | null>,
+	target?: T | React.RefObject<T | null | undefined>,
 	/**
-	 * The HTMLElement Event listener.
+	 * The `EventTarget` Event listener.
+	 * 
+	 * @param event The event object that implements the [`Event`](https://developer.mozilla.org/en-US/docs/Web/API/Event) interface.
+	 */
+	listener: ElementEventListener<K>,
+}
+
+
+export interface ElementListenerOptions<
+	T extends HTMLElement,
+	K extends keyof HTMLElementEventMap,
+> extends Omit<EventTargetListenerOptions<T, K>, 'listener'>
+{
+	/**
+	 * The `HTMLElement` Event listener.
 	 * 
 	 * @param event The event object that implements the [`Event`](https://developer.mozilla.org/en-US/docs/Web/API/Event) interface.
 	 */
@@ -225,7 +243,7 @@ export interface CustomEventListenerOptions<
 	 * 
 	 * If not set, the listener will get attached to the `Window` object.
 	 */
-	target?: Document | HTMLElement | null | React.RefObject<Document | HTMLElement | null>
+	target?: EventListenerTarget | React.RefObject<EventListenerTarget>
 	/**
 	 * The Event listener.
 	 * 
@@ -309,6 +327,36 @@ export function useEventListener<K extends keyof WindowEventMap>(
 export function useEventListener<K extends keyof DocumentEventMap>(
 	type	: K | K[],
 	options	: DocumentListenerOptions<K>
+): void
+
+
+/**
+ * Attach a new Event listener to an `EventTarget` object.
+ * 
+ * @param type		The event name or an array of event names.
+ * @param options	An object defining init options. See {@link EventTargetListenerOptions} for more info.
+ * 
+ * @example
+ * 
+ * #### Add a new `EventTarget` event listener
+ * 
+ * ```ts
+ * // A React.RefObject<EventTarget | null> can be used too.
+ * 
+ * useEventListener( 'click', {
+ * 	target: new EventTarget(),
+ * 	listener: useCallback( () => {
+ * 		console.log( 'click event on `EventTarget` dispatched.' )
+ * 	}, [] )
+ * } )
+ * ```
+ */
+export function useEventListener<
+	T extends EventTarget,
+	K extends keyof HTMLElementEventMap,
+>(
+	type	: K | K[],
+	options	: EventTargetListenerOptions<T, K>
 ): void
 
 
@@ -499,7 +547,7 @@ export function useEventListener<
 	type: W | D | E | M | C | ( W | D | E | M | C )[],
 	options: {
 		listener: CommonEventHandler<W, D, E, M, C>,
-		target?	: Document | HTMLElement | null | React.RefObject<Document | HTMLElement | null>,
+		target?	: EventListenerTarget | React.RefObject<EventListenerTarget>,
 		query?	: string,
 	} & CommonListenerOptions
 )
