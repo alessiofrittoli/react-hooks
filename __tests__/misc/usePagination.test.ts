@@ -2,10 +2,10 @@ import { renderHook } from '@testing-library/react'
 import { usePagination } from '@/misc/usePagination'
 import {
 	paginate as mathPaginate, type Pagination, type PaginateOptions
-} from '@alessiofrittoli/math-utils/helpers'
+} from '@alessiofrittoli/math-utils'
 
 
-jest.mock( '@alessiofrittoli/math-utils/helpers', () => ( {
+jest.mock( '@alessiofrittoli/math-utils', () => ( {
 	paginate: jest.fn(),
 } ) )
 

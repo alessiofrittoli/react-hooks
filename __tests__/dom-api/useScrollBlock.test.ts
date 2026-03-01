@@ -1,9 +1,9 @@
 import { useRef } from 'react'
 import { renderHook, act } from '@testing-library/react'
 import { useScrollBlock } from '@/dom-api/useScrollBlock'
-import { blockScroll, restoreScroll } from '@alessiofrittoli/web-utils/dom'
+import { blockScroll, restoreScroll } from '@alessiofrittoli/web-utils'
 
-jest.mock( '@alessiofrittoli/web-utils/dom', () => ( {
+jest.mock( '@alessiofrittoli/web-utils', () => ( {
 	blockScroll		: jest.fn(),
 	restoreScroll	: jest.fn(),
 } ) )

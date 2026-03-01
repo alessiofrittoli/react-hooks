@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { paginate, type PaginateOptions } from '@alessiofrittoli/math-utils/helpers'
+import { paginate, type PaginateOptions } from '@alessiofrittoli/math-utils'
 
 /**
  * Get pagination informations based on the given options.

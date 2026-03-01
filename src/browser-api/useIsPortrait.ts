@@ -1,5 +1,5 @@
 import { useMediaQuery } from './useMediaQuery'
-import { portraitMediaQuery } from '@alessiofrittoli/web-utils/device'
+import { portraitMediaQuery } from '@alessiofrittoli/web-utils'
 
 /**
  * Check if device is portrait oriented.
