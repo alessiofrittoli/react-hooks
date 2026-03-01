@@ -318,13 +318,11 @@ Get states about Internet Connection.
 
 <summary style="cursor:pointer">Returns</summary>
 
-Type: `UseConnectionReturnType`
+Type: `Connection`
 
-An object with the following properties:
+An object defining network status and `NetworkInformation`.
 
-- `connection`: `online | offline` - Indicates the connections status.
-- `isOnline`: `boolean` - Indicates whether the current device is online.
-- `isOffline`: `boolean` - Indicates whether the current device is offline.
+- See [`Connection`](https://github.com/alessiofrittoli/web-utils?tab=readme-ov-file#connection-interface) interface from [`@alessiofrittoli/web-utils`](https://www.npmjs.com/package/@alessiofrittoli/web-utils)
 
 </details>
 
@@ -496,6 +494,8 @@ Attach a new Event listener to the `Window`, `Document`, `MediaQueryList` or an 
 | Parameter           | Type                       | Description                                                                                                                                                     |
 | ------------------- | -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `type`              | `K\|K[]`                   | The `Window` event name or an array of event names.                                                                                                             |
+|                     |                            | ⚠️ Please, make sure to memoize the event names array with `useMemo`                                                                                            |
+|                     |                            | or declare that array outside your Component/hook in order to avoid infinite loops when a React state changes.                                                  |
 | `options`           | `WindowListenerOptions<K>` | An object defining init options.                                                                                                                                |
 | `options.listener`  | `WindowEventListener<K>`   | The Window Event listener.                                                                                                                                      |
 | `options.onLoad`    | `() => void`               | A custom callback executed before event listener get attached.                                                                                                  |
@@ -513,6 +513,8 @@ Attach a new Event listener to the `Window`, `Document`, `MediaQueryList` or an 
 | Parameter           | Type                                              | Description                                                                                                                                                     |
 | ------------------- | ------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `type`              | `K\|K[]`                                          | The `Document` event name or an array of event names.                                                                                                           |
+|                     |                                                   | ⚠️ Please, make sure to memoize the event names array with `useMemo`                                                                                            |
+|                     |                                                   | or declare that array outside your Component/hook in order to avoid infinite loops when a React state changes.                                                  |
 | `options`           | `DocumentListenerOptions<K>`                      | An object defining init options.                                                                                                                                |
 | `options.target`    | `Document\|null\|React.RefObject<Document\|null>` | The `Document` reference or a React RefObject of the `Document`.                                                                                                |
 | `options.listener`  | `DocumentEventListener<K>`                        | The Document Event listener.                                                                                                                                    |
@@ -531,6 +533,8 @@ Attach a new Event listener to the `Window`, `Document`, `MediaQueryList` or an 
 | Parameter           | Type                           | Description                                                                                                                                                     |
 | ------------------- | ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `type`              | `K\|K[]`                       | The `HTMLElement` event name or an array of event names.                                                                                                        |
+|                     |                                | ⚠️ Please, make sure to memoize the event names array with `useMemo`                                                                                            |
+|                     |                                | or declare that array outside your Component/hook in order to avoid infinite loops when a React state changes.                                                  |
 | `options`           | `ElementListenerOptions<K>`    | An object defining init options.                                                                                                                                |
 | `options.target`    | `T\|React.RefObject<T\| null>` | The React RefObject of the target where the listener get attached to.                                                                                           |
 | `options.listener`  | `ElementEventListener<K>`      | The HTMLElement Event listener.                                                                                                                                 |
@@ -567,6 +571,8 @@ Attach a new Event listener to the `Window`, `Document`, `MediaQueryList` or an 
 | Parameter           | Type                                                                        | Description                                                                                                                                                     |
 | ------------------- | --------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `type`              | `K\|K[]`                                                                    | The custom event name or an array of event names.                                                                                                               |
+|                     |                                                                             | ⚠️ Please, make sure to memoize the event names array with `useMemo`                                                                                            |
+|                     |                                                                             | or declare that array outside your Component/hook in order to avoid infinite loops when a React state changes.                                                  |
 | `options`           | `CustomEventListenerOptions<T, K>`                                          | An object defining init options.                                                                                                                                |
 | `options.target`    | `Document\|HTMLElement\|null\|React.RefObject<Document\|HTMLElement\|null>` | (Optional) The target where the listener get attached to. If not set, the listener will get attached to the `Window` object.                                    |
 | `options.listener`  | `( event: T[ K ] ) => void`                                                 | The Event listener.                                                                                                                                             |
@@ -724,6 +730,30 @@ export const MyComponent: React.FC = () => {
 ```
 
 ---
+
+###### Attach listeners to multiple events
+
+```tsx
+import { useCallback, useState } from "react";
+import { useEventListener } from "@alessiofrittoli/react-hooks";
+
+/**
+ * We define events outside the Component to avoid array recreation when a state update is triggered.
+ *
+ * This prevents infinite loops for `useEventListener` life-cycle
+ */
+const events: (keyof WindowEventMap)[] = ["resize", "scroll"];
+
+export const MyComponent: React.FC = () => {
+  const [isInteracting, setIsIntercting] = useState(false);
+
+  useEventListener(events, {
+    listener: useCallback(() => {
+      setIsIntercting(true);
+    }, []),
+  });
+};
+```
 
 </details>
 
