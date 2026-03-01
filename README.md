@@ -1,22 +1,46 @@
-# React Hooks 🪝
+<h1 align="center">React Hooks 🪝</h1>
+<p align="center">
+  TypeScript React utility Hooks
+</p>
+<p align="center">
+  <a href="https://npmjs.org/package/@alessiofrittoli/react-hooks">
+    <img src="https://img.shields.io/npm/v/@alessiofrittoli/react-hooks" alt="Latest version"/>
+  </a>
+  <a href="https://coveralls.io/github/alessiofrittoli/react-hooks">
+    <img src="https://coveralls.io/repos/github/alessiofrittoli/react-hooks/badge.svg" alt="Test coverage"/>
+  </a>
+  <a href="https://socket.dev/npm/package/@alessiofrittoli/react-hooks/overview">
+    <img src="https://socket.dev/api/badge/npm/package/@alessiofrittoli/react-hooks" alt="Socket Security score"/>
+  </a>
+  <a href="https://npmjs.org/package/@alessiofrittoli/react-hooks">
+    <img src="https://img.shields.io/npm/dm/@alessiofrittoli/react-hooks.svg" alt="npm downloads"/>
+  </a>
+  <a href="https://bundlephobia.com/package/@alessiofrittoli/react-hooks">
+    <img src="https://badgen.net/bundlephobia/dependency-count/@alessiofrittoli/react-hooks" alt="Dependencies"/>
+  </a>
+  <a href="https://libraries.io/npm/%40alessiofrittoli%2Freact-hooks">
+    <img src="https://img.shields.io/librariesio/release/npm/@alessiofrittoli/react-hooks" alt="Dependencies status"/>
+  </a>
+</p>
+<p align="center">
+  <a href="https://bundlephobia.com/package/@alessiofrittoli/react-hooks">
+    <img src="https://badgen.net/bundlephobia/min/@alessiofrittoli/react-hooks" alt="minified"/>
+  </a>
+  <a href="https://bundlephobia.com/package/@alessiofrittoli/react-hooks">
+    <img src="https://badgen.net/bundlephobia/minzip/@alessiofrittoli/react-hooks" alt="minizipped"/>
+  </a>
+  <a href="https://bundlephobia.com/package/@alessiofrittoli/react-hooks">
+    <img src="https://badgen.net/bundlephobia/tree-shaking/@alessiofrittoli/react-hooks" alt="Tree shakable"/>
+  </a>
+</p>
+<p align="center">
+  <a href="https://github.com/sponsors/alessiofrittoli">
+    <img src="https://img.shields.io/static/v1?label=Fund%20this%20package&message=%E2%9D%A4&logo=GitHub&color=%23DB61A2" alt="Fund this package"/>
+  </a>
+</p>
 
-[![NPM Latest Version][version-badge]][npm-url] [![Coverage Status][coverage-badge]][coverage-url] [![Socket Status][socket-badge]][socket-url] [![NPM Monthly Downloads][downloads-badge]][npm-url] [![Dependencies][deps-badge]][deps-url]
-
-[![GitHub Sponsor][sponsor-badge]][sponsor-url]
-
-[version-badge]: https://img.shields.io/npm/v/%40alessiofrittoli%2Freact-hooks
-[npm-url]: https://npmjs.org/package/%40alessiofrittoli%2Freact-hooks
-[coverage-badge]: https://coveralls.io/repos/github/alessiofrittoli/react-hooks/badge.svg
-[coverage-url]: https://coveralls.io/github/alessiofrittoli/react-hooks
-[socket-badge]: https://socket.dev/api/badge/npm/package/@alessiofrittoli/react-hooks
-[socket-url]: https://socket.dev/npm/package/@alessiofrittoli/react-hooks/overview
-[downloads-badge]: https://img.shields.io/npm/dm/%40alessiofrittoli%2Freact-hooks.svg
-[deps-badge]: https://img.shields.io/librariesio/release/npm/%40alessiofrittoli%2Freact-hooks
-[deps-url]: https://libraries.io/npm/%40alessiofrittoli%2Freact-hooks
 [sponsor-badge]: https://img.shields.io/static/v1?label=Fund%20this%20package&message=%E2%9D%A4&logo=GitHub&color=%23DB61A2
 [sponsor-url]: https://github.com/sponsors/alessiofrittoli
-
-## TypeScript React utility Hooks
 
 ### Table of Contents
 
@@ -1284,7 +1308,7 @@ const AsyncStartExample: React.FC = () => {
       await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate delay
       console.log("Async task completed. `inView` will now be updated.");
     },
-    []
+    [],
   );
 
   const { inView } = useInView(targetRef, { onIntersect });
@@ -1947,7 +1971,7 @@ const items: Item[] = [
 
 const MyComponent: React.FC = () => {
   const { setSelection, select, groupSelect, isSelected } = useSelection(
-    useMemo(() => items.map((item) => item.id), [])
+    useMemo(() => items.map((item) => item.id), []),
   );
 
   const clickHandler = useCallback(
@@ -1959,10 +1983,10 @@ const MyComponent: React.FC = () => {
         return select(id); // toggle single item in selection
       }
       setSelection(
-        (prev) => (prev.includes(id) ? [] : [id]) // toggle single item selection
+        (prev) => (prev.includes(id) ? [] : [id]), // toggle single item selection
       );
     },
-    [select, groupSelect, setSelection]
+    [select, groupSelect, setSelection],
   );
 
   return (
@@ -2147,7 +2171,7 @@ const MyComponent: React.FC = () => {
     useCallback(() => {
       console.log("tick timer");
     }, []),
-    { delay: 1000 }
+    { delay: 1000 },
   );
 
   return <button onClick={stop}>Stop timer</button>;
@@ -2174,7 +2198,7 @@ const MyComponent: React.FC = () => {
       autoplay: false,
       runOnStart: true,
       updateState: true,
-    }
+    },
   );
 
   return (
@@ -2249,7 +2273,7 @@ const MyComponent: React.FC = () => {
     useCallback(() => {
       console.log("tick timer");
     }, []),
-    { delay: 1000 }
+    { delay: 1000 },
   );
 };
 ```
@@ -2291,15 +2315,17 @@ The `Timeout` is automatically cancelled on unmount.
 
 <summary style="cursor:pointer">Parameters</summary>
 
-| Parameter             | Type              | Default | Description                                                       |
-| --------------------- | ----------------- | ------- | ----------------------------------------------------------------- |
-| `callback`            | `TimerHandler<T>` | -       | The function to call when the timer elapses.                      |
-| `options`             | `TimerOptions<T>` | -       | (Optional) An object defining custom timer options.               |
-| `options.delay`       | `number`          | `1`     | The number of milliseconds to wait before calling the `callback`. |
-| `options.args`        | `T`               | -       | Optional arguments to pass when the `callback` is called.         |
-| `options.autoplay`    | `boolean`         | `true`  | Indicates whether auto start the timer.                           |
-| `options.updateState` | `boolean`         | `false` | Whether to update React state about Timer running status.         |
-| `options.runOnStart`  | `boolean`         | `false` | Indicates whether to execute the callback when timer starts.      |
+| Parameter             | Type              | Default | Description                                                                 |
+| --------------------- | ----------------- | ------- | --------------------------------------------------------------------------- |
+| `callback`            | `TimerHandler<T>` | -       | The function to call when the timer elapses.                                |
+| `options`             | `TimerOptions<T>` | -       | (Optional) An object defining custom timer options.                         |
+| `options.delay`       | `number`          | `1`     | The number of milliseconds to wait before calling the `callback`.           |
+| `options.args`        | `T`               | -       | Optional arguments to pass when the `callback` is called.                   |
+| `options.autoplay`    | `boolean`         | `true`  | Indicates whether auto start the timer.                                     |
+| `options.updateState` | `boolean`         | `false` | Whether to update React state about Timer running status.                   |
+|                       |                   |         | Passing a `callback` is optional if `updateState`                           |
+|                       |                   |         | has been set to `true` if you're only interested about running timer state. |
+| `options.runOnStart`  | `boolean`         | `false` | Indicates whether to execute the callback when timer starts.                |
 
 </details>
 
@@ -2341,7 +2367,7 @@ const MyComponent: React.FC = () => {
     useCallback(() => {
       console.log("tick timer");
     }, []),
-    { delay: 1000 }
+    { delay: 1000 },
   );
 
   return <button onClick={stop}>Stop timer</button>;
@@ -2368,8 +2394,38 @@ const MyComponent: React.FC = () => {
       autoplay: false,
       runOnStart: true,
       updateState: true,
-    }
+    },
   );
+
+  return (
+    <>
+      {!isActive && <button onClick={start}>Start timer</button>}
+      {isActive && <button onClick={stop}>Stop timer</button>}
+    </>
+  );
+};
+```
+
+</details>
+
+---
+
+##### Rely on time state only
+
+You can pass `undefined` instead of a callback if you're interested only in timer running states.
+
+```tsx
+"use client";
+
+import { useCallback } from "react";
+import { useTimeout } from "@alessiofrittoli/react-hooks";
+
+const MyComponent: React.FC = () => {
+  const { isActive, start, stop } = useTimeout(undefined, {
+    delay: 1000,
+    autoplay: false,
+    updateState: true,
+  });
 
   return (
     <>
@@ -2432,7 +2488,7 @@ const MyComponent: React.FC = () => {
     useCallback(() => {
       console.log("tick timer");
     }, []),
-    { delay: 1000 }
+    { delay: 1000 },
   );
 };
 ```

@@ -29,7 +29,7 @@ import type { TimerReturnType, StateTimerReturnType } from './types'
  * @returns An object with timer utilities. See {@link StateTimerReturnType} for more info.
  */
 export function useTimeout<T extends readonly unknown[]>(
-	callback: TimerHandler<T>,
+	callback?: TimerHandler<T>,
 	options?: StateTimerOptions<T>,
 ): StateTimerReturnType
 
@@ -85,7 +85,7 @@ export function useTimeout<T extends readonly unknown[]>(
  * @returns An object with timer utilities. See {@link TimerReturnType} and {@link StateTimerReturnType} for more info.
  */
 export function useTimeout<T extends readonly unknown[]>(
-	callback: TimerHandler<T>,
+	callback?: TimerHandler<T>,
 	options	: TimerOptions<T> | StateTimerOptions<T> = {},
 ): TimerReturnType | StateTimerReturnType
 {
@@ -122,17 +122,17 @@ export function useTimeout<T extends readonly unknown[]>(
 
 		if ( runOnStart ) {
 			if ( args ) {
-				callback( ...args )
+				callback?.( ...args )
 			} else {
-				callback()
+				callback?.()
 			}
 		}
 		
 		timerRef.current = setTimeout( () => {
 			timerRef.current = undefined
 			if ( updateState ) setIsActive( false )
-			if ( args ) return callback( ...args )
-			callback()
+			if ( args ) return callback?.( ...args )
+			callback?.()
 		}, delay )
 
 		if ( ! wasActive && updateState ) setIsActive( true )

@@ -104,6 +104,26 @@ describe( 'useTimeout', () => {
 
 	} )
 
+	
+	it( 'handles timeout with no custom callback when updateState is set to true', () => {
+
+		const delay = 1000
+		const { result } = renderHook( () => (
+			useTimeout( undefined, { delay, updateState: true } )
+		) )
+
+		expect( result.current.isActive )
+			.toBe( true )
+		
+		act( () => {
+			jest.advanceTimersByTime( delay )
+		} )
+
+		expect( result.current.isActive )
+			.toBe( false )
+
+	} )
+
 
 	it( 'allows to disable autoplay', () => {
 
