@@ -6,6 +6,45 @@ import { useEventListener } from '@/browser-api/useEventListener'
 
 describe( 'useEventListener', () => {
 
+	it( 'doesn\'t attach listener to the given target if `.addEventListener()` is not defined', () => {
+		
+		const mockListener	= jest.fn()
+		const element		= document.createElement( 'button' )
+
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		;( element as any ).addEventListener = undefined
+		
+		renderHook( () => (
+			useEventListener( 'click', {
+				target	: element,
+				listener: mockListener,
+			} )
+		) )
+
+		fireEvent( element, new Event( 'click' ) )
+		expect( mockListener ).not.toHaveBeenCalled()
+
+	} )
+
+
+	it( 'clean up event listeners on unmount', () => {
+
+		const mockListener = jest.fn()
+
+		const { unmount } = renderHook( () => (
+			useEventListener( 'scroll', {
+				listener: mockListener,
+			} )
+		) )
+
+		fireEvent( window, new Event( 'scroll' ) )
+		unmount()
+		fireEvent( window, new Event( 'scroll' ) )
+
+		expect( mockListener ).toHaveBeenCalledTimes( 1 )
+
+	} )
+
 
 	describe( 'Lifecycle', () => {
 
@@ -51,8 +90,6 @@ describe( 'useEventListener', () => {
 	} )
 
 
-
-
 	describe( 'Window', () => {
 
 		it( 'attaches a window event listener', () => {
@@ -81,7 +118,7 @@ describe( 'useEventListener', () => {
 	
 			renderHook( () => (
 				useEventListener( 'visibilitychange', {
-					target		: typeof document !== 'undefined' ? document : null,
+					target		: document,
 					listener	: mockListener,
 				} )
 			) )
@@ -107,6 +144,28 @@ describe( 'useEventListener', () => {
 			fireEvent( document, new Event( 'visibilitychange' ) )
 			expect( mockListener ).toHaveBeenCalledTimes( 1 )
 	
+		} )
+
+	} )
+
+
+	describe( 'EventTarget', () => {
+
+		it( 'supports any EventTarget', () => {
+
+			const mockListener	= jest.fn()
+			const target		= new EventTarget()
+
+			renderHook( () => (
+				useEventListener( 'click', {
+					target,
+					listener: mockListener,
+				} )
+			) )
+
+			target.dispatchEvent( new Event( 'click' ) )
+			expect( mockListener ).toHaveBeenCalledTimes( 1 )
+			
 		} )
 
 	} )
@@ -282,46 +341,6 @@ describe( 'useEventListener', () => {
 			expect( mockListener ).toHaveBeenNthCalledWith( 2, clickEvent )
 
 		} )
-
-	} )
-
-
-	it( 'doesn\'t attach listener to the given target if `.addEventListener()` is not defined', () => {
-		
-		const mockListener	= jest.fn()
-		const element		= document.createElement( 'button' )
-
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		;( element as any ).addEventListener = undefined
-		
-		renderHook( () => (
-			useEventListener( 'click', {
-				target	: element,
-				listener: mockListener,
-			} )
-		) )
-
-		fireEvent( element, new Event( 'click' ) )
-		expect( mockListener ).not.toHaveBeenCalled()
-
-	} )
-
-
-	it( 'clean up event listeners on unmount', () => {
-
-		const mockListener = jest.fn()
-
-		const { unmount } = renderHook( () => (
-			useEventListener( 'scroll', {
-				listener: mockListener,
-			} )
-		) )
-
-		fireEvent( window, new Event( 'scroll' ) )
-		unmount()
-		fireEvent( window, new Event( 'scroll' ) )
-
-		expect( mockListener ).toHaveBeenCalledTimes( 1 )
 
 	} )
 
