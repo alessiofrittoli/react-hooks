@@ -131,6 +131,16 @@ export default config;
 
 #### Updates in the latest release 🎉
 
+- Improved `useConnection` hook. It now returns
+  [`NetworkInformation`](https://github.com/alessiofrittoli/web-utils?tab=readme-ov-file#network-information) when available.
+  See [API Reference](#useconnection) for more info.
+- Improved `useEventListener` hook types. It now supports `EventTarget` as listener targets.
+  See [API Reference](#useeventlistener) for more info.
+
+---
+
+Old updates
+
 - Added `useDocumentVisibility`. See [API Reference](#usedocumentvisibility) for more info.
 - Added `useWakeLock`. See [API Reference](#usewakelock) for more info.
 - Added `useDeferCallback`. See [API Reference](#usedefercallback) for more info.
