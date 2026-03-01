@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { getMediaMatches } from '@alessiofrittoli/web-utils/browser-api'
+import { getMediaMatches } from '@alessiofrittoli/web-utils'
 
 export type OnChangeHandler = ( matches: boolean ) => void
 

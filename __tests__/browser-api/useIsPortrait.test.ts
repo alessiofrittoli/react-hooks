@@ -1,5 +1,5 @@
 import { renderHook } from '@testing-library/react'
-import { portraitMediaQuery } from '@alessiofrittoli/web-utils/device'
+import { portraitMediaQuery } from '@alessiofrittoli/web-utils'
 
 import { useMediaQuery } from '@/browser-api/useMediaQuery'
 import { useIsPortrait } from '@/browser-api/useIsPortrait'
