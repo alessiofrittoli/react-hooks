@@ -1,53 +1,39 @@
 import { useCallback, useState } from 'react'
 import { useEventListener } from '@/browser-api'
+import { getConnection, type Connection } from '@alessiofrittoli/web-utils'
 
-export type Connection = 'online' | 'offline'
 
-export const getState = ( online: boolean ) => online ? 'online' : 'offline'
-
-export interface UseConnectionReturnType
-{
-	/**
-	 * Indicates the connections status.
-	 * 
-	 */
-	connection: Connection
-	/**
-	 * Indicates whether the current device is online.
-	 * 
-	 */
-	isOnline: boolean
-	/**
-	 * Indicates whether the current device is offline.
-	 * 
-	 */
-	isOffline: boolean
-}
+const initialState: Connection = { onLine: true }
+const connectivityEvents: ( keyof WindowEventMap )[] = [ 'online', 'offline' ]
 
 
 /**
  * Get states about Internet Connection.
  * 
- * @returns An object defining Internet Connection status. See {@link UseConnectionReturnType} for more info.
+ * @returns An object defining network status and `NetworkInformation`. See {@link Connection} for more info.
  */
-export const useConnection = (): UseConnectionReturnType => {
+export const useConnection = () => {
 
-	const [ connection, setConnection ] = useState<Connection>( getState( true ) )	
-	
-	const isOnline	= connection === 'online'
-	const isOffline	= connection === 'offline'
+	const [ connection, setConnection ] = useState<Connection>( initialState )	
 
-	const updateStateHandler = useCallback( () => (
-		setConnection( getState( navigator.onLine ) )
-	), [] )
 
-	useEventListener( [ 'online', 'offline' ], {
+	const updateStateHandler = useCallback( () => {
+		setConnection( getConnection() )
+	}, [] )
+
+
+	useEventListener( 'change', {
+		target	: connection.network,
 		listener: updateStateHandler,
 		onLoad	: updateStateHandler,
 	} )
 
-	return {
-		connection, isOnline, isOffline
-	}
+
+	useEventListener( connectivityEvents, {
+		listener: updateStateHandler,
+	} )
+
+
+	return connection
 	
 }
