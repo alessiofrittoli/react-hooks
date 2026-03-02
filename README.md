@@ -58,6 +58,7 @@
     - [`useIsPortrait`](#useisportrait)
     - [`useIsTouchDevice`](#useistouchdevice)
     - [`useMediaQuery`](#usemediaquery)
+    - [`usePreventContextMenu`](#usepreventcontextmenu)
     - [`useDocumentVisibility`](#usedocumentvisibility)
     - [`useWakeLock`](#usewakelock)
   - [DOM API](#dom-api)
@@ -131,19 +132,20 @@ export default config;
 
 #### Updates in the latest release 🎉
 
-- Improved `useConnection` hook. It now returns
-  [`NetworkInformation`](https://github.com/alessiofrittoli/web-utils?tab=readme-ov-file#network-information) when available.
-  See [API Reference](#useconnection) for more info.
-- Improved `useEventListener` hook types. It now supports `EventTarget` as listener targets.
-  See [API Reference](#useeventlistener) for more info.
+- Added `usePreventContextMenu` hook. See [API Reference](#usepreventcontextmenu) for more info.
 
 ---
 
 Old updates
 
-- Added `useDocumentVisibility`. See [API Reference](#usedocumentvisibility) for more info.
-- Added `useWakeLock`. See [API Reference](#usewakelock) for more info.
-- Added `useDeferCallback`. See [API Reference](#usedefercallback) for more info.
+- Improved `useConnection` hook. It now returns
+  [`NetworkInformation`](https://github.com/alessiofrittoli/web-utils?tab=readme-ov-file#network-information) when available.
+  See [API Reference](#useconnection) for more info.
+- Improved `useEventListener` hook types. It now supports `EventTarget` as listener targets.
+  See [API Reference](#useeventlistener) for more info.
+- Added `useDocumentVisibility` hook. See [API Reference](#usedocumentvisibility) for more info.
+- Added `useWakeLock` hook. See [API Reference](#usewakelock) for more info.
+- Added `useDeferCallback` hook. See [API Reference](#usedefercallback) for more info.
 
 ---
 
@@ -578,17 +580,17 @@ Attach a new Event listener to the `Window`, `Document`, `MediaQueryList` or an 
 
 <summary style="cursor:pointer">Custom events</summary>
 
-| Parameter           | Type                                                                        | Description                                                                                                                                                     |
-| ------------------- | --------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `type`              | `K\|K[]`                                                                    | The custom event name or an array of event names.                                                                                                               |
-|                     |                                                                             | ⚠️ Please, make sure to memoize the event names array with `useMemo`                                                                                            |
-|                     |                                                                             | or declare that array outside your Component/hook in order to avoid infinite loops when a React state changes.                                                  |
-| `options`           | `CustomEventListenerOptions<T, K>`                                          | An object defining init options.                                                                                                                                |
-| `options.target`    | `Document\|HTMLElement\|null\|React.RefObject<Document\|HTMLElement\|null>` | (Optional) The target where the listener get attached to. If not set, the listener will get attached to the `Window` object.                                    |
-| `options.listener`  | `( event: T[ K ] ) => void`                                                 | The Event listener.                                                                                                                                             |
-| `options.onLoad`    | `() => void`                                                                | A custom callback executed before event listener get attached.                                                                                                  |
-| `options.onCleanUp` | `() => void`                                                                | A custom callback executed after event listener get removed.                                                                                                    |
-| `options.options`   | `ListenerOptions`                                                           | Specifies characteristics about the event listener. See [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#options). |
+| Parameter           | Type                                                                                     | Description                                                                                                                                                     |
+| ------------------- | ---------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `type`              | `K\|K[]`                                                                                 | The custom event name or an array of event names.                                                                                                               |
+|                     |                                                                                          | ⚠️ Please, make sure to memoize the event names array with `useMemo`                                                                                            |
+|                     |                                                                                          | or declare that array outside your Component/hook in order to avoid infinite loops when a React state changes.                                                  |
+| `options`           | `CustomEventListenerOptions<T, K>`                                                       | An object defining init options.                                                                                                                                |
+| `options.target`    | `Document\|EventTarget\|HTMLElement\|null\|React.RefObject<Document\|HTMLElement\|null>` | (Optional) The target where the listener get attached to. If not set, the listener will get attached to the `Window` object.                                    |
+| `options.listener`  | `( event: T[ K ] ) => void`                                                              | The Event listener.                                                                                                                                             |
+| `options.onLoad`    | `() => void`                                                                             | A custom callback executed before event listener get attached.                                                                                                  |
+| `options.onCleanUp` | `() => void`                                                                             | A custom callback executed after event listener get removed.                                                                                                    |
+| `options.options`   | `ListenerOptions`                                                                        | Specifies characteristics about the event listener. See [MDN Reference](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener#options). |
 
 </details>
 
@@ -893,6 +895,40 @@ useMediaQuery("(prefers-color-scheme: dark)", {
     console.log("is dark OS?", matches);
   },
 });
+```
+
+</details>
+
+---
+
+##### `usePreventContextMenu`
+
+Prevents the context menu from appearing on a specified target element.
+
+<details>
+
+<summary style="cursor:pointer">Parameters</summary>
+
+| Parameter | Type                                                        | Default  | Description                                                                           |
+| --------- | ----------------------------------------------------------- | -------- | ------------------------------------------------------------------------------------- |
+| `target`  | `EventListenerTarget\|React.RefObject<EventListenerTarget>` | `window` | The target element or a `React.RefObject` where the context menu should be prevented. |
+|           |                                                             |          | If not provided, the listener will be attached to the top `window`.                   |
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Examples</summary>
+
+```tsx
+// Prevent context menu on the entire top window.
+usePreventContextMenu();
+
+// Prevent context menu on a specific target.
+const ref = useRef<HTMLDivElement>(null);
+usePreventContextMenu(ref);
 ```
 
 </details>
