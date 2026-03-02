@@ -17,7 +17,7 @@ type CommonEventHandler<
 
 
 export type EventListenerTarget = (
-	| Document | HTMLElement | EventTarget | null | undefined
+	| Window | Document | HTMLElement | EventTarget | null | undefined
 )
 
 
@@ -159,6 +159,11 @@ export interface WindowListenerOptions<
 > extends CommonListenerOptions
 {
 	/**
+	 * Optionally defines a `Window` context.
+	 * 
+	 */
+	target?: Window
+	/**
 	 * The Window Event listener.
 	 * 
 	 * @param event The event object that implements the [`Event`](https://developer.mozilla.org/en-US/docs/Web/API/Event) interface.
@@ -234,8 +239,9 @@ export interface MediaQueryListenerOptions extends CommonListenerOptions
 
 
 export interface CustomEventListenerOptions<
-	T extends Record<string, Event>,
+	T extends Record<string, U>,
 	K extends keyof T = keyof T,
+	U extends Event = Event,
 > extends CommonListenerOptions
 {
 	/**
@@ -523,8 +529,9 @@ export function useEventListener(
  *```
  */
 export function useEventListener<
-	T extends Record<string, Event>,
+	T extends Record<string, U>,
 	K extends keyof T = keyof T,
+	U extends Event = Event,
 >(
 	type	: K | K[],
 	options	: CustomEventListenerOptions<T, K>
