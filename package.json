@@ -96,8 +96,8 @@
 	"devDependencies": {
 		"@alessiofrittoli/event-emitter": "^1.6.0",
 		"@alessiofrittoli/node-scripts": "^3.3.0",
-		"@eslint/compat": "^2.0.2",
-		"@eslint/eslintrc": "^3.3.4",
+		"@eslint/compat": "^2.0.3",
+		"@eslint/eslintrc": "^3.3.5",
 		"@eslint/js": "^10.0.1",
 		"@jest/globals": "^30.2.0",
 		"@testing-library/dom": "^10.4.1",
@@ -105,13 +105,13 @@
 		"@testing-library/react": "^16.3.2",
 		"@testing-library/user-event": "^14.6.1",
 		"@types/jest": "^30.0.0",
-		"@types/node": "^25.3.3",
+		"@types/node": "^25.3.5",
 		"@types/react": "^19.2.14",
 		"@types/react-dom": "^19.2.3",
 		"concurrently": "^9.2.1",
 		"cross-env": "^10.1.0",
 		"dotenv": "^17.3.1",
-		"eslint": "^10.0.2",
+		"eslint": "^10.0.3",
 		"eslint-plugin-react": "^7.37.5",
 		"eslint-plugin-react-hooks": "^7.0.1",
 		"globals": "^17.4.0",
@@ -129,6 +129,6 @@
 	"dependencies": {
 		"@alessiofrittoli/math-utils": "^2.0.0",
 		"@alessiofrittoli/type-utils": "^1.9.0",
-		"@alessiofrittoli/web-utils": "^2.1.0"
+		"@alessiofrittoli/web-utils": "^2.2.0"
 	}
 }
