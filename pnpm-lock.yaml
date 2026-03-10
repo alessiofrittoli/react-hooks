@@ -15,8 +15,8 @@ importers:
         specifier: ^1.9.0
         version: 1.9.0
       '@alessiofrittoli/web-utils':
-        specifier: ^2.2.0
-        version: 2.2.0
+        specifier: ^2.3.0
+        version: 2.3.0
     devDependencies:
       '@alessiofrittoli/event-emitter':
         specifier: ^1.6.0
@@ -162,8 +162,8 @@ packages:
   '@alessiofrittoli/web-utils@1.20.0':
     resolution: {integrity: sha512-433XOudif9a9TfU7EZr+GvedeUoVFk1CnuMKUL00Gdw/hJZLiyEjzO90oVHn+KVwR5x+Ig4/9JWBVS69VCfvHA==}
 
-  '@alessiofrittoli/web-utils@2.2.0':
-    resolution: {integrity: sha512-0+/EIfEPJw5yz8n1e9RyPsThCF+eDYu0+tFg0Nbdk4h3nz8YytNyJnzjdZlCOldgEIaaeyhIfJvtSjQOKAD4+w==}
+  '@alessiofrittoli/web-utils@2.3.0':
+    resolution: {integrity: sha512-j5QOHYMn6XRWDPlcet0BEEs2859qTGKXW3GEALJDHa1SfR2YHeCA9iZoR4GbwTikXzctWdHq5zAXRqUqrNsilg==}
 
   '@ampproject/remapping@2.3.0':
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
@@ -3346,7 +3346,7 @@ snapshots:
       '@alessiofrittoli/type-utils': 1.9.0
       '@alessiofrittoli/url-utils': 3.7.1
 
-  '@alessiofrittoli/web-utils@2.2.0':
+  '@alessiofrittoli/web-utils@2.3.0':
     dependencies:
       '@alessiofrittoli/date-utils': 4.1.0
       '@alessiofrittoli/exception': 3.5.0

@@ -44,6 +44,26 @@
 				"default": "./dist/index.js"
 			}
 		},
+		"./queue": {
+			"import": {
+				"types": "./dist/misc/queue/index.d.mts",
+				"default": "./dist/misc/queue/index.mjs"
+			},
+			"require": {
+				"types": "./dist/misc/queue/index.d.ts",
+				"default": "./dist/misc/queue/index.js"
+			}
+		},
+		"./queue/utils": {
+			"import": {
+				"types": "./dist/misc/queue/utils.d.mts",
+				"default": "./dist/misc/queue/utils.mjs"
+			},
+			"require": {
+				"types": "./dist/misc/queue/utils.d.ts",
+				"default": "./dist/misc/queue/utils.js"
+			}
+		},
 		"./eslint": {
 			"import": {
 				"types": "./dist/eslint.d.mts",
@@ -129,6 +149,6 @@
 	"dependencies": {
 		"@alessiofrittoli/math-utils": "^2.0.0",
 		"@alessiofrittoli/type-utils": "^1.9.0",
-		"@alessiofrittoli/web-utils": "^2.2.0"
+		"@alessiofrittoli/web-utils": "^2.3.0"
 	}
 }
