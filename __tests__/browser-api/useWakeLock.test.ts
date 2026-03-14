@@ -212,17 +212,19 @@ describe( 'useWakeLock', () => {
 
 	it( 'releases WakeLock when Document is no longer visible', async () => {
 
-		renderHook( () => useWakeLock() )
+		const { result } = renderHook( () => useWakeLock() )
 
-		// Get the onVisibilityChange handler passed to useDocumentVisibility
-		const { onVisibilityChange } = useDocumentVisibility.mock.calls[ 0 ][ 0 ]
+		await waitFor( () => {
+			expect( result.current.enabled ).toBe( true )
+		} )
+
+		const { onVisibilityChange } = useDocumentVisibility.mock.calls.at( -1 )[ 0 ]
 
 		await act( async () => {
 			await onVisibilityChange( false )
 		} )
 		
-		// ⚠️ for some odd reason this check is failing o.O
-		// expect( mockRelease ).toHaveBeenCalled()
+		expect( mockRelease ).toHaveBeenCalledTimes( 1 )
 
 	} )
 
@@ -258,5 +260,27 @@ describe( 'useWakeLock', () => {
 		expect( result.current.enabled ).toBe( true )
 
 	} )
-	
+
+
+	it( 'does nothing when Document is visible and WakeLock is already enabled', async () => {
+
+		const { result } = renderHook( () => useWakeLock() )
+
+		await waitFor( () => {
+			expect( result.current.enabled ).toBe( true )
+		} )
+
+		// const { onVisibilityChange } =
+		// 	useDocumentVisibility.mock.calls[ useDocumentVisibility.mock.calls.length - 1 ][ 0 ]
+		const { onVisibilityChange } = useDocumentVisibility.mock.calls.at( -1 )[ 0 ]
+
+		await act( async () => {
+			await onVisibilityChange( true )
+		} )
+
+		expect( mockRequest ).toHaveBeenCalledTimes( 1 )
+		expect( mockRelease ).not.toHaveBeenCalled()
+
+	} )
+
 } )
