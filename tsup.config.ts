@@ -3,7 +3,12 @@ import { defineConfig } from 'tsup'
 const isProduction = process.env.NODE_ENV === 'production'
 
 export default defineConfig( {
-	entry		: [ 'src/index.ts', 'src/eslint.ts' ],
+	entry		: [
+		'src/index.ts',
+		'src/misc/queue/index.ts',
+		'src/misc/queue/utils.ts',
+		'src/eslint.ts',
+	],
 	format		: [ 'cjs', 'esm' ],
 	dts			: true,
 	splitting	: true,

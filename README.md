@@ -74,6 +74,11 @@
     - [`useIsFirstRender`](#useisfirstrender)
     - [`usePagination`](#usepagination)
     - [`useSelection`](#useselection)
+    - [Queue](#queue)
+      - [Queue Types](#queue-types)
+      - [Queue Utils](#queue-utils)
+      - [`useShuffle`](#useshuffle)
+      - [`useQueue`](#usequeue)
   - [Timers](#timers)
     - [`useDebounce`](#usedebounce)
     - [`useInterval`](#useinterval)
@@ -2089,6 +2094,506 @@ const MyComponent: React.FC = () => {
 </details>
 
 ---
+
+##### Queue
+
+###### Queue Types
+
+###### `QueueItem<T>`
+
+Queue item with an optional UUID.
+
+<details>
+
+<summary style="cursor:pointer">Type parameters</summary>
+
+| Parameter | Type                        | Description                                     |
+| --------- | --------------------------- | ----------------------------------------------- |
+| `T`       | `T extends object = object` | The type of the given item, must extend object. |
+
+</details>
+
+---
+
+###### `QueueItems<T>`
+
+An array of `QueueItem<T>`.
+
+<details>
+
+<summary style="cursor:pointer">Type parameters</summary>
+
+| Parameter | Type                        | Description                                     |
+| --------- | --------------------------- | ----------------------------------------------- |
+| `T`       | `T extends object = object` | The type of the given item, must extend object. |
+
+</details>
+
+---
+
+###### `QueuedItem<T>`
+
+Queue item with a required UUID.
+
+<details>
+
+<summary style="cursor:pointer">Type parameters</summary>
+
+| Parameter | Type                        | Description                                     |
+| --------- | --------------------------- | ----------------------------------------------- |
+| `T`       | `T extends object = object` | The type of the given item, must extend object. |
+
+</details>
+
+---
+
+###### `QueuedItems<T>`
+
+An array of `QueuedItem<T>`.
+
+<details>
+
+<summary style="cursor:pointer">Type parameters</summary>
+
+| Parameter | Type                        | Description                                     |
+| --------- | --------------------------- | ----------------------------------------------- |
+| `T`       | `T extends object = object` | The type of the given item, must extend object. |
+
+</details>
+
+---
+
+###### `OptionalQueuedItem<T>`
+
+Item shape accepted when enqueuing, with an optional UUID.
+
+<details>
+
+<summary style="cursor:pointer">Type parameters</summary>
+
+| Parameter | Type                        | Description                                     |
+| --------- | --------------------------- | ----------------------------------------------- |
+| `T`       | `T extends object = object` | The type of the given item, must extend object. |
+
+</details>
+
+---
+
+###### `OptionalQueuedItems<T>`
+
+List of items accepted when enqueuing.
+
+<details>
+
+<summary style="cursor:pointer">Type parameters</summary>
+
+| Parameter | Type                        | Description                                     |
+| --------- | --------------------------- | ----------------------------------------------- |
+| `T`       | `T extends object = object` | The type of the given item, must extend object. |
+
+</details>
+
+---
+
+###### `Queue<T>`
+
+Defines the queue interface.
+
+<details>
+
+<summary style="cursor:pointer">Type parameters</summary>
+
+| Parameter | Type                        | Description                                                 |
+| --------- | --------------------------- | ----------------------------------------------------------- |
+| `T`       | `T extends object = object` | The type of a single item in the queue, must extend object. |
+
+</details>
+
+---
+
+###### `QueuedItemType<T>`
+
+Extracts the queued item type from a queue.
+
+<details>
+
+<summary style="cursor:pointer">Type parameters</summary>
+
+| Parameter | Type                      | Description                                 |
+| --------- | ------------------------- | ------------------------------------------- |
+| `T`       | `T extends Queue = Queue` | The type of the queue, must extend `Queue`. |
+
+</details>
+
+---
+
+###### `QueuedItemsType<T>`
+
+Extracts the queued items type from a queue.
+
+<details>
+
+<summary style="cursor:pointer">Type parameters</summary>
+
+| Parameter | Type                      | Description                                 |
+| --------- | ------------------------- | ------------------------------------------- |
+| `T`       | `T extends Queue = Queue` | The type of the queue, must extend `Queue`. |
+
+</details>
+
+---
+
+###### `NewQueue<T>`
+
+Queue shape used when creating a new queue with optional item UUIDs.
+
+<details>
+
+<summary style="cursor:pointer">Type parameters</summary>
+
+| Parameter | Type                      | Description                                 |
+| --------- | ------------------------- | ------------------------------------------- |
+| `T`       | `T extends Queue = Queue` | The type of the queue, must extend `Queue`. |
+
+</details>
+
+---
+
+###### Queue Utils
+
+###### `addItemUUID`
+
+Adds a UUID to the given item.
+
+<details>
+
+<summary style="cursor:pointer">Type parameters</summary>
+
+| Parameter | Type                        | Description                                     |
+| --------- | --------------------------- | ----------------------------------------------- |
+| `T`       | `T extends object = object` | The type of the given item, must extend object. |
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Parameters</summary>
+
+| Parameter | Type                          | Description                              |
+| --------- | ----------------------------- | ---------------------------------------- |
+| `item`    | `QueueItem<T>\|QueuedItem<T>` | The item to add a UUID to.               |
+|           |                               | - See [`QueueItem`](#queueitemt) type.   |
+|           |                               | - See [`QueuedItem`](#queueditemt) type. |
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Returns</summary>
+
+Type: `QueuedItem<T>`
+
+A new `item` with the same properties as the input `item` plus a UUID.
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Examples</summary>
+
+```ts
+import { addItemUUID } from "@alessiofrittoli/react-hooks/queue";
+
+const item = { foo: "bar" };
+const newItem = addItemUUID(item);
+// Returns: { foo: 'bar', uuid: 'XXXXXXXX-XXXX-4XXX-YXXX-XXXXXXXXXXXX' }
+```
+
+</details>
+
+---
+
+###### `addItemsUUID`
+
+Adds a UUID to one or more items.
+
+- Applies same API of [`addItemUUID`](#additemuuid) where `items` could be a single or an array of items.
+
+<details>
+
+<summary style="cursor:pointer">Examples</summary>
+
+```ts
+import { addItemsUUID } from "@alessiofrittoli/react-hooks/queue";
+
+const item = { foo: "bar" };
+const newItem = addItemsUUID(item);
+// Returns: [ { foo: 'bar', uuid: 'XXXXXXXX-XXXX-4XXX-YXXX-XXXXXXXXXXXX' } ]
+
+const items = [{ foo: "bar" }, { baz: "qux" }];
+const newItems = addItemsUUID(items);
+// Returns: [
+// { foo: 'bar', uuid: 'XXXXXXXX-XXXX-4XXX-YXXX-XXXXXXXXXXXX' },
+// { baz: 'qux', uuid: 'XXXXXXXX-XXXX-4XXX-YXXX-XXXXXXXXXXXX' },
+// ]
+```
+
+</details>
+
+---
+
+###### `maybeAddItemUUID`
+
+Adds a UUID to the given item only when it does not already define one.
+
+- Applies same API of [`addItemUUID`](#additemuuid).
+
+<details>
+
+<summary style="cursor:pointer">Examples</summary>
+
+```ts
+import { maybeAddItemUUID } from "@alessiofrittoli/react-hooks/queue";
+
+const item = { foo: "bar" };
+const newItem = maybeAddItemUUID(item);
+// Returns: [ { foo: 'bar', uuid: 'XXXXXXXX-XXXX-4XXX-YXXX-XXXXXXXXXXXX' } ]
+
+const item2 = { baz: "qux", uuid: "658ebade-ce6c-4bf3-a11e-e2bebb3a1f9c" };
+const newItem2 = maybeAddItemUUID(item);
+// Returns: [ { baz: 'qux', uuid: '658ebade-ce6c-4bf3-a11e-e2bebb3a1f9c' } ]
+```
+
+</details>
+
+---
+
+###### `maybeAddItemsUUID`
+
+Adds UUIDs to one or more items, preserving existing UUIDs when present.
+
+- Applies same API of [`maybeAddItemUUID`](#maybeadditemuuid) where `items` could be a single or an array of items.
+
+<details>
+
+<summary style="cursor:pointer">Examples</summary>
+
+```ts
+import { maybeAddItemsUUID } from "@alessiofrittoli/react-hooks/queue";
+
+const item = { foo: "bar" };
+const newItem = maybeAddItemsUUID(item);
+// Returns: [ { foo: 'bar', uuid: 'XXXXXXXX-XXXX-4XXX-YXXX-XXXXXXXXXXXX' } ]
+
+const items = [
+  { foo: "bar" },
+  { baz: "qux", uuid: "658ebade-ce6c-4bf3-a11e-e2bebb3a1f9c" },
+];
+const newItems = maybeAddItemsUUID(items);
+// Returns: [
+// { foo: 'bar', uuid: 'XXXXXXXX-XXXX-4XXX-YXXX-XXXXXXXXXXXX' },
+// { baz: 'qux', uuid: '658ebade-ce6c-4bf3-a11e-e2bebb3a1f9c' },
+// ]
+```
+
+</details>
+
+---
+
+###### `findIndexByUUID`
+
+Finds the index of the item matching the given UUID.
+
+<details>
+
+<summary style="cursor:pointer">Parameters</summary>
+
+| Parameter | Type          | Description                   |
+| --------- | ------------- | ----------------------------- |
+| `items`   | `QueuedItems` | The queue items to search in. |
+| `uuid`    | `UUID`        | The UUID to match.            |
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Returns</summary>
+
+Type: `number`
+
+The matching index, or `-1` when the UUID is missing or not found.
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Examples</summary>
+
+```ts
+import { findIndexByUUID } from "@alessiofrittoli/react-hooks/queue";
+
+const items = [
+  { uuid: "x" },
+  { uuid: "y" },
+  { uuid: "658ebade-ce6c-4bf3-a11e-e2bebb3a1f9c" },
+];
+
+findIndexByUUID(items, "658ebade-ce6c-4bf3-a11e-e2bebb3a1f9c");
+// Returns: 2
+```
+
+</details>
+
+---
+
+###### `useShuffle`
+
+Handle shuffle functionality for queues.
+
+This hook manages the shuffle state and provides methods to shuffle, unshuffle, and toggle shuffle for a queue. When shuffling, it preserves the order of items up to the current cursor position and only shuffles upcoming items.
+
+<details>
+
+<summary style="cursor:pointer">Returns</summary>
+
+Type: `UseShuffle`
+
+| Property        | Type                                            | Description                                     |
+| --------------- | ----------------------------------------------- | ----------------------------------------------- |
+| `enabled`       | `boolean`                                       | Indicates whether shuffle is currently enabled. |
+| `shuffle`       | `<T extends Queue>(queue: T, uuid?: UUID) => T` | Shuffle given queue items.                      |
+| `unshuffle`     | `<T extends Queue>(queue: T, uuid?: UUID) => T` | Un-shuffle given queue items.                   |
+| `toggleShuffle` | `<T extends Queue>(queue: T, uuid?: UUID) => T` | Shuffle/un-shuffle given queue items.           |
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Examples</summary>
+
+```ts
+import { useShuffle } from "@alessiofrittoli/react-hooks/queue";
+
+const { enabled, shuffle, unshuffle, toggleShuffle } = useShuffle();
+
+// Shuffle the queue
+const shuffledQueue = shuffle(currentQueue, currentUUID);
+
+// Restore original order
+const restoredQueue = unshuffle(currentQueue, currentUUID);
+
+// Toggle shuffle state
+const updatedQueue = toggleShuffle(currentQueue, currentUUID);
+```
+
+</details>
+
+---
+
+###### `useQueue`
+
+Manage a queue of items with support for shuffling, repeating, and custom queue items.
+
+<details>
+
+<summary style="cursor:pointer">Type parameters</summary>
+
+| Parameter | Type    | Default | Description            |
+| --------- | ------- | ------- | ---------------------- |
+| `T`       | `Queue` | `Queue` | The type of the queue. |
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Parameters</summary>
+
+| Parameter | Type                 | Default | Description                                    |
+| --------- | -------------------- | ------- | ---------------------------------------------- |
+| `options` | `UseQueueOptions<T>` | -       | Configuration options for the `useQueue` hook. |
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Returns</summary>
+
+Type: `UseQueue<T>`
+
+| Property           | Type                                                                                              | Description                                     |
+| ------------------ | ------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
+| `queue`            | `T`                                                                                               | The main queue.                                 |
+| `current`          | `QueuedItemType<T>`                                                                               | The current active item.                        |
+| `currentId`        | `UUID`                                                                                            | Defines the `current` item cursor ID.           |
+| `customQueue`      | `QueuedItemsType<T>`                                                                              | Array of queued items in the custom queue.      |
+| `effectiveQueue`   | `QueuedItemsType<T>`                                                                              | The complete queue (main queue + custom queue). |
+| `nextFromQueue`    | `QueuedItemsType<T>`                                                                              | Upcoming main queue items.                      |
+| `hasPrevious`      | `boolean`                                                                                         | Whether the current item has a previous item.   |
+| `hasNext`          | `boolean`                                                                                         | Whether the current item has a next item.       |
+| `isShuffleEnabled` | `boolean`                                                                                         | Whether shuffle is currently enabled.           |
+| `shuffle`          | `VoidFunction`                                                                                    | Shuffle main queue.                             |
+| `unshuffle`        | `VoidFunction`                                                                                    | Un-shuffle main queue.                          |
+| `toggleShuffle`    | `VoidFunction`                                                                                    | Toggle shuffle for the main queue.              |
+| `isRepeatEnabled`  | `boolean`                                                                                         | Whether repeat is enabled or not.               |
+| `toggleRepeat`     | `VoidFunction`                                                                                    | Toggle repeat on/off.                           |
+| `jumpTo`           | `JumpToHandler<T>`                                                                                | Jump to a specific item.                        |
+| `getPrevious`      | `() => QueuedItemType<T> \| undefined`                                                            | Get previous item.                              |
+| `previous`         | `() => QueuedItemType<T> \| undefined`                                                            | Jump to previous item.                          |
+| `getNext`          | `() => QueuedItemType<T> \| undefined`                                                            | Get next item.                                  |
+| `next`             | `() => QueuedItemType<T> \| undefined`                                                            | Jump to next item.                              |
+| `setQueue`         | `(queue: NewQueue<T>) => T`                                                                       | Overwrite the main queue.                       |
+| `addToQueue`       | `(item: OptionalQueuedItem<QueuedItemType<T>> \| OptionalQueuedItems<QueuedItemType<T>>) => void` | Add a new item to the custom queue.             |
+| `removeFromQueue`  | `(uuid: UUID) => void`                                                                            | Remove item from the queues.                    |
+| `clearQueue`       | `VoidFunction`                                                                                    | Wipe custom queue.                              |
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Usage</summary>
+
+```tsx
+import { useQueue } from "@alessiofrittoli/react-hooks/queue";
+
+const queue = [{ foo: "bar" }, { foo: "baz" }];
+
+const { next, jumpTo, shuffle, addToQueue } = useQueue({ queue });
+
+// Move to next item
+const nextItem = next();
+
+// Move to next item
+const newItem = jumpTo({ uuid: "XXXXXXXX-XXXX-4XXX-YXXX-XXXXXXXXXXXX" });
+
+// Shuffle the queue
+shuffle();
+
+// Add a custom item
+addToQueue({ foo: "custom" });
+
+// Move to first of a new queue
+const newItem = jumpTo({ queue: { items: [ ... ] } });
+```
+
+</details>
 
 #### Timers
 
