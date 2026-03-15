@@ -53,7 +53,7 @@ export interface UseShuffle
  * Handle shuffle functionality for queues.
  * 
  * This hook manages the shuffle state and provides methods to shuffle, unshuffle, 
- * and toggle shuffle for a queue. When shuffling, it preserves the order 
+ * and toggle shuffle for a queue. When shuffling, it preserves the order
  * of items up to the current cursor position and only shuffles upcoming items.
  * 
  * @returns An object containing state and utilities. See {@link UseShuffle} for more info.

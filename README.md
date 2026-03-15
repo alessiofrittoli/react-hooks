@@ -77,6 +77,8 @@
     - [Queue](#queue)
       - [Queue Types](#queue-types)
       - [Queue Utils](#queue-utils)
+      - [`useShuffle`](#useshuffle)
+      - [`useQueue`](#usequeue)
   - [Timers](#timers)
     - [`useDebounce`](#usedebounce)
     - [`useInterval`](#useinterval)
@@ -2453,6 +2455,145 @@ findIndexByUUID(items, "658ebade-ce6c-4bf3-a11e-e2bebb3a1f9c");
 </details>
 
 ---
+
+###### `useShuffle`
+
+Handle shuffle functionality for queues.
+
+This hook manages the shuffle state and provides methods to shuffle, unshuffle, and toggle shuffle for a queue. When shuffling, it preserves the order of items up to the current cursor position and only shuffles upcoming items.
+
+<details>
+
+<summary style="cursor:pointer">Returns</summary>
+
+Type: `UseShuffle`
+
+| Property        | Type                                            | Description                                     |
+| --------------- | ----------------------------------------------- | ----------------------------------------------- |
+| `enabled`       | `boolean`                                       | Indicates whether shuffle is currently enabled. |
+| `shuffle`       | `<T extends Queue>(queue: T, uuid?: UUID) => T` | Shuffle given queue items.                      |
+| `unshuffle`     | `<T extends Queue>(queue: T, uuid?: UUID) => T` | Un-shuffle given queue items.                   |
+| `toggleShuffle` | `<T extends Queue>(queue: T, uuid?: UUID) => T` | Shuffle/un-shuffle given queue items.           |
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Examples</summary>
+
+```ts
+import { useShuffle } from "@alessiofrittoli/react-hooks/queue";
+
+const { enabled, shuffle, unshuffle, toggleShuffle } = useShuffle();
+
+// Shuffle the queue
+const shuffledQueue = shuffle(currentQueue, currentUUID);
+
+// Restore original order
+const restoredQueue = unshuffle(currentQueue, currentUUID);
+
+// Toggle shuffle state
+const updatedQueue = toggleShuffle(currentQueue, currentUUID);
+```
+
+</details>
+
+---
+
+###### `useQueue`
+
+Manage a queue of items with support for shuffling, repeating, and custom queue items.
+
+<details>
+
+<summary style="cursor:pointer">Type parameters</summary>
+
+| Parameter | Type    | Default | Description            |
+| --------- | ------- | ------- | ---------------------- |
+| `T`       | `Queue` | `Queue` | The type of the queue. |
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Parameters</summary>
+
+| Parameter | Type                 | Default | Description                                    |
+| --------- | -------------------- | ------- | ---------------------------------------------- |
+| `options` | `UseQueueOptions<T>` | -       | Configuration options for the `useQueue` hook. |
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Returns</summary>
+
+Type: `UseQueue<T>`
+
+| Property           | Type                                                                                              | Description                                     |
+| ------------------ | ------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
+| `queue`            | `T`                                                                                               | The main queue.                                 |
+| `current`          | `QueuedItemType<T>`                                                                               | The current active item.                        |
+| `currentId`        | `UUID`                                                                                            | Defines the `current` item cursor ID.           |
+| `customQueue`      | `QueuedItemsType<T>`                                                                              | Array of queued items in the custom queue.      |
+| `effectiveQueue`   | `QueuedItemsType<T>`                                                                              | The complete queue (main queue + custom queue). |
+| `nextFromQueue`    | `QueuedItemsType<T>`                                                                              | Upcoming main queue items.                      |
+| `hasPrevious`      | `boolean`                                                                                         | Whether the current item has a previous item.   |
+| `hasNext`          | `boolean`                                                                                         | Whether the current item has a next item.       |
+| `isShuffleEnabled` | `boolean`                                                                                         | Whether shuffle is currently enabled.           |
+| `shuffle`          | `VoidFunction`                                                                                    | Shuffle main queue.                             |
+| `unshuffle`        | `VoidFunction`                                                                                    | Un-shuffle main queue.                          |
+| `toggleShuffle`    | `VoidFunction`                                                                                    | Toggle shuffle for the main queue.              |
+| `isRepeatEnabled`  | `boolean`                                                                                         | Whether repeat is enabled or not.               |
+| `toggleRepeat`     | `VoidFunction`                                                                                    | Toggle repeat on/off.                           |
+| `jumpTo`           | `JumpToHandler<T>`                                                                                | Jump to a specific item.                        |
+| `getPrevious`      | `() => QueuedItemType<T> \| undefined`                                                            | Get previous item.                              |
+| `previous`         | `() => QueuedItemType<T> \| undefined`                                                            | Jump to previous item.                          |
+| `getNext`          | `() => QueuedItemType<T> \| undefined`                                                            | Get next item.                                  |
+| `next`             | `() => QueuedItemType<T> \| undefined`                                                            | Jump to next item.                              |
+| `setQueue`         | `(queue: NewQueue<T>) => T`                                                                       | Overwrite the main queue.                       |
+| `addToQueue`       | `(item: OptionalQueuedItem<QueuedItemType<T>> \| OptionalQueuedItems<QueuedItemType<T>>) => void` | Add a new item to the custom queue.             |
+| `removeFromQueue`  | `(uuid: UUID) => void`                                                                            | Remove item from the queues.                    |
+| `clearQueue`       | `VoidFunction`                                                                                    | Wipe custom queue.                              |
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Usage</summary>
+
+```tsx
+import { useQueue } from "@alessiofrittoli/react-hooks/queue";
+
+const queue = [{ foo: "bar" }, { foo: "baz" }];
+
+const { next, jumpTo, shuffle, addToQueue } = useQueue({ queue });
+
+// Move to next item
+const nextItem = next();
+
+// Move to next item
+const newItem = jumpTo({ uuid: "XXXXXXXX-XXXX-4XXX-YXXX-XXXXXXXXXXXX" });
+
+// Shuffle the queue
+shuffle();
+
+// Add a custom item
+addToQueue({ foo: "custom" });
+
+// Move to first of a new queue
+const newItem = jumpTo({ queue: { items: [ ... ] } });
+```
+
+</details>
 
 #### Timers
 
