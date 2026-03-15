@@ -21,6 +21,13 @@ export type QueueItem<T extends object = object> = T & {
 
 
 /**
+ * List of queued items.
+ * 
+ */
+export type QueueItems<T extends object = object> = QueueItem<T>[]
+
+
+/**
  * Queue item with a required UUID.
  * 
  */
@@ -41,7 +48,7 @@ export type QueuedItems<T extends object = object> = QueuedItem<T>[]
 
 
 /**
- * Item shape accepted when enqueuing, with UUID optional.
+ * Item shape accepted when enqueuing, with an optional UUID.
  * 
  */
 export type OptionalQueuedItem<T extends object = object> = Omit<T, 'uuid'> & Pick<QueueItem<Omit<T, 'uuid'>>, 'uuid'>
@@ -52,6 +59,7 @@ export type OptionalQueuedItem<T extends object = object> = Omit<T, 'uuid'> & Pi
  * 
  */
 export type OptionalQueuedItems<T extends object = object> = OptionalQueuedItem<T>[]
+
 
 /**
  * Defines the queue.
@@ -71,14 +79,14 @@ export interface Queue<T extends object = object>
  * Extracts the queued items type from a queue.
  * 
  */
-export type QueuedItemsType<Q extends Queue = Queue> = Q[ 'items' ]
+export type QueuedItemsType<T extends Queue = Queue> = T[ 'items' ]
 
 
 /**
  * Extracts the queued item type from a queue.
  * 
  */
-export type QueuedItemType<Q extends Queue = Queue> = QueuedItemsType<Q>[ number ]
+export type QueuedItemType<T extends Queue = Queue> = QueuedItemsType<T>[ number ]
 
 
 /**

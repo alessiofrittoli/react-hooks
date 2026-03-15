@@ -74,6 +74,9 @@
     - [`useIsFirstRender`](#useisfirstrender)
     - [`usePagination`](#usepagination)
     - [`useSelection`](#useselection)
+    - [Queue](#queue)
+      - [Queue Types](#queue-types)
+      - [Queue Utils](#queue-utils)
   - [Timers](#timers)
     - [`useDebounce`](#usedebounce)
     - [`useInterval`](#useinterval)
@@ -2084,6 +2087,367 @@ const MyComponent: React.FC = () => {
     </ul>
   );
 };
+```
+
+</details>
+
+---
+
+##### Queue
+
+###### Queue Types
+
+###### `QueueItem<T>`
+
+Queue item with an optional UUID.
+
+<details>
+
+<summary style="cursor:pointer">Type parameters</summary>
+
+| Parameter | Type                        | Description                                     |
+| --------- | --------------------------- | ----------------------------------------------- |
+| `T`       | `T extends object = object` | The type of the given item, must extend object. |
+
+</details>
+
+---
+
+###### `QueueItems<T>`
+
+An array of `QueueItem<T>`.
+
+<details>
+
+<summary style="cursor:pointer">Type parameters</summary>
+
+| Parameter | Type                        | Description                                     |
+| --------- | --------------------------- | ----------------------------------------------- |
+| `T`       | `T extends object = object` | The type of the given item, must extend object. |
+
+</details>
+
+---
+
+###### `QueuedItem<T>`
+
+Queue item with a required UUID.
+
+<details>
+
+<summary style="cursor:pointer">Type parameters</summary>
+
+| Parameter | Type                        | Description                                     |
+| --------- | --------------------------- | ----------------------------------------------- |
+| `T`       | `T extends object = object` | The type of the given item, must extend object. |
+
+</details>
+
+---
+
+###### `QueuedItems<T>`
+
+An array of `QueuedItem<T>`.
+
+<details>
+
+<summary style="cursor:pointer">Type parameters</summary>
+
+| Parameter | Type                        | Description                                     |
+| --------- | --------------------------- | ----------------------------------------------- |
+| `T`       | `T extends object = object` | The type of the given item, must extend object. |
+
+</details>
+
+---
+
+###### `OptionalQueuedItem<T>`
+
+Item shape accepted when enqueuing, with an optional UUID.
+
+<details>
+
+<summary style="cursor:pointer">Type parameters</summary>
+
+| Parameter | Type                        | Description                                     |
+| --------- | --------------------------- | ----------------------------------------------- |
+| `T`       | `T extends object = object` | The type of the given item, must extend object. |
+
+</details>
+
+---
+
+###### `OptionalQueuedItems<T>`
+
+List of items accepted when enqueuing.
+
+<details>
+
+<summary style="cursor:pointer">Type parameters</summary>
+
+| Parameter | Type                        | Description                                     |
+| --------- | --------------------------- | ----------------------------------------------- |
+| `T`       | `T extends object = object` | The type of the given item, must extend object. |
+
+</details>
+
+---
+
+###### `Queue<T>`
+
+Defines the queue interface.
+
+<details>
+
+<summary style="cursor:pointer">Type parameters</summary>
+
+| Parameter | Type                        | Description                                                 |
+| --------- | --------------------------- | ----------------------------------------------------------- |
+| `T`       | `T extends object = object` | The type of a single item in the queue, must extend object. |
+
+</details>
+
+---
+
+###### `QueuedItemType<T>`
+
+Extracts the queued item type from a queue.
+
+<details>
+
+<summary style="cursor:pointer">Type parameters</summary>
+
+| Parameter | Type                      | Description                                 |
+| --------- | ------------------------- | ------------------------------------------- |
+| `T`       | `T extends Queue = Queue` | The type of the queue, must extend `Queue`. |
+
+</details>
+
+---
+
+###### `QueuedItemsType<T>`
+
+Extracts the queued items type from a queue.
+
+<details>
+
+<summary style="cursor:pointer">Type parameters</summary>
+
+| Parameter | Type                      | Description                                 |
+| --------- | ------------------------- | ------------------------------------------- |
+| `T`       | `T extends Queue = Queue` | The type of the queue, must extend `Queue`. |
+
+</details>
+
+---
+
+###### `NewQueue<T>`
+
+Queue shape used when creating a new queue with optional item UUIDs.
+
+<details>
+
+<summary style="cursor:pointer">Type parameters</summary>
+
+| Parameter | Type                      | Description                                 |
+| --------- | ------------------------- | ------------------------------------------- |
+| `T`       | `T extends Queue = Queue` | The type of the queue, must extend `Queue`. |
+
+</details>
+
+---
+
+###### Queue Utils
+
+###### `addItemUUID`
+
+Adds a UUID to the given item.
+
+<details>
+
+<summary style="cursor:pointer">Type parameters</summary>
+
+| Parameter | Type                        | Description                                     |
+| --------- | --------------------------- | ----------------------------------------------- |
+| `T`       | `T extends object = object` | The type of the given item, must extend object. |
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Parameters</summary>
+
+| Parameter | Type                          | Description                              |
+| --------- | ----------------------------- | ---------------------------------------- |
+| `item`    | `QueueItem<T>\|QueuedItem<T>` | The item to add a UUID to.               |
+|           |                               | - See [`QueueItem`](#queueitemt) type.   |
+|           |                               | - See [`QueuedItem`](#queueditemt) type. |
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Returns</summary>
+
+Type: `QueuedItem<T>`
+
+A new `item` with the same properties as the input `item` plus a UUID.
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Examples</summary>
+
+```ts
+import { addItemUUID } from "@alessiofrittoli/react-hooks/queue";
+
+const item = { foo: "bar" };
+const newItem = addItemUUID(item);
+// Returns: { foo: 'bar', uuid: 'XXXXXXXX-XXXX-4XXX-YXXX-XXXXXXXXXXXX' }
+```
+
+</details>
+
+---
+
+###### `addItemsUUID`
+
+Adds a UUID to one or more items.
+
+- Applies same API of [`addItemUUID`](#additemuuid) where `items` could be a single or an array of items.
+
+<details>
+
+<summary style="cursor:pointer">Examples</summary>
+
+```ts
+import { addItemsUUID } from "@alessiofrittoli/react-hooks/queue";
+
+const item = { foo: "bar" };
+const newItem = addItemsUUID(item);
+// Returns: [ { foo: 'bar', uuid: 'XXXXXXXX-XXXX-4XXX-YXXX-XXXXXXXXXXXX' } ]
+
+const items = [{ foo: "bar" }, { baz: "qux" }];
+const newItems = addItemsUUID(items);
+// Returns: [
+// { foo: 'bar', uuid: 'XXXXXXXX-XXXX-4XXX-YXXX-XXXXXXXXXXXX' },
+// { baz: 'qux', uuid: 'XXXXXXXX-XXXX-4XXX-YXXX-XXXXXXXXXXXX' },
+// ]
+```
+
+</details>
+
+---
+
+###### `maybeAddItemUUID`
+
+Adds a UUID to the given item only when it does not already define one.
+
+- Applies same API of [`addItemUUID`](#additemuuid).
+
+<details>
+
+<summary style="cursor:pointer">Examples</summary>
+
+```ts
+import { maybeAddItemUUID } from "@alessiofrittoli/react-hooks/queue";
+
+const item = { foo: "bar" };
+const newItem = maybeAddItemUUID(item);
+// Returns: [ { foo: 'bar', uuid: 'XXXXXXXX-XXXX-4XXX-YXXX-XXXXXXXXXXXX' } ]
+
+const item2 = { baz: "qux", uuid: "658ebade-ce6c-4bf3-a11e-e2bebb3a1f9c" };
+const newItem2 = maybeAddItemUUID(item);
+// Returns: [ { baz: 'qux', uuid: '658ebade-ce6c-4bf3-a11e-e2bebb3a1f9c' } ]
+```
+
+</details>
+
+---
+
+###### `maybeAddItemsUUID`
+
+Adds UUIDs to one or more items, preserving existing UUIDs when present.
+
+- Applies same API of [`maybeAddItemUUID`](#maybeadditemuuid) where `items` could be a single or an array of items.
+
+<details>
+
+<summary style="cursor:pointer">Examples</summary>
+
+```ts
+import { maybeAddItemsUUID } from "@alessiofrittoli/react-hooks/queue";
+
+const item = { foo: "bar" };
+const newItem = maybeAddItemsUUID(item);
+// Returns: [ { foo: 'bar', uuid: 'XXXXXXXX-XXXX-4XXX-YXXX-XXXXXXXXXXXX' } ]
+
+const items = [
+  { foo: "bar" },
+  { baz: "qux", uuid: "658ebade-ce6c-4bf3-a11e-e2bebb3a1f9c" },
+];
+const newItems = maybeAddItemsUUID(items);
+// Returns: [
+// { foo: 'bar', uuid: 'XXXXXXXX-XXXX-4XXX-YXXX-XXXXXXXXXXXX' },
+// { baz: 'qux', uuid: '658ebade-ce6c-4bf3-a11e-e2bebb3a1f9c' },
+// ]
+```
+
+</details>
+
+---
+
+###### `findIndexByUUID`
+
+Finds the index of the item matching the given UUID.
+
+<details>
+
+<summary style="cursor:pointer">Parameters</summary>
+
+| Parameter | Type          | Description                   |
+| --------- | ------------- | ----------------------------- |
+| `items`   | `QueuedItems` | The queue items to search in. |
+| `uuid`    | `UUID`        | The UUID to match.            |
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Returns</summary>
+
+Type: `number`
+
+The matching index, or `-1` when the UUID is missing or not found.
+
+</details>
+
+---
+
+<details>
+
+<summary style="cursor:pointer">Examples</summary>
+
+```ts
+import { findIndexByUUID } from "@alessiofrittoli/react-hooks/queue";
+
+const items = [
+  { uuid: "x" },
+  { uuid: "y" },
+  { uuid: "658ebade-ce6c-4bf3-a11e-e2bebb3a1f9c" },
+];
+
+findIndexByUUID(items, "658ebade-ce6c-4bf3-a11e-e2bebb3a1f9c");
+// Returns: 2
 ```
 
 </details>

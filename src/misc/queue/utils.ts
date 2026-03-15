@@ -1,6 +1,6 @@
 import { randomUUID } from '@alessiofrittoli/math-utils'
 import { findIndexBy } from '@alessiofrittoli/web-utils'
-import type { QueuedItem, QueuedItems, QueueItem, UUID } from '@/misc/queue/types'
+import type { QueuedItem, QueuedItems, QueueItem, QueueItems, UUID } from '@/misc/queue/types'
 
 
 /**
@@ -14,7 +14,7 @@ import type { QueuedItem, QueuedItems, QueueItem, UUID } from '@/misc/queue/type
  * ```ts
  * const item       = { foo: 'bar' }
  * const newItem    = addItemUUID( item )
- * // Returns: { foo: 'bar', uuid: '...' }
+ * // Returns: { foo: 'bar', uuid: 'XXXXXXXX-XXXX-4XXX-YXXX-XXXXXXXXXXXX' }
  * ```
  */
 export const addItemUUID = <T extends object = object>( item: QueueItem<T> | QueuedItem<T> ): QueuedItem<T> => ( {
@@ -38,10 +38,12 @@ export const addItemUUID = <T extends object = object>( item: QueueItem<T> | Que
  * // Returns: [ { foo: 'bar', uuid: '...' } ]
  * ```
  */
-export const addItemsUUID = <T extends object = object>( items: QueueItem<T> | QueuedItem<T> | ( QueueItem<T> | QueuedItem<T> )[] ): QueuedItems<T> => (
+export const addItemsUUID = <T extends object = object>(
+	items: QueueItem<T> | QueuedItem<T> | QueueItems<T> | QueuedItems<T>
+): QueuedItems<T> => (
 	! Array.isArray( items )
 		? addItemsUUID( [ items ] )
-		: items.map( addItemUUID )
+		: items.map( item => addItemUUID( item ) )
 )
 
 
@@ -89,7 +91,7 @@ export const maybeAddItemsUUID = <T extends object = object>( items: QueueItem<T
 /**
  * Finds the index of the item matching the given UUID.
  *
- * @param items	The queue items to search.
+ * @param items	The queue items to search in.
  * @param uuid	The UUID to match.
  * @returns		The matching index, or `-1` when the UUID is missing or not found.
  */
