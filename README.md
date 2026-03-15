@@ -137,12 +137,14 @@ export default config;
 
 #### Updates in the latest release 🎉
 
-- Added `usePreventContextMenu` hook. See [API Reference](#usepreventcontextmenu) for more info.
+- Added `useQueue` hook. See [API Reference](#usequeue) for more info.
+- Added `useShuffle` hook. See [API Reference](#useshuffle) for more info.
 
 ---
 
-Old updates
+Old major updates
 
+- Added `usePreventContextMenu` hook. See [API Reference](#usepreventcontextmenu) for more info.
 - Improved `useConnection` hook. It now returns
   [`NetworkInformation`](https://github.com/alessiofrittoli/web-utils?tab=readme-ov-file#network-information) when available.
   See [API Reference](#useconnection) for more info.
