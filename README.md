@@ -87,7 +87,7 @@
     - [`useTimeout`](#usetimeout)
     - [`useLightTimeout`](#uselighttimeout)
 - [Development](#development)
-  - [Install depenendencies](#install-depenendencies)
+  - [Install dependencies](#install-dependencies)
   - [Build the source code](#build-the-source-code)
   - [ESLint](#eslint)
   - [Jest](#jest)
@@ -3082,7 +3082,7 @@ const MyComponent: React.FC = () => {
 
 ### Development
 
-#### Install depenendencies
+#### Install dependencies
 
 ```bash
 npm install
@@ -3104,7 +3104,7 @@ pnpm build
 
 #### [ESLint](https://www.npmjs.com/package/eslint)
 
-warnings / errors check.
+Run warnings and errors checks.
 
 ```bash
 pnpm lint
