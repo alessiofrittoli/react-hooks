@@ -320,6 +320,28 @@ describe( 'useQueue', () => {
 	} )
 
 
+	it( 'jumps to the first item when uuid is set but it doesn\'t exists in the new queue', () => {
+
+		const queue = makeQueue( [ 'a' ] )
+		const newQueue = makeQueue( [ 'x', 'y' ] )
+		maybeAddItemsUUID.mockReturnValue( newQueue.items )
+
+		const { result } = renderHook( () => useQueue( { queue, current: queue.items.at( 0 ) } ) )
+
+		let returned: Queue[ 'items' ][ number ] | undefined
+
+		act( () => {
+			returned = result.current.jumpTo( { queue: { items: newQueue.items }, uuid: result.current.currentId } )
+		} )
+
+		expect( returned?.uuid ).toBe( 'x' )
+		expect( result.current.currentId ).toBe( 'x' )
+		expect( result.current.queue.items.map( item => item.uuid ) )
+			.toEqual( [ 'x', 'y' ] )
+
+	} )
+
+
 	it( 'previous returns the last item when current is undefined', () => {
 
 		const queue = makeQueue( [ 'a', 'b' ] )
