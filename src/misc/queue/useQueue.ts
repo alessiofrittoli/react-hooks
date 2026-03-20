@@ -448,7 +448,7 @@ export const useQueue = <T extends Queue = Queue>( options: UseQueueOptions<T> )
 		}
 
 		const index	= ! uuid ? 0 : findIndexByUUID( queueItems, uuid )
-		const item	= queueItems[ index === -1 ? 0 : index ]
+		const item	= queueItems[ index === -1 && !! queue ? 0 : index ]
 
 		setCurrent( item )
 		setCursorUUID( item?.uuid )
