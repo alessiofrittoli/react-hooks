@@ -1,62 +1,47 @@
-import { renderHook } from '@testing-library/react'
+import { useIsFirstRender as _useIsFirstRender } from '@/misc/useIsFirstRender'
+import { describe, expect, it, vi, type Mock } from 'vitest'
 import { useUpdateEffect } from '@/misc/useUpdateEffect'
-import { useIsFirstRender } from '@/misc/useIsFirstRender'
+import { renderHook } from '@testing-library/react'
 
-jest.mock( '@/misc/useIsFirstRender' )
+vi.mock('@/misc/useIsFirstRender')
 
-describe( 'useUpdateEffect', () => {
+const useIsFirstRender = _useIsFirstRender as Mock<typeof _useIsFirstRender>
 
-	let mockUseIsFirstRender: jest.Mock
+describe('useUpdateEffect', () => {
+	it('should not call the effect on the first render', () => {
+		useIsFirstRender.mockReturnValue(true)
+		const effect = vi.fn()
 
-	beforeEach( () => {
-		mockUseIsFirstRender = useIsFirstRender as jest.Mock;
-	} )
+		renderHook(() => useUpdateEffect(effect, []))
 
+		expect(effect).not.toHaveBeenCalled()
+	})
 
-	it( 'should not call the effect on the first render', () => {
-		mockUseIsFirstRender.mockReturnValue( true )
-		const effect = jest.fn()
+	it('should call the effect on subsequent renders when dependencies change', () => {
+		useIsFirstRender.mockReturnValueOnce(true).mockReturnValue(false)
 
-		renderHook( () => useUpdateEffect( effect, [] ) )
+		const effect = vi.fn()
 
-		expect( effect ).not.toHaveBeenCalled()
-	} )
+		const { rerender } = renderHook(({ deps }) => useUpdateEffect(effect, deps), {
+			initialProps: { deps: [1] },
+		})
 
+		rerender({ deps: [2] })
 
-	it( 'should call the effect on subsequent renders when dependencies change', () => {
+		expect(effect).toHaveBeenCalledTimes(1)
+	})
 
-		mockUseIsFirstRender
-			.mockReturnValueOnce( true )
-			.mockReturnValue( false )
+	it('should not call the effect if dependencies do not change', () => {
+		useIsFirstRender.mockReturnValueOnce(true).mockReturnValue(false)
 
-		const effect = jest.fn()
+		const effect = vi.fn()
 
-		const { rerender } = renderHook( ( { deps } ) => useUpdateEffect( effect, deps ), {
-			initialProps: { deps: [ 1 ] },
-		} )
+		const { rerender } = renderHook(({ deps }) => useUpdateEffect(effect, deps), {
+			initialProps: { deps: [1] },
+		})
 
-		rerender( { deps: [ 2 ] } )
+		rerender({ deps: [1] })
 
-		expect( effect ).toHaveBeenCalledTimes( 1 )
-
-	} )
-
-
-	it( 'should not call the effect if dependencies do not change', () => {
-
-		mockUseIsFirstRender
-			.mockReturnValueOnce( true )
-			.mockReturnValue( false )
-		
-		const effect = jest.fn()
-
-				const { rerender } = renderHook( ( { deps } ) => useUpdateEffect( effect, deps ), {
-			initialProps: { deps: [ 1 ] },
-		} )
-
-		rerender( { deps: [ 1 ] } )
-
-		expect( effect ).not.toHaveBeenCalled()
-	} )
-
-} )
+		expect(effect).not.toHaveBeenCalled()
+	})
+})

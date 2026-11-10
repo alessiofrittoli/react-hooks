@@ -1,90 +1,76 @@
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
 import { renderHook, act } from '@testing-library/react'
 import { useDebounce } from '@/timers/useDebounce'
 
+describe('useDebounce', () => {
+	beforeAll(() => {
+		vi.useFakeTimers()
+	})
 
-describe( 'useDebounce', () => {
+	afterAll(() => {
+		vi.clearAllTimers()
+		vi.useRealTimers()
+	})
 
-	beforeAll( () => {
-		jest.useFakeTimers()
-	} )
-
-	afterAll( () => {
-		jest.clearAllTimers()
-		jest.useRealTimers()
-	} )
-
-
-	it( 'debounces the value update', () => {
-
+	it('debounces the value update', () => {
 		const delay = 500
 
-		const { result, rerender } = renderHook(
-			( { value, delay } ) => useDebounce( value, delay ),
-			{ initialProps: { value: 'initial', delay } }
-		)
+		const { result, rerender } = renderHook(({ value, delay }) => useDebounce(value, delay), {
+			initialProps: { value: 'initial', delay },
+		})
 
-		expect( result.current ).toBe( 'initial' )
+		expect(result.current).toBe('initial')
 
-		rerender( { value: 'updated', delay } )
-		expect( result.current ).toBe( 'initial' )
+		rerender({ value: 'updated', delay })
+		expect(result.current).toBe('initial')
 
-		act( () => {
-			jest.advanceTimersByTime( delay )
-		} )
+		act(() => {
+			vi.advanceTimersByTime(delay)
+		})
 
-		expect( result.current ).toBe( 'updated' )
+		expect(result.current).toBe('updated')
+	})
 
-	} )
+	it('uses the default delay if none is provided', () => {
+		const { result, rerender } = renderHook(({ value }) => useDebounce(value), {
+			initialProps: { value: 'initial' },
+		})
 
+		expect(result.current).toBe('initial')
 
-	it( 'uses the default delay if none is provided', () => {
+		rerender({ value: 'updated' })
+		expect(result.current).toBe('initial')
 
-		const { result, rerender } = renderHook(
-			( { value } ) => useDebounce( value ),
-			{ initialProps: { value: 'initial' } }
-		)
+		act(() => {
+			vi.advanceTimersByTime(500)
+		})
 
-		expect( result.current ).toBe( 'initial' )
+		expect(result.current).toBe('updated')
+	})
 
-		rerender( { value: 'updated' } )
-		expect( result.current ).toBe( 'initial' )
-
-		act( () => {
-			jest.advanceTimersByTime( 500 )
-		} )
-
-		expect( result.current ).toBe( 'updated' )
-
-	} )
-
-
-	it( 'resets timers if value updates', () => {
-
+	it('resets timers if value updates', () => {
 		const delay = 500
 
-		const { result, rerender } = renderHook(
-			( { value, delay } ) => useDebounce( value, delay ),
-			{ initialProps: { value: 'initial', delay } }
-		)
+		const { result, rerender } = renderHook(({ value, delay }) => useDebounce(value, delay), {
+			initialProps: { value: 'initial', delay },
+		})
 
-		expect( result.current ).toBe( 'initial' )
+		expect(result.current).toBe('initial')
 
-		rerender( { value: 'updated', delay } )
-		expect( result.current ).toBe( 'initial' )
+		rerender({ value: 'updated', delay })
+		expect(result.current).toBe('initial')
 
-		act( () => {
-			jest.advanceTimersByTime( delay / 2 )
-			rerender( { value: 'updated-2', delay } )
-		} )
+		act(() => {
+			vi.advanceTimersByTime(delay / 2)
+			rerender({ value: 'updated-2', delay })
+		})
 
-		expect( result.current ).toBe( 'initial' )
+		expect(result.current).toBe('initial')
 
-		act( () => {
-			jest.advanceTimersByTime( delay )
-		} )
+		act(() => {
+			vi.advanceTimersByTime(delay)
+		})
 
-		expect( result.current ).toBe( 'updated-2' )
-
-	} )
-
-} )
+		expect(result.current).toBe('updated-2')
+	})
+})

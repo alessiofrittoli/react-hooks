@@ -1,140 +1,104 @@
-import { renderHook } from '@testing-library/react'
+import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest'
 import { useIntervalWhenVisible } from '@/timers/useIntervalWhenVisible'
 import { useInterval as _useInterval } from '@/timers/useInterval'
+import { renderHook } from '@testing-library/react'
 
-jest.mock( '@/timers/useInterval' )
+vi.mock('@/timers/useInterval')
 
-const useInterval = _useInterval as jest.Mock
+const useInterval = _useInterval as unknown as Mock<typeof _useInterval>
 
+describe('useIntervalWhenVisible', () => {
+	let mockStart: Mock
+	let mockStop: Mock
 
-describe( 'useIntervalWhenVisible', () => {
+	beforeEach(() => {
+		mockStart = vi.fn()
+		mockStop = vi.fn()
 
-	let mockStart	: jest.Mock
-	let mockStop	: jest.Mock
+		useInterval.mockReturnValue({
+			start: mockStart,
+			stop: mockStop,
+		})
 
-	beforeEach( () => {
+		Object.defineProperty(document, 'hidden', {
+			configurable: true,
+			writable: true,
+			value: false,
+		})
+	})
 
-		mockStart	= jest.fn()
-		mockStop	= jest.fn()
+	afterEach(() => {
+		vi.clearAllMocks().resetModules()
+	})
 
-		useInterval.mockReturnValue( {
-			start	: mockStart,
-			stop	: mockStop,
-		} )
+	it('starts the interval when autoplay is true and document is visible', () => {
+		renderHook(() => useIntervalWhenVisible(vi.fn()))
 
-		Object.defineProperty( document, 'hidden', {
-			configurable	: true,
-			writable		: true,
-			value			: false,
-		} )
+		expect(mockStart).toHaveBeenCalledTimes(1)
+		expect(mockStop).not.toHaveBeenCalled()
+	})
 
-	} )
+	it("doesn't start the interval when autoplay is false", () => {
+		renderHook(() => useIntervalWhenVisible(vi.fn(), { autoplay: false }))
 
+		expect(mockStart).not.toHaveBeenCalled()
+		expect(mockStop).not.toHaveBeenCalled()
+	})
 
-	afterEach( () => {
-		jest.clearAllMocks().resetModules()
-	} )
+	it("doesn't start the interval when document is not visible and autoplay is true", () => {
+		Object.defineProperty(document, 'hidden', { value: true })
 
+		renderHook(() => useIntervalWhenVisible(vi.fn()))
 
-	it( 'starts the interval when autoplay is true and document is visible', () => {
+		expect(mockStart).not.toHaveBeenCalled()
+		expect(mockStop).not.toHaveBeenCalled()
+	})
 
-		renderHook( () => useIntervalWhenVisible( jest.fn() ) )
-
-		expect( mockStart ).toHaveBeenCalledTimes( 1 )
-		expect( mockStop ).not.toHaveBeenCalled()
-
-	} )
-
-
-	it( 'doesn\'t start the interval when autoplay is false', () => {
-
-		renderHook( () => useIntervalWhenVisible( jest.fn(), { autoplay: false } ) )
-
-		expect( mockStart ).not.toHaveBeenCalled()
-		expect( mockStop ).not.toHaveBeenCalled()
-
-	} )
-
-
-	it( 'doesn\'t start the interval when document is not visible and autoplay is true', () => {
-
-		Object.defineProperty( document, 'hidden', { value: true } )
-
-		renderHook( () => useIntervalWhenVisible( jest.fn() ) )
-
-		expect( mockStart ).not.toHaveBeenCalled()
-		expect( mockStop ).not.toHaveBeenCalled()
-
-	} )
-	
-
-	it( 'starts the interval manually when start is called', () => {
-
-		const { result } = renderHook( () => (
-			useIntervalWhenVisible( jest.fn(), { autoplay: false } )
-		) )
+	it('starts the interval manually when start is called', () => {
+		const { result } = renderHook(() => useIntervalWhenVisible(vi.fn(), { autoplay: false }))
 
 		result.current.start()
 
-		expect( mockStart ).toHaveBeenCalledTimes( 1 )
-		expect( mockStop ).not.toHaveBeenCalled()
+		expect(mockStart).toHaveBeenCalledTimes(1)
+		expect(mockStop).not.toHaveBeenCalled()
+	})
 
-	} )
-
-
-	it( 'stops the interval manually when stop is called', () => {
-
-		const { result } = renderHook( () => (
-			useIntervalWhenVisible( jest.fn() )
-		) )
+	it('stops the interval manually when stop is called', () => {
+		const { result } = renderHook(() => useIntervalWhenVisible(vi.fn()))
 
 		result.current.stop()
 
-		expect( mockStop ).toHaveBeenCalledTimes( 1 )
-		expect( mockStart ).toHaveBeenCalledTimes( 1 )
+		expect(mockStop).toHaveBeenCalledTimes(1)
+		expect(mockStart).toHaveBeenCalledTimes(1)
+	})
 
-	} )
-
-
-	it( 'handles visibility change events', () => {
-
-		const { result } = renderHook( () => (
-			useIntervalWhenVisible( jest.fn(), { autoplay: false } )
-		) )
+	it('handles visibility change events', () => {
+		const { result } = renderHook(() => useIntervalWhenVisible(vi.fn(), { autoplay: false }))
 
 		result.current.start()
 
-		expect( mockStart ).toHaveBeenCalledTimes( 1 )
+		expect(mockStart).toHaveBeenCalledTimes(1)
 
-		Object.defineProperty( document, 'hidden', { value: true } )
-		document.dispatchEvent( new Event( 'visibilitychange' ) )
+		Object.defineProperty(document, 'hidden', { value: true })
+		document.dispatchEvent(new Event('visibilitychange'))
 
-		expect( mockStop ).toHaveBeenCalledTimes( 1 )
+		expect(mockStop).toHaveBeenCalledTimes(1)
 
+		Object.defineProperty(document, 'hidden', { value: false })
+		document.dispatchEvent(new Event('visibilitychange'))
 
-		Object.defineProperty( document, 'hidden', { value: false } )
-		document.dispatchEvent( new Event( 'visibilitychange' ) )
+		expect(mockStart).toHaveBeenCalledTimes(2)
+	})
 
-		expect( mockStart ).toHaveBeenCalledTimes( 2 )
+	it('clean up visibility change listener on unmount', () => {
+		const { unmount } = renderHook(() => useIntervalWhenVisible(vi.fn()))
 
-	} )
-
-
-	it( 'clean up visibility change listener on unmount', () => {
-
-		const { unmount } = renderHook( () => (
-			useIntervalWhenVisible( jest.fn() )
-		) )
-
-		const removeEventListener = jest.spyOn( document, 'removeEventListener' )
+		const removeEventListener = vi.spyOn(document, 'removeEventListener')
 
 		unmount()
 
-		expect( mockStop ).toHaveBeenCalledTimes( 1 )
+		expect(mockStop).toHaveBeenCalledTimes(1)
 
-		expect( removeEventListener )
-			.toHaveBeenCalledWith( 'visibilitychange', expect.any( Function ) )
-
-	} )
-
-} )
+		expect(removeEventListener).toHaveBeenCalledWith('visibilitychange', expect.any(Function))
+	})
+})

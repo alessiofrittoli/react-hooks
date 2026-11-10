@@ -1,69 +1,51 @@
-import { renderHook } from '@testing-library/react'
-import { useEffectOnce } from '@/misc'
 import { useIsFirstRender as _useIsFirstRender } from '@/misc/useIsFirstRender'
+import { describe, expect, it, vi, type Mock } from 'vitest'
+import { useEffectOnce } from '@/misc/useEffectOnce'
+import { renderHook } from '@testing-library/react'
 
+vi.mock('@/misc/useIsFirstRender', () => ({
+	useIsFirstRender: vi.fn(),
+}))
 
-jest.mock( '@/misc/useIsFirstRender', () => ( {
-	useIsFirstRender: jest.fn(),
-} ) )
+const useIsFirstRender = _useIsFirstRender as Mock<typeof _useIsFirstRender>
 
-const useIsFirstRender = _useIsFirstRender as jest.Mock
+describe('useEffectOnce', () => {
+	it('calls effect on first render', () => {
+		useIsFirstRender.mockReturnValue(true)
 
+		const effect = vi.fn()
+		renderHook(() => useEffectOnce(effect))
+		expect(effect).toHaveBeenCalledTimes(1)
+	})
 
-describe( 'useEffectOnce', () => {
+	it("doesn't call effect if not first render", () => {
+		useIsFirstRender.mockReturnValue(false)
 
-	beforeEach( () => {
-		jest.clearAllMocks()
-	} )
+		const effect = vi.fn()
+		renderHook(() => useEffectOnce(effect))
+		expect(effect).toHaveBeenCalledTimes(0)
+	})
 
-	it( 'calls effect on first render', () => {
+	it("doesn't call effect on subsequent renders", () => {
+		useIsFirstRender.mockReturnValue(true)
 
-		useIsFirstRender.mockReturnValue( true )
-		
-		const effect = jest.fn()
-		renderHook( () => useEffectOnce( effect ) )
-		expect( effect ).toHaveBeenCalledTimes( 1 )
+		const effect = vi.fn()
+		const { rerender } = renderHook(() => useEffectOnce(effect))
 
-	} )
-
-
-	it( 'doesn\'t call effect if not first render', () => {
-
-		useIsFirstRender.mockReturnValue( false )
-		
-		const effect = jest.fn()
-		renderHook( () => useEffectOnce( effect ) )
-		expect( effect ).toHaveBeenCalledTimes( 0 )
-
-	} )
-
-
-	it( 'doesn\'t call effect on subsequent renders', () => {
-
-		useIsFirstRender.mockReturnValue( true )
-
-		const effect = jest.fn()
-		const { rerender } = renderHook( () => useEffectOnce( effect ) )
-
-		useIsFirstRender.mockReturnValue( false )
+		useIsFirstRender.mockReturnValue(false)
 		rerender()
-		expect( effect ).toHaveBeenCalledTimes( 1 )
+		expect(effect).toHaveBeenCalledTimes(1)
+	})
 
-	} )
+	it('calls cleanup function on unmount if provided', () => {
+		useIsFirstRender.mockReturnValue(true)
 
+		const cleanup = vi.fn()
+		const effect = vi.fn(() => cleanup)
 
-	it( 'calls cleanup function on unmount if provided', () => {
+		const { unmount } = renderHook(() => useEffectOnce(effect))
 
-		useIsFirstRender.mockReturnValue( true )
-		
-		const cleanup	= jest.fn()
-		const effect	= jest.fn( () => cleanup )
-
-		const { unmount } = renderHook( () => useEffectOnce( effect ) )
-		
 		unmount()
-		expect( cleanup ).toHaveBeenCalledTimes( 1 )
-
-	} )
-
-} )
+		expect(cleanup).toHaveBeenCalledTimes(1)
+	})
+})

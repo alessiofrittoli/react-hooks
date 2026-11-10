@@ -47,6 +47,13 @@
 - [Getting started](#getting-started)
 - [ESLint Configuration](#eslint-configuration)
 - [What's Changed](#whats-changed)
+- [Development](#development)
+  - [Local development](#local-development)
+  - [Production build](#production-build)
+  - [Unit tests](#unit-tests)
+    - [Run tests with coverage](#run-tests-with-coverage)
+  - [Contributing](#contributing)
+  - [Security](#security)
 - [API Reference](#api-reference)
   - [Browser API](#browser-api)
     - [`useStorage`](#usestorage)
@@ -86,11 +93,6 @@
     - [`useLightInterval`](#uselightinterval)
     - [`useTimeout`](#usetimeout)
     - [`useLightTimeout`](#uselighttimeout)
-- [Development](#development)
-  - [Install dependencies](#install-dependencies)
-  - [Build the source code](#build-the-source-code)
-  - [ESLint](#eslint)
-  - [Jest](#jest)
 - [Contributing](#contributing)
 - [Security](#security)
 - [Credits](#made-with-)
@@ -120,15 +122,15 @@ This library may define and exports hooks that requires additional ESLint config
 Simply imports recommended configuration from `@alessiofrittoli/react-hooks/eslint` and add them to your ESLint configuration like so:
 
 ```mjs
-import { config as AFReactHooksEslint } from "@alessiofrittoli/react-hooks/eslint";
+import { config as AFReactHooksEslint } from '@alessiofrittoli/react-hooks/eslint'
 
 /** @type {import('eslint').Linter.Config[]} */
 const config = [
   ...AFReactHooksEslint.recommended,
   // ... other configurations
-];
+]
 
-export default config;
+export default config
 ```
 
 ---
@@ -153,6 +155,84 @@ Old major updates
 - Added `useDocumentVisibility` hook. See [API Reference](#usedocumentvisibility) for more info.
 - Added `useWakeLock` hook. See [API Reference](#usewakelock) for more info.
 - Added `useDeferCallback` hook. See [API Reference](#usedefercallback) for more info.
+
+---
+
+### Development
+
+Run the following to start development
+
+```shell
+nvm use
+
+pnpm i
+```
+
+#### Local development
+
+Run the following
+
+```shell
+pnpm dev
+```
+
+This will generate unminified output code, sourcemaps and will enable source file watcher.
+
+---
+
+#### Production build
+
+Run the following to create a local production build
+
+```shell
+pnpm build
+```
+
+This will generate minified output code without sourcemaps.
+
+---
+
+#### Unit tests
+
+Run all the defined test suites by running the following:
+
+```shell
+# Run tests and watch file changes.
+pnpm test:watch
+
+# Run tests in a CI environment.
+pnpm test:ci
+```
+
+---
+
+##### Run tests with coverage
+
+An HTTP server is then started to serve coverage files from `./coverage` folder.
+
+⚠️ You may see a blank page the first time you run this command. Simply refresh the browser to see the updates.
+
+```shell
+pnpm test:coverage:serve
+```
+
+---
+
+#### Contributing
+
+Contributions are truly welcome!
+
+Please refer to the [Contributing Doc](./CONTRIBUTING.md) for more information on how to start contributing to this project.
+
+Help keep this project up to date with [GitHub Sponsor][sponsor-url].
+
+[![GitHub Sponsor][sponsor-badge]][sponsor-url]
+
+---
+
+#### Security
+
+If you believe you have found a security vulnerability, we encourage you to **_responsibly disclose this and NOT open a public issue_**. We will investigate all legitimate reports. Email `security@alessiofrittoli.it` to disclose any security vulnerabilities.
 
 ---
 
@@ -213,11 +293,7 @@ A tuple with the stored item value or initial value and the setter function.
 ###### Importing the hooks
 
 ```tsx
-import {
-  useStorage,
-  useLocalStorage,
-  useSessionStorage,
-} from "@alessiofrittoli/react-hooks";
+import { useStorage, useLocalStorage, useSessionStorage } from '@alessiofrittoli/react-hooks'
 ```
 
 ---
@@ -396,15 +472,15 @@ An object containing utilities for managing dark mode:
 ###### Basic usage
 
 ```tsx
-"use client";
+'use client'
 
-import { useDarkMode } from "@alessiofrittoli/react-hooks";
+import { useDarkMode } from '@alessiofrittoli/react-hooks'
 
 export const Component: React.FC = () => {
-  const { isDarkMode } = useDarkMode();
+  const { isDarkMode } = useDarkMode()
 
-  return <div>{isDarkMode ? "Dark mode enabled" : "Dark mode disabled"}</div>;
-};
+  return <div>{isDarkMode ? 'Dark mode enabled' : 'Dark mode disabled'}</div>
+}
 ```
 
 ---
@@ -413,17 +489,17 @@ export const Component: React.FC = () => {
 
 ```tsx
 // Component.tsx
-"use client";
+'use client'
 
-import { useDarkMode } from "@alessiofrittoli/react-hooks";
+import { useDarkMode } from '@alessiofrittoli/react-hooks'
 
 export const Component: React.FC = () => {
   const { isDarkMode } = useDarkMode({
-    docClassNames: ["dark", "light"],
-  });
+    docClassNames: ['dark', 'light'],
+  })
 
-  return <div>{isDarkMode ? "Dark mode enabled" : "Dark mode disabled"}</div>;
-};
+  return <div>{isDarkMode ? 'Dark mode enabled' : 'Dark mode disabled'}</div>
+}
 ```
 
 ```css
@@ -452,15 +528,15 @@ export const Component: React.FC = () => {
 ###### Custom theme switcher
 
 ```tsx
-"use client";
+'use client'
 
-import { useDarkMode } from "@alessiofrittoli/react-hooks";
+import { useDarkMode } from '@alessiofrittoli/react-hooks'
 
 export const ThemeSwitcher: React.FC = () => {
-  const { isDarkMode, toggleDarkMode } = useDarkMode();
+  const { isDarkMode, toggleDarkMode } = useDarkMode()
 
-  return <button onClick={toggleDarkMode}>{isDarkMode ? "🌙" : "☀️"}</button>;
-};
+  return <button onClick={toggleDarkMode}>{isDarkMode ? '🌙' : '☀️'}</button>
+}
 ```
 
 ---
@@ -481,16 +557,8 @@ Just make sure to define both `light` and `dark` theme-color tags in your docume
 
 ```html
 <head>
-  <meta
-    name="theme-color"
-    media="(prefers-color-scheme: light)"
-    content="lime"
-  />
-  <meta
-    name="theme-color"
-    media="(prefers-color-scheme: dark)"
-    content="aqua"
-  />
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="lime" />
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="aqua" />
 </head>
 ```
 
@@ -753,25 +821,25 @@ export const MyComponent: React.FC = () => {
 ###### Attach listeners to multiple events
 
 ```tsx
-import { useCallback, useState } from "react";
-import { useEventListener } from "@alessiofrittoli/react-hooks";
+import { useEventListener } from '@alessiofrittoli/react-hooks'
+import { useCallback, useState } from 'react'
 
 /**
  * We define events outside the Component to avoid array recreation when a state update is triggered.
  *
  * This prevents infinite loops for `useEventListener` life-cycle
  */
-const events: (keyof WindowEventMap)[] = ["resize", "scroll"];
+const events: (keyof WindowEventMap)[] = ['resize', 'scroll']
 
 export const MyComponent: React.FC = () => {
-  const [isInteracting, setIsIntercting] = useState(false);
+  const [isInteracting, setIsIntercting] = useState(false)
 
   useEventListener(events, {
     listener: useCallback(() => {
-      setIsIntercting(true);
+      setIsIntercting(true)
     }, []),
-  });
-};
+  })
+}
 ```
 
 </details>
@@ -804,9 +872,9 @@ Type: `boolean`
 ###### Check if user device is in landscape
 
 ```tsx
-import { useIsPortrait } from "@alessiofrittoli/react-hooks";
+import { useIsPortrait } from '@alessiofrittoli/react-hooks'
 
-const isLandscape = !useIsPortrait();
+const isLandscape = !useIsPortrait()
 ```
 
 </details>
@@ -835,9 +903,9 @@ Type: `boolean`
 <summary style="cursor:pointer">Usage</summary>
 
 ```tsx
-import { useIsTouchDevice } from "@alessiofrittoli/react-hooks";
+import { useIsTouchDevice } from '@alessiofrittoli/react-hooks'
 
-const isTouchDevice = useIsTouchDevice();
+const isTouchDevice = useIsTouchDevice()
 ```
 
 </details>
@@ -884,9 +952,9 @@ Type: `boolean|void`
 ###### Check if user device prefers dark color scheme
 
 ```tsx
-import { useMediaQuery } from "@alessiofrittoli/react-hooks";
+import { useMediaQuery } from '@alessiofrittoli/react-hooks'
 
-const isDarkOS = useMediaQuery("(prefers-color-scheme: dark)");
+const isDarkOS = useMediaQuery('(prefers-color-scheme: dark)')
 ```
 
 ---
@@ -894,14 +962,14 @@ const isDarkOS = useMediaQuery("(prefers-color-scheme: dark)");
 ###### Listen changes with no state updates
 
 ```tsx
-import { useMediaQuery } from "@alessiofrittoli/react-hooks";
+import { useMediaQuery } from '@alessiofrittoli/react-hooks'
 
-useMediaQuery("(prefers-color-scheme: dark)", {
+useMediaQuery('(prefers-color-scheme: dark)', {
   updateState: false,
   onChange(matches) {
-    console.log("is dark OS?", matches);
+    console.log('is dark OS?', matches)
   },
-});
+})
 ```
 
 </details>
@@ -931,11 +999,11 @@ Prevents the context menu from appearing on a specified target element.
 
 ```tsx
 // Prevent context menu on the entire top window.
-usePreventContextMenu();
+usePreventContextMenu()
 
 // Prevent context menu on a specific target.
-const ref = useRef<HTMLDivElement>(null);
-usePreventContextMenu(ref);
+const ref = useRef<HTMLDivElement>(null)
+usePreventContextMenu(ref)
 ```
 
 </details>
@@ -979,9 +1047,9 @@ Returns `true` if the document is visible, `false` if hidden, or `void` if `upda
 ###### Simple usage
 
 ```tsx
-import { useDocumentVisibility } from "@alessiofrittoli/react-hooks";
+import { useDocumentVisibility } from '@alessiofrittoli/react-hooks'
 
-const isDocumentVisible = useDocumentVisibility();
+const isDocumentVisible = useDocumentVisibility()
 ```
 
 ---
@@ -989,15 +1057,12 @@ const isDocumentVisible = useDocumentVisibility();
 ###### Disable state updates and listen visibility changes
 
 ```tsx
-import {
-  useDocumentVisibility,
-  type VisibilityChangeHandler,
-} from "@alessiofrittoli/react-hooks";
+import { useDocumentVisibility, type VisibilityChangeHandler } from '@alessiofrittoli/react-hooks'
 
-const onVisibilityChange = useCallback<VisibilityChangeHandler>((isVisible) => {
+const onVisibilityChange = useCallback<VisibilityChangeHandler>(isVisible => {
   // ... do something
-}, []);
-useDocumentVisibility({ updateState: false, onVisibilityChange });
+}, [])
+useDocumentVisibility({ updateState: false, onVisibilityChange })
 ```
 
 </details>
@@ -1046,9 +1111,9 @@ An object returning The current `WakeLockSentinel` instance or `null` if not ena
 ###### Enable Wake Lock on mount
 
 ```tsx
-import { useWakeLock } from "@alessiofrittoli/react-hooks";
+import { useWakeLock } from '@alessiofrittoli/react-hooks'
 
-useWakeLock();
+useWakeLock()
 ```
 
 ---
@@ -1056,12 +1121,12 @@ useWakeLock();
 ###### Manually enable and disable Wake Lock
 
 ```tsx
-import { useWakeLock } from "@alessiofrittoli/react-hooks";
+import { useWakeLock } from '@alessiofrittoli/react-hooks'
 
 export const WakeLockButton: React.FC = () => {
   const { enabled, requestWakeLock, releaseWakeLock } = useWakeLock({
     enableOnLoad: false,
-  });
+  })
 
   return (
     <>
@@ -1069,8 +1134,8 @@ export const WakeLockButton: React.FC = () => {
       <button onClick={requestWakeLock}>Enable wakelock</button>
       <button onClick={releaseWakeLock}>Disable wakelock</button>
     </>
-  );
-};
+  )
+}
 ```
 
 ---
@@ -1078,24 +1143,17 @@ export const WakeLockButton: React.FC = () => {
 ###### Handling Wake Lock errors
 
 ```tsx
-import {
-  useWakeLock,
-  type OnWakeLockRequestError,
-} from "@alessiofrittoli/react-hooks";
+import { useWakeLock, type OnWakeLockRequestError } from '@alessiofrittoli/react-hooks'
 
-const onError: OnWakeLockRequestError = (error) => {
-  alert("Could not enable Wake Lock: " + error.message);
-};
+const onError: OnWakeLockRequestError = error => {
+  alert('Could not enable Wake Lock: ' + error.message)
+}
 
 export const WakeLockWithError: React.FC = () => {
-  const { enabled, requestWakeLock } = useWakeLock({ onError });
+  const { enabled, requestWakeLock } = useWakeLock({ onError })
 
-  return (
-    <button onClick={requestWakeLock}>
-      {enabled ? "Wake Lock enabled" : "Enable Wake Lock"}
-    </button>
-  );
-};
+  return <button onClick={requestWakeLock}>{enabled ? 'Wake Lock enabled' : 'Enable Wake Lock'}</button>
+}
 ```
 
 </details>
@@ -1145,22 +1203,22 @@ A tuple containing:
 ###### Defining the target on hook initialization
 
 ```tsx
-import { useFocusTrap } from "@alessiofrittoli/react-hooks";
+import { useFocusTrap } from '@alessiofrittoli/react-hooks'
 
-const modalRef = useRef<HTMLDivElement>(null);
-const [setFocusTrap, restoreFocusTrap] = useFocusTrap(modalRef);
+const modalRef = useRef<HTMLDivElement>(null)
+const [setFocusTrap, restoreFocusTrap] = useFocusTrap(modalRef)
 
 const modalOpenHandler = useCallback(() => {
-  if (!modalRef.current) return;
+  if (!modalRef.current) return
   // ... open modal
-  setFocusTrap();
-  modalRef.current.focus(); // focus the dialog so next tab will focus the next element inside the modal
-}, [setFocusTrap]);
+  setFocusTrap()
+  modalRef.current.focus() // focus the dialog so next tab will focus the next element inside the modal
+}, [setFocusTrap])
 
 const modalCloseHandler = useCallback(() => {
   // ... close modal
-  restoreFocusTrap(); // cancel focus trap and restore focus to the last active element before enablig the focus trap
-}, [restoreFocusTrap]);
+  restoreFocusTrap() // cancel focus trap and restore focus to the last active element before enablig the focus trap
+}, [restoreFocusTrap])
 ```
 
 ---
@@ -1168,25 +1226,25 @@ const modalCloseHandler = useCallback(() => {
 ###### Defining the target ondemand
 
 ```tsx
-import { useFocusTrap } from "@alessiofrittoli/react-hooks";
+import { useFocusTrap } from '@alessiofrittoli/react-hooks'
 
-const modalRef = useRef<HTMLDivElement>(null);
-const modal2Ref = useRef<HTMLDivElement>(null);
-const [setFocusTrap, restoreFocusTrap] = useFocusTrap();
+const modalRef = useRef<HTMLDivElement>(null)
+const modal2Ref = useRef<HTMLDivElement>(null)
+const [setFocusTrap, restoreFocusTrap] = useFocusTrap()
 
 const modalOpenHandler = useCallback(() => {
-  if (!modalRef.current) return;
+  if (!modalRef.current) return
   // ... open modal
-  setFocusTrap(modalRef.current);
-  modalRef.current.focus();
-}, [setFocusTrap]);
+  setFocusTrap(modalRef.current)
+  modalRef.current.focus()
+}, [setFocusTrap])
 
 const modal2OpenHandler = useCallback(() => {
-  if (!modal2Ref.current) return;
+  if (!modal2Ref.current) return
   // ... open modal
-  setFocusTrap(modal2Ref.current);
-  modal2Ref.current.focus();
-}, [setFocusTrap]);
+  setFocusTrap(modal2Ref.current)
+  modal2Ref.current.focus()
+}, [setFocusTrap])
 ```
 
 </details>
@@ -1258,24 +1316,24 @@ An object containing:
 ###### Basic usage
 
 ```tsx
-"use client";
+'use client'
 
-import { useRef } from "react";
-import { useInView } from "@alessiofrittoli/react-hooks";
+import { useInView } from '@alessiofrittoli/react-hooks'
+import { useRef } from 'react'
 
 const UseInViewExample: React.FC = () => {
-  const targetRef = useRef<HTMLDivElement>(null);
-  const { inView } = useInView(ref);
+  const targetRef = useRef<HTMLDivElement>(null)
+  const { inView } = useInView(ref)
 
   return Array.from(Array(6)).map((value, index) => (
     <div
       key={index}
       style={{
-        height: "50vh",
-        border: "1px solid red",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
+        height: '50vh',
+        border: '1px solid red',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
       }}
     >
       <div
@@ -1284,18 +1342,18 @@ const UseInViewExample: React.FC = () => {
           width: 150,
           height: 150,
           borderRadius: 12,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          background: inView ? "#51AF83" : "#201A1B",
-          color: inView ? "#201A1B" : "#FFFFFF",
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: inView ? '#51AF83' : '#201A1B',
+          color: inView ? '#201A1B' : '#FFFFFF',
         }}
       >
         {index + 1}
       </div>
     </div>
-  ));
-};
+  ))
+}
 ```
 
 ---
@@ -1303,30 +1361,30 @@ const UseInViewExample: React.FC = () => {
 ###### Disconnect observer after target enters the viewport
 
 ```tsx
-"use client";
+'use client'
 
-import { useRef } from "react";
-import { useInView } from "@alessiofrittoli/react-hooks";
+import { useInView } from '@alessiofrittoli/react-hooks'
+import { useRef } from 'react'
 
 const OnceExample: React.FC = () => {
-  const targetRef = useRef<HTMLDivElement>(null);
-  const { inView } = useInView(targetRef, { once: true });
+  const targetRef = useRef<HTMLDivElement>(null)
+  const { inView } = useInView(targetRef, { once: true })
 
   useEffect(() => {
-    if (!inView) return;
-    console.count("Fired only once: element entered viewport.");
-  }, [inView]);
+    if (!inView) return
+    console.count('Fired only once: element entered viewport.')
+  }, [inView])
 
   return (
     <div
       ref={targetRef}
       style={{
         height: 200,
-        background: inView ? "lime" : "gray",
+        background: inView ? 'lime' : 'gray',
       }}
     />
-  );
-};
+  )
+}
 ```
 
 ---
@@ -1334,33 +1392,31 @@ const OnceExample: React.FC = () => {
 ###### Observe target only when needed
 
 ```tsx
-"use client";
+'use client'
 
-import { useRef } from "react";
-import { useInView } from "@alessiofrittoli/react-hooks";
+import { useInView } from '@alessiofrittoli/react-hooks'
+import { useRef } from 'react'
 
 const OnDemandObservation: React.FC = () => {
-  const targetRef = useRef<HTMLDivElement>(null);
+  const targetRef = useRef<HTMLDivElement>(null)
   const { inView, enabled, setEnabled } = useInView(targetRef, {
     enable: false,
-  });
+  })
 
   return (
     <div>
-      <button onClick={() => setEnabled((prev) => !prev)}>
-        {enabled ? "Disconnect observer" : "Observe"}
-      </button>
+      <button onClick={() => setEnabled(prev => !prev)}>{enabled ? 'Disconnect observer' : 'Observe'}</button>
       <div
         ref={targetRef}
         style={{
           height: 200,
           marginTop: 50,
-          background: inView ? "lime" : "gray",
+          background: inView ? 'lime' : 'gray',
         }}
       />
     </div>
-  );
-};
+  )
+}
 ```
 
 ---
@@ -1368,44 +1424,38 @@ const OnDemandObservation: React.FC = () => {
 ###### Execute custom callback when intersection occurs
 
 ```tsx
-"use client";
+'use client'
 
-import { useRef } from "react";
-import {
-  useInView,
-  type OnIntersectStateHandler,
-} from "@alessiofrittoli/react-hooks";
+import { useInView, type OnIntersectStateHandler } from '@alessiofrittoli/react-hooks'
+import { useRef } from 'react'
 
 const AsyncStartExample: React.FC = () => {
-  const targetRef = useRef<HTMLDivElement>(null);
-  const onIntersect = useCallback<OnIntersectStateHandler>(
-    async ({ entry, isEntering }) => {
-      if (isEntering) {
-        console.log("Delaying state update...");
-        await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate delay
-        console.log("Async task completed. `inView` will now be updated.");
-        return;
-      }
+  const targetRef = useRef<HTMLDivElement>(null)
+  const onIntersect = useCallback<OnIntersectStateHandler>(async ({ entry, isEntering }) => {
+    if (isEntering) {
+      console.log('Delaying state update...')
+      await new Promise(resolve => setTimeout(resolve, 1000)) // Simulate delay
+      console.log('Async task completed. `inView` will now be updated.')
+      return
+    }
 
-      console.log("Delaying state update...");
-      await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate delay
-      console.log("Async task completed. `inView` will now be updated.");
-    },
-    [],
-  );
+    console.log('Delaying state update...')
+    await new Promise(resolve => setTimeout(resolve, 1000)) // Simulate delay
+    console.log('Async task completed. `inView` will now be updated.')
+  }, [])
 
-  const { inView } = useInView(targetRef, { onIntersect });
+  const { inView } = useInView(targetRef, { onIntersect })
 
   return (
     <div
       ref={targetRef}
       style={{
         height: 200,
-        background: inView ? "lime" : "gray",
+        background: inView ? 'lime' : 'gray',
       }}
     />
-  );
-};
+  )
+}
 ```
 
 ---
@@ -1413,35 +1463,32 @@ const AsyncStartExample: React.FC = () => {
 ###### Execute custom callback when `onEnter` and `onExit`
 
 ```tsx
-"use client";
+'use client'
 
-import { useRef } from "react";
-import {
-  useInView,
-  type OnIntersectHandler,
-} from "@alessiofrittoli/react-hooks";
+import { useInView, type OnIntersectHandler } from '@alessiofrittoli/react-hooks'
+import { useRef } from 'react'
 
 const AsyncStartExample: React.FC = () => {
-  const targetRef = useRef<HTMLDivElement>(null);
+  const targetRef = useRef<HTMLDivElement>(null)
   const onEnter = useCallback<OnIntersectHandler>(async ({ entry }) => {
-    console.log("In viewport - ", entry);
-  }, []);
+    console.log('In viewport - ', entry)
+  }, [])
   const onExit = useCallback<OnIntersectHandler>(async ({ entry }) => {
-    console.log("Exited viewport - ", entry);
-  }, []);
+    console.log('Exited viewport - ', entry)
+  }, [])
 
-  const { inView } = useInView(targetRef, { onEnter, onExit });
+  const { inView } = useInView(targetRef, { onEnter, onExit })
 
   return (
     <div
       ref={targetRef}
       style={{
         height: 200,
-        background: inView ? "lime" : "gray",
+        background: inView ? 'lime' : 'gray',
       }}
     />
-  );
-};
+  )
+}
 ```
 
 </details>
@@ -1596,17 +1643,12 @@ An object containing the following properties:
 
 ```tsx
 const MyComponent: React.FC = () => {
-  const input = useInput<string>();
+  const input = useInput<string>()
 
   return (
-    <input
-      type="text"
-      value={input.value || ""}
-      onChange={input.changeHandler}
-      onBlur={input.blurHandler}
-    />
-  );
-};
+    <input type='text' value={input.value || ''} onChange={input.changeHandler} onBlur={input.blurHandler} />
+  )
+}
 ```
 
 ---
@@ -1614,30 +1656,22 @@ const MyComponent: React.FC = () => {
 ###### Displaying custom error messages
 
 ```tsx
-import {
-  useInput,
-  type ValidateValueHandler,
-} from "@alessiofrittoli/react-hooks";
+import { useInput, type ValidateValueHandler } from '@alessiofrittoli/react-hooks'
 
-const isNotEmpty: ValidateValueHandler<string> = (value) =>
-  !value ? false : value.trim().length > 0;
+const isNotEmpty: ValidateValueHandler<string> = value => (!value ? false : value.trim().length > 0)
 
 const MyComponent: React.FC = () => {
   const input = useInput<string>({
     validate: isNotEmpty,
-  });
+  })
 
   return (
     <>
-      <input
-        value={input.value || ""}
-        onChange={input.changeHandler}
-        onBlur={input.blurHandler}
-      />
+      <input value={input.value || ''} onChange={input.changeHandler} onBlur={input.blurHandler} />
       {input.hasError && <span>The input cannot be empty.</span>}
     </>
-  );
-};
+  )
+}
 ```
 
 ---
@@ -1645,39 +1679,32 @@ const MyComponent: React.FC = () => {
 ###### Parsing and validating parsed value
 
 ```tsx
-import { formatDate, isValidDate } from "@alessiofrittoli/date-utils";
-import {
-  useInput,
-  type ValidateValueHandler,
-  type ParseValueHandler,
-} from "@alessiofrittoli/react-hooks";
+import { useInput, type ValidateValueHandler, type ParseValueHandler } from '@alessiofrittoli/react-hooks'
+import { formatDate, isValidDate } from '@alessiofrittoli/date-utils'
 
-const parseStringToDate: ParseValueHandler<string, Date> = (value) =>
-  value ? new Date(value) : undefined;
+const parseStringToDate: ParseValueHandler<string, Date> = value => (value ? new Date(value) : undefined)
 
-const validateInputDate: ValidateValueHandler<Date> = (value) =>
-  isValidDate(value) && value.getTime() > Date.now();
+const validateInputDate: ValidateValueHandler<Date> = value =>
+  isValidDate(value) && value.getTime() > Date.now()
 
 const MyComponent: React.FC = () => {
   const input = useInput<string, Date>({
     parse: parseStringToDate,
     validate: validateInputDate,
-  });
+  })
 
   return (
     <>
       <input
-        type="datetime-local"
-        value={input.value ? formatDate(input.value, "Y-m-dTH:i") : ""}
+        type='datetime-local'
+        value={input.value ? formatDate(input.value, 'Y-m-dTH:i') : ''}
         onChange={input.changeHandler}
         onBlur={input.blurHandler}
       />
-      {input.hasError && (
-        <span>Please choose a date no earlier than today</span>
-      )}
+      {input.hasError && <span>Please choose a date no earlier than today</span>}
     </>
-  );
-};
+  )
+}
 ```
 
 </details>
@@ -1773,30 +1800,30 @@ Modified version of `useEffect` that only run once on intial load.
 <summary style="cursor:pointer">Usage</summary>
 
 ```tsx
-"use client";
+'use client'
 
-import { useEffect, useState } from "react";
-import { useEffectOnce } from "@alessiofrittoli/react-hooks";
+import { useEffectOnce } from '@alessiofrittoli/react-hooks'
+import { useEffect, useState } from 'react'
 
 export const ClientComponent: React.FC = () => {
-  const [count, setCount] = useState(0);
+  const [count, setCount] = useState(0)
 
   useEffect(() => {
     const intv = setInterval(() => {
-      setCount((prev) => prev + 1); // update state each 1s
-    }, 1000);
-    return () => clearInterval(intv);
-  }, []);
+      setCount(prev => prev + 1) // update state each 1s
+    }, 1000)
+    return () => clearInterval(intv)
+  }, [])
 
   useEffectOnce(() => {
-    console.log("Component did mount");
+    console.log('Component did mount')
     return () => {
-      console.log("Component did unmount");
-    };
-  });
+      console.log('Component did unmount')
+    }
+  })
 
-  return <div>{count}</div>;
-};
+  return <div>{count}</div>
+}
 ```
 
 </details>
@@ -1825,37 +1852,37 @@ Modified version of `useEffect` that skips the first render.
 <summary style="cursor:pointer">Usage</summary>
 
 ```tsx
-"use client";
+'use client'
 
-import { useEffect, useState } from "react";
-import { useUpdateEffect } from "@alessiofrittoli/react-hooks";
+import { useUpdateEffect } from '@alessiofrittoli/react-hooks'
+import { useEffect, useState } from 'react'
 
 export const ClientComponent: React.FC = () => {
-  const [count, setCount] = useState(0);
+  const [count, setCount] = useState(0)
 
   useEffect(() => {
     const intv = setInterval(() => {
-      setCount((prev) => prev + 1);
-    }, 1000);
-    return () => clearInterval(intv);
-  }, []);
+      setCount(prev => prev + 1)
+    }, 1000)
+    return () => clearInterval(intv)
+  }, [])
 
   useEffect(() => {
-    console.log("useEffect", count); // starts from 0
+    console.log('useEffect', count) // starts from 0
     return () => {
-      console.log("useEffect - clean up", count); // starts from 0
-    };
-  }, [count]);
+      console.log('useEffect - clean up', count) // starts from 0
+    }
+  }, [count])
 
   useUpdateEffect(() => {
-    console.log("useUpdateEffect", count); // starts from 1
+    console.log('useUpdateEffect', count) // starts from 1
     return () => {
-      console.log("useUpdateEffect - clean up", count); // starts from 1
-    };
-  }, [count]);
+      console.log('useUpdateEffect - clean up', count) // starts from 1
+    }
+  }, [count])
 
-  return <div>{count}</div>;
-};
+  return <div>{count}</div>
+}
 ```
 
 </details>
@@ -1886,15 +1913,15 @@ Type: `boolean`
 <summary style="cursor:pointer">Usage</summary>
 
 ```tsx
-"use client";
+'use client'
 
-import { useIsClient } from "@alessiofrittoli/react-hooks";
+import { useIsClient } from '@alessiofrittoli/react-hooks'
 
 export const ClientComponent: React.FC = () => {
-  const isClient = useIsClient();
+  const isClient = useIsClient()
 
-  return <div>Running {!isClient ? "server" : "client"}-side</div>;
-};
+  return <div>Running {!isClient ? 'server' : 'client'}-side</div>
+}
 ```
 
 </details>
@@ -1925,29 +1952,29 @@ Note that if the React Hook/Component has no state updates, `useIsFirstRender` w
 <summary style="cursor:pointer">Usage</summary>
 
 ```tsx
-"use client";
+'use client'
 
-import { useIsFirstRender } from "@alessiofrittoli/react-hooks";
+import { useIsFirstRender } from '@alessiofrittoli/react-hooks'
 
 export const ClientComponent: React.FC = () => {
-  const isFirstRender = useIsFirstRender();
-  const [counter, setCounter] = useState(0);
+  const isFirstRender = useIsFirstRender()
+  const [counter, setCounter] = useState(0)
 
   useEffect(() => {
     const intv = setInterval(() => {
-      setCounter((prev) => prev + 1);
-    }, 1000);
-    return () => clearInterval(intv);
-  }, []);
+      setCounter(prev => prev + 1)
+    }, 1000)
+    return () => clearInterval(intv)
+  }, [])
 
   return (
     <div>
-      {isFirstRender ? "First render" : "Subsequent render"}
+      {isFirstRender ? 'First render' : 'Subsequent render'}
       <hr />
       {counter}
     </div>
-  );
-};
+  )
+}
 ```
 
 </details>
@@ -2019,69 +2046,67 @@ An object containing the selection state and handlers.
 <summary style="cursor:pointer">Usage</summary>
 
 ```tsx
-"use client";
+'use client'
 
-import { useCallback, useMemo } from "react";
-import { useSelection } from "@alessiofrittoli/react-hooks";
+import { useSelection } from '@alessiofrittoli/react-hooks'
+import { useCallback, useMemo } from 'react'
 
 interface Item {
-  id: number;
-  name: string;
+  id: number
+  name: string
 }
 
 const items: Item[] = [
   {
     id: 1,
-    name: "item-1",
+    name: 'item-1',
   },
   {
     id: 2,
-    name: "item-2",
+    name: 'item-2',
   },
   {
     id: 3,
-    name: "item-3",
+    name: 'item-3',
   },
   {
     id: 4,
-    name: "item-4",
+    name: 'item-4',
   },
   {
     id: 5,
-    name: "item-5",
+    name: 'item-5',
   },
-];
+]
 
 const MyComponent: React.FC = () => {
   const { setSelection, select, groupSelect, isSelected } = useSelection(
-    useMemo(() => items.map((item) => item.id), []),
-  );
+    useMemo(() => items.map(item => item.id), []),
+  )
 
   const clickHandler = useCallback(
-    (id: Item["id"]) => (event: React.MouseEvent<HTMLButtonElement>) => {
+    (id: Item['id']) => (event: React.MouseEvent<HTMLButtonElement>) => {
       if (event.shiftKey) {
-        return groupSelect(id); // group select
+        return groupSelect(id) // group select
       }
       if (event.metaKey || event.ctrlKey) {
-        return select(id); // toggle single item in selection
+        return select(id) // toggle single item in selection
       }
       setSelection(
-        (prev) => (prev.includes(id) ? [] : [id]), // toggle single item selection
-      );
+        prev => (prev.includes(id) ? [] : [id]), // toggle single item selection
+      )
     },
     [select, groupSelect, setSelection],
-  );
+  )
 
   return (
     <ul>
-      {items.map((item) => (
+      {items.map(item => (
         <li key={item.id}>
           <button
             onClick={clickHandler(item.id)}
             style={{
-              border: isSelected(item.id)
-                ? "1px solid red"
-                : " 1px solid black",
+              border: isSelected(item.id) ? '1px solid red' : ' 1px solid black',
             }}
           >
             {item.name}
@@ -2089,8 +2114,8 @@ const MyComponent: React.FC = () => {
         </li>
       ))}
     </ul>
-  );
-};
+  )
+}
 ```
 
 </details>
@@ -2310,10 +2335,10 @@ A new `item` with the same properties as the input `item` plus a UUID.
 <summary style="cursor:pointer">Examples</summary>
 
 ```ts
-import { addItemUUID } from "@alessiofrittoli/react-hooks/queue";
+import { addItemUUID } from '@alessiofrittoli/react-hooks/queue'
 
-const item = { foo: "bar" };
-const newItem = addItemUUID(item);
+const item = { foo: 'bar' }
+const newItem = addItemUUID(item)
 // Returns: { foo: 'bar', uuid: 'XXXXXXXX-XXXX-4XXX-YXXX-XXXXXXXXXXXX' }
 ```
 
@@ -2332,14 +2357,14 @@ Adds a UUID to one or more items.
 <summary style="cursor:pointer">Examples</summary>
 
 ```ts
-import { addItemsUUID } from "@alessiofrittoli/react-hooks/queue";
+import { addItemsUUID } from '@alessiofrittoli/react-hooks/queue'
 
-const item = { foo: "bar" };
-const newItem = addItemsUUID(item);
+const item = { foo: 'bar' }
+const newItem = addItemsUUID(item)
 // Returns: [ { foo: 'bar', uuid: 'XXXXXXXX-XXXX-4XXX-YXXX-XXXXXXXXXXXX' } ]
 
-const items = [{ foo: "bar" }, { baz: "qux" }];
-const newItems = addItemsUUID(items);
+const items = [{ foo: 'bar' }, { baz: 'qux' }]
+const newItems = addItemsUUID(items)
 // Returns: [
 // { foo: 'bar', uuid: 'XXXXXXXX-XXXX-4XXX-YXXX-XXXXXXXXXXXX' },
 // { baz: 'qux', uuid: 'XXXXXXXX-XXXX-4XXX-YXXX-XXXXXXXXXXXX' },
@@ -2361,14 +2386,14 @@ Adds a UUID to the given item only when it does not already define one.
 <summary style="cursor:pointer">Examples</summary>
 
 ```ts
-import { maybeAddItemUUID } from "@alessiofrittoli/react-hooks/queue";
+import { maybeAddItemUUID } from '@alessiofrittoli/react-hooks/queue'
 
-const item = { foo: "bar" };
-const newItem = maybeAddItemUUID(item);
+const item = { foo: 'bar' }
+const newItem = maybeAddItemUUID(item)
 // Returns: [ { foo: 'bar', uuid: 'XXXXXXXX-XXXX-4XXX-YXXX-XXXXXXXXXXXX' } ]
 
-const item2 = { baz: "qux", uuid: "658ebade-ce6c-4bf3-a11e-e2bebb3a1f9c" };
-const newItem2 = maybeAddItemUUID(item);
+const item2 = { baz: 'qux', uuid: '658ebade-ce6c-4bf3-a11e-e2bebb3a1f9c' }
+const newItem2 = maybeAddItemUUID(item)
 // Returns: [ { baz: 'qux', uuid: '658ebade-ce6c-4bf3-a11e-e2bebb3a1f9c' } ]
 ```
 
@@ -2387,17 +2412,14 @@ Adds UUIDs to one or more items, preserving existing UUIDs when present.
 <summary style="cursor:pointer">Examples</summary>
 
 ```ts
-import { maybeAddItemsUUID } from "@alessiofrittoli/react-hooks/queue";
+import { maybeAddItemsUUID } from '@alessiofrittoli/react-hooks/queue'
 
-const item = { foo: "bar" };
-const newItem = maybeAddItemsUUID(item);
+const item = { foo: 'bar' }
+const newItem = maybeAddItemsUUID(item)
 // Returns: [ { foo: 'bar', uuid: 'XXXXXXXX-XXXX-4XXX-YXXX-XXXXXXXXXXXX' } ]
 
-const items = [
-  { foo: "bar" },
-  { baz: "qux", uuid: "658ebade-ce6c-4bf3-a11e-e2bebb3a1f9c" },
-];
-const newItems = maybeAddItemsUUID(items);
+const items = [{ foo: 'bar' }, { baz: 'qux', uuid: '658ebade-ce6c-4bf3-a11e-e2bebb3a1f9c' }]
+const newItems = maybeAddItemsUUID(items)
 // Returns: [
 // { foo: 'bar', uuid: 'XXXXXXXX-XXXX-4XXX-YXXX-XXXXXXXXXXXX' },
 // { baz: 'qux', uuid: '658ebade-ce6c-4bf3-a11e-e2bebb3a1f9c' },
@@ -2442,15 +2464,11 @@ The matching index, or `-1` when the UUID is missing or not found.
 <summary style="cursor:pointer">Examples</summary>
 
 ```ts
-import { findIndexByUUID } from "@alessiofrittoli/react-hooks/queue";
+import { findIndexByUUID } from '@alessiofrittoli/react-hooks/queue'
 
-const items = [
-  { uuid: "x" },
-  { uuid: "y" },
-  { uuid: "658ebade-ce6c-4bf3-a11e-e2bebb3a1f9c" },
-];
+const items = [{ uuid: 'x' }, { uuid: 'y' }, { uuid: '658ebade-ce6c-4bf3-a11e-e2bebb3a1f9c' }]
 
-findIndexByUUID(items, "658ebade-ce6c-4bf3-a11e-e2bebb3a1f9c");
+findIndexByUUID(items, '658ebade-ce6c-4bf3-a11e-e2bebb3a1f9c')
 // Returns: 2
 ```
 
@@ -2486,18 +2504,18 @@ Type: `UseShuffle`
 <summary style="cursor:pointer">Examples</summary>
 
 ```ts
-import { useShuffle } from "@alessiofrittoli/react-hooks/queue";
+import { useShuffle } from '@alessiofrittoli/react-hooks/queue'
 
-const { enabled, shuffle, unshuffle, toggleShuffle } = useShuffle();
+const { enabled, shuffle, unshuffle, toggleShuffle } = useShuffle()
 
 // Shuffle the queue
-const shuffledQueue = shuffle(currentQueue, currentUUID);
+const shuffledQueue = shuffle(currentQueue, currentUUID)
 
 // Restore original order
-const restoredQueue = unshuffle(currentQueue, currentUUID);
+const restoredQueue = unshuffle(currentQueue, currentUUID)
 
 // Toggle shuffle state
-const updatedQueue = toggleShuffle(currentQueue, currentUUID);
+const updatedQueue = toggleShuffle(currentQueue, currentUUID)
 ```
 
 </details>
@@ -2653,26 +2671,26 @@ The debounced value, which updates only after the delay has passed.
 <summary style="cursor:pointer">Usage</summary>
 
 ```tsx
-"use client";
+'use client'
 
-import { useEffect, useState } from "react";
-import { useDebounce } from "@alessiofrittoli/react-hooks";
+import { useDebounce } from '@alessiofrittoli/react-hooks'
+import { useEffect, useState } from 'react'
 
 const MyComponent: React.FC = () => {
-  const [query, setQuery] = useState("");
-  const debouncedQuery = useDebounce(query);
+  const [query, setQuery] = useState('')
+  const debouncedQuery = useDebounce(query)
 
   useEffect(() => {
-    if (!debouncedQuery) return;
+    if (!debouncedQuery) return
 
-    fetch("...", {
+    fetch('...', {
       // ...
       body: JSON.stringify({ query: debouncedQuery }),
-    });
-  }, [debouncedQuery]);
+    })
+  }, [debouncedQuery])
 
-  return <input onChange={(event) => setQuery(event.target.value)} />;
-};
+  return <input onChange={event => setQuery(event.target.value)} />
+}
 ```
 
 </details>
@@ -2744,21 +2762,21 @@ If `updateState` is set to `true` then the following property is added in the re
 ##### Basic usage
 
 ```tsx
-"use client";
+'use client'
 
-import { useCallback } from "react";
-import { useInterval } from "@alessiofrittoli/react-hooks";
+import { useInterval } from '@alessiofrittoli/react-hooks'
+import { useCallback } from 'react'
 
 const MyComponent: React.FC = () => {
   const { stop } = useInterval(
     useCallback(() => {
-      console.log("tick timer");
+      console.log('tick timer')
     }, []),
     { delay: 1000 },
-  );
+  )
 
-  return <button onClick={stop}>Stop timer</button>;
-};
+  return <button onClick={stop}>Stop timer</button>
+}
 ```
 
 ---
@@ -2766,15 +2784,15 @@ const MyComponent: React.FC = () => {
 ##### Rely on state updates
 
 ```tsx
-"use client";
+'use client'
 
-import { useCallback } from "react";
-import { useInterval } from "@alessiofrittoli/react-hooks";
+import { useInterval } from '@alessiofrittoli/react-hooks'
+import { useCallback } from 'react'
 
 const MyComponent: React.FC = () => {
   const { isActive, start, stop } = useInterval(
     useCallback(() => {
-      console.log("tick timer");
+      console.log('tick timer')
     }, []),
     {
       delay: 1000,
@@ -2782,15 +2800,15 @@ const MyComponent: React.FC = () => {
       runOnStart: true,
       updateState: true,
     },
-  );
+  )
 
   return (
     <>
       {!isActive && <button onClick={start}>Start timer</button>}
       {isActive && <button onClick={stop}>Stop timer</button>}
     </>
-  );
-};
+  )
+}
 ```
 
 </details>
@@ -2846,19 +2864,19 @@ This is a lighter version of [`useInterval`](#useinterval) and is suggested to u
 <summary style="cursor:pointer">Usage</summary>
 
 ```tsx
-"use client";
+'use client'
 
-import { useCallback } from "react";
-import { useLightInterval } from "@alessiofrittoli/react-hooks";
+import { useLightInterval } from '@alessiofrittoli/react-hooks'
+import { useCallback } from 'react'
 
 const MyComponent: React.FC = () => {
   useLightInterval(
     useCallback(() => {
-      console.log("tick timer");
+      console.log('tick timer')
     }, []),
     { delay: 1000 },
-  );
-};
+  )
+}
 ```
 
 </details>
@@ -2940,21 +2958,21 @@ If `updateState` is set to `true` then the following property is added in the re
 ##### Basic usage
 
 ```tsx
-"use client";
+'use client'
 
-import { useCallback } from "react";
-import { useTimeout } from "@alessiofrittoli/react-hooks";
+import { useTimeout } from '@alessiofrittoli/react-hooks'
+import { useCallback } from 'react'
 
 const MyComponent: React.FC = () => {
   const { stop } = useTimeout(
     useCallback(() => {
-      console.log("tick timer");
+      console.log('tick timer')
     }, []),
     { delay: 1000 },
-  );
+  )
 
-  return <button onClick={stop}>Stop timer</button>;
-};
+  return <button onClick={stop}>Stop timer</button>
+}
 ```
 
 ---
@@ -2962,15 +2980,15 @@ const MyComponent: React.FC = () => {
 ##### Rely on state updates
 
 ```tsx
-"use client";
+'use client'
 
-import { useCallback } from "react";
-import { useTimeout } from "@alessiofrittoli/react-hooks";
+import { useTimeout } from '@alessiofrittoli/react-hooks'
+import { useCallback } from 'react'
 
 const MyComponent: React.FC = () => {
   const { isActive, start, stop } = useTimeout(
     useCallback(() => {
-      console.log("tick timer");
+      console.log('tick timer')
     }, []),
     {
       delay: 1000,
@@ -2978,15 +2996,15 @@ const MyComponent: React.FC = () => {
       runOnStart: true,
       updateState: true,
     },
-  );
+  )
 
   return (
     <>
       {!isActive && <button onClick={start}>Start timer</button>}
       {isActive && <button onClick={stop}>Stop timer</button>}
     </>
-  );
-};
+  )
+}
 ```
 
 </details>
@@ -2998,25 +3016,25 @@ const MyComponent: React.FC = () => {
 You can pass `undefined` instead of a callback if you're interested only in timer running states.
 
 ```tsx
-"use client";
+'use client'
 
-import { useCallback } from "react";
-import { useTimeout } from "@alessiofrittoli/react-hooks";
+import { useTimeout } from '@alessiofrittoli/react-hooks'
+import { useCallback } from 'react'
 
 const MyComponent: React.FC = () => {
   const { isActive, start, stop } = useTimeout(undefined, {
     delay: 1000,
     autoplay: false,
     updateState: true,
-  });
+  })
 
   return (
     <>
       {!isActive && <button onClick={start}>Start timer</button>}
       {isActive && <button onClick={stop}>Stop timer</button>}
     </>
-  );
-};
+  )
+}
 ```
 
 </details>
@@ -3061,96 +3079,24 @@ This is a lighter version of [`useTimeout`](#usetimeout) and is suggested to use
 <summary style="cursor:pointer">Usage</summary>
 
 ```tsx
-"use client";
+'use client'
 
-import { useCallback } from "react";
-import { useLightTimeout } from "@alessiofrittoli/react-hooks";
+import { useLightTimeout } from '@alessiofrittoli/react-hooks'
+import { useCallback } from 'react'
 
 const MyComponent: React.FC = () => {
   useLightTimeout(
     useCallback(() => {
-      console.log("tick timer");
+      console.log('tick timer')
     }, []),
     { delay: 1000 },
-  );
-};
+  )
+}
 ```
 
 </details>
 
 ---
-
-### Development
-
-#### Install dependencies
-
-```bash
-npm install
-```
-
-or using `pnpm`
-
-```bash
-pnpm i
-```
-
-#### Build the source code
-
-Run the following command to test and build code for distribution.
-
-```bash
-pnpm build
-```
-
-#### [ESLint](https://www.npmjs.com/package/eslint)
-
-Run warnings and errors checks.
-
-```bash
-pnpm lint
-```
-
-#### [Jest](https://npmjs.com/package/jest)
-
-Run all the defined test suites by running the following:
-
-```bash
-# Run tests and watch file changes.
-pnpm test:watch
-
-# Run tests in a CI environment.
-pnpm test:ci
-```
-
-- See [`package.json`](./package.json) file scripts for more info.
-
-Run tests with coverage.
-
-An HTTP server is then started to serve coverage files from `./coverage` folder.
-
-⚠️ You may see a blank page the first time you run this command. Simply refresh the browser to see the updates.
-
-```bash
-test:coverage:serve
-```
-
----
-
-### Contributing
-
-Contributions are truly welcome!
-
-Please refer to the [Contributing Doc](./CONTRIBUTING.md) for more information on how to start contributing to this project.
-
-Help keep this project up to date with [GitHub Sponsor][sponsor-url].
-
-[![GitHub Sponsor][sponsor-badge]][sponsor-url]
-
----
-
-### Security
-
-If you believe you have found a security vulnerability, we encourage you to **_responsibly disclose this and NOT open a public issue_**. We will investigate all legitimate reports. Email `security@alessiofrittoli.it` to disclose any security vulnerabilities.
 
 ### Made with ☕
 

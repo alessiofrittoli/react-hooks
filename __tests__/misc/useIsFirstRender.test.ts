@@ -1,25 +1,22 @@
-import { renderHook } from '@testing-library/react'
 import { useIsFirstRender } from '@/misc/useIsFirstRender'
+import { renderHook } from '@testing-library/react'
+import { describe, expect, it } from 'vitest'
 
+describe('useIsFirstRender', () => {
+	it('returns true on the first render', () => {
+		const { result } = renderHook(() => useIsFirstRender())
+		expect(result.current).toBe(true)
+	})
 
-describe( 'useIsFirstRender', () => {
+	it('returns false on subsequent renders', () => {
+		const { result, rerender } = renderHook(() => useIsFirstRender())
 
-	it( 'returns true on the first render', () => {
-		const { result } = renderHook( () => useIsFirstRender() )
-		expect( result.current ).toBe( true )
-	} )
-
-	it( 'returns false on subsequent renders', () => {
-
-		const { result, rerender } = renderHook( () => useIsFirstRender() )
-
-		expect( result.current ).toBe( true )
-
-		rerender()
-		expect( result.current ).toBe( false )
+		expect(result.current).toBe(true)
 
 		rerender()
-		expect( result.current ).toBe( false )
-	} )
+		expect(result.current).toBe(false)
 
-} )
+		rerender()
+		expect(result.current).toBe(false)
+	})
+})

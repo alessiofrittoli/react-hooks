@@ -1,39 +1,29 @@
-import { renderHook } from '@testing-library/react'
+import { useMediaQuery as _useMediaQuery, type UseMediaQueryStateOptions } from '@/browser-api/useMediaQuery'
 import { portraitMediaQuery } from '@alessiofrittoli/web-utils'
-
-import { useMediaQuery } from '@/browser-api/useMediaQuery'
+import { describe, expect, it, vi, type Mock } from 'vitest'
 import { useIsPortrait } from '@/browser-api/useIsPortrait'
+import { renderHook } from '@testing-library/react'
 
-jest.mock( '@/browser-api/useMediaQuery' )
-const mockedUseMediaQuery = useMediaQuery as jest.Mock
+vi.mock('@/browser-api/useMediaQuery')
 
+const useMediaQuery = _useMediaQuery as Mock<(query: string, options?: UseMediaQueryStateOptions) => boolean>
 
-describe( 'useIsPortrait', () => {
+describe('useIsPortrait', () => {
+	it('returns true when the device is in portrait mode', () => {
+		useMediaQuery.mockReturnValue(true)
 
-	afterEach( () => {
-		jest.clearAllMocks().resetModules()
-	} )
+		const { result } = renderHook(() => useIsPortrait())
 
-	it( 'returns true when the device is in portrait mode', () => {
+		expect(result.current).toBe(true)
+		expect(useMediaQuery).toHaveBeenCalledWith(portraitMediaQuery)
+	})
 
-		mockedUseMediaQuery.mockReturnValue( true )
+	it('returns false when the device is not in portrait mode', () => {
+		useMediaQuery.mockReturnValue(false)
 
-		const { result } = renderHook( () => useIsPortrait() )
+		const { result } = renderHook(() => useIsPortrait())
 
-		expect( result.current ).toBe( true )
-		expect( mockedUseMediaQuery ).toHaveBeenCalledWith( portraitMediaQuery )
-	} )
-
-
-	it( 'returns false when the device is not in portrait mode', () => {
-
-		mockedUseMediaQuery.mockReturnValue( false )
-
-		const { result } = renderHook( () => useIsPortrait() )
-
-		expect( result.current ).toBe( false )
-		expect( mockedUseMediaQuery ).toHaveBeenCalledWith( portraitMediaQuery )
-		
-	} )
-
-} )
+		expect(result.current).toBe(false)
+		expect(useMediaQuery).toHaveBeenCalledWith(portraitMediaQuery)
+	})
+})

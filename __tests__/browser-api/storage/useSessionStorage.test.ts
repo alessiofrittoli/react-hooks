@@ -1,26 +1,18 @@
-import { renderHook } from '@testing-library/react'
 import { useStorage as _useStorage, useSessionStorage } from '@/browser-api'
+import { describe, expect, it, vi, type Mock } from 'vitest'
+import { renderHook } from '@testing-library/react'
 
-jest.mock( '@/browser-api/storage/useStorage' )
+vi.mock('@/browser-api/storage/useStorage')
 
-const useStorage = _useStorage as jest.Mock
+const useStorage = _useStorage as Mock<typeof _useStorage>
 
-describe( 'useSessionStorage', () => {
+describe('useSessionStorage', () => {
+	const key = 'testKey'
+	const initialValue = 'testValue'
 
-	const key			= 'testKey'
-	const initialValue	= 'testValue'
+	it('shortcut usage of useStorage', () => {
+		renderHook(() => useSessionStorage(key, initialValue))
 
-	afterEach( () => {
-		jest.clearAllMocks().resetModules()
-	} )
-
-	it( 'shortcut usage of useStorage', () => {
-
-		renderHook( () => useSessionStorage( key, initialValue ) )
-
-		expect( useStorage )
-			.toHaveBeenCalledWith( key, initialValue, 'session' )
-			
-	} )
-
-} )
+		expect(useStorage).toHaveBeenCalledWith(key, initialValue, 'session')
+	})
+})

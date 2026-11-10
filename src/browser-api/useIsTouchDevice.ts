@@ -1,5 +1,4 @@
-import { useMediaQuery } from './useMediaQuery'
-
+import { useMediaQuery } from '@/browser-api/useMediaQuery'
 
 /**
  * Detects if the current device supports touch events.
@@ -7,13 +6,13 @@ import { useMediaQuery } from './useMediaQuery'
  * @returns	A boolean indicating whether the device is a touch device or not.
  *
  * @example
- * 
+ *
  * ```ts
  * const isTouch = useIsTouchDevice()
- * 
+ *
  * if ( isTouch ) {
  *   // Enable touch-specific UI
  * }
  * ```
  */
-export const useIsTouchDevice = () => useMediaQuery( '(pointer: coarse)' )
+export const useIsTouchDevice = (): boolean => useMediaQuery('(pointer: coarse)')

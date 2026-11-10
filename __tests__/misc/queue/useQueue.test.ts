@@ -1,549 +1,518 @@
-import { act, renderHook } from '@testing-library/react'
-import { useQueue } from '@/misc/queue/useQueue'
-import { useShuffle as _useShuffle } from '@/misc/queue/useShuffle'
 import {
 	addItemsUUID as _addItemsUUID,
 	maybeAddItemsUUID as _maybeAddItemsUUID,
 	findIndexByUUID as _findIndexByUUID,
-} from '@/misc/queue/utils'
-import type { Queue, UUID } from '@/misc/queue/types'
+} from '@/queue/utils'
+import { useShuffle as _useShuffle, type UseShuffle } from '@/queue/useShuffle'
+import { beforeEach, describe, expect, it, vi, type Mock } from 'vitest'
+import { act, renderHook } from '@testing-library/react'
+import type { Queue, UUID } from '@/queue/types'
+import { useQueue } from '@/queue/useQueue'
 
-jest.mock( '@/misc/queue/useShuffle', () => ( {
-	useShuffle: jest.fn(),
-} ) )
+vi.mock('@/queue/useShuffle', () => ({
+	useShuffle: vi.fn(),
+}))
 
-jest.mock( '@/misc/queue/utils', () => {
-	const actual = jest.requireActual( '@/misc/queue/utils' )
+vi.mock('@/queue/utils', async () => {
+	const { findIndexByUUID, ...module } = await vi.importActual('@/queue/utils')
+
 	return {
-		...actual,
-		addItemsUUID: jest.fn(),
-		maybeAddItemsUUID: jest.fn(),
-		findIndexByUUID: jest.fn( actual.findIndexByUUID ),
+		...module,
+		addItemsUUID: vi.fn(),
+		maybeAddItemsUUID: vi.fn(),
+		findIndexByUUID: vi.fn(findIndexByUUID as typeof _findIndexByUUID),
 	}
-} )
+})
 
-const useShuffle = _useShuffle as jest.Mock
-const addItemsUUID = _addItemsUUID as jest.Mock
-const maybeAddItemsUUID = _maybeAddItemsUUID as jest.Mock
-const findIndexByUUID = _findIndexByUUID as jest.Mock
-const actualUtils = jest.requireActual( '@/misc/queue/utils' ) as typeof import( '@/misc/queue/utils' )
+const useShuffle = _useShuffle as Mock<typeof _useShuffle>
+const addItemsUUID = _addItemsUUID as Mock<typeof _addItemsUUID>
+const maybeAddItemsUUID = _maybeAddItemsUUID as Mock<typeof _maybeAddItemsUUID>
+const findIndexByUUID = _findIndexByUUID as Mock<typeof _findIndexByUUID>
 
-const makeQueue = ( uuids: string[] ): Queue => ( {
-	items: uuids.map( ( uuid ) => ( { uuid: uuid as UUID } ) ),
-} )
+const getActualUtils = (): Promise<
+	// eslint-disable-next-line @typescript-eslint/consistent-type-imports
+	typeof import('@/queue/utils')
+> => vi.importActual('@/queue/utils')
 
-const makeQueuedItems = ( uuids: string[] ) => (
-	uuids.map( ( uuid ) => ( { uuid: uuid as UUID } ) )
-)
+const makeQueue = (uuids: string[]): Queue => ({
+	items: uuids.map(uuid => ({ uuid: uuid as UUID })),
+})
 
-describe( 'useQueue', () => {
+const makeQueuedItems = (
+	uuids: string[],
+): {
+	uuid: UUID
+}[] => uuids.map(uuid => ({ uuid: uuid as UUID }))
 
-	beforeEach( () => {
-		useShuffle.mockReturnValue( {
+describe('useQueue', () => {
+	beforeEach(async () => {
+		useShuffle.mockReturnValue({
 			enabled: false,
-			shuffle: jest.fn( ( queue: Queue ) => queue ),
-			unshuffle: jest.fn( ( queue: Queue ) => queue ),
-			toggleShuffle: jest.fn( ( queue: Queue ) => queue ),
-		} )
-		findIndexByUUID.mockImplementation( actualUtils.findIndexByUUID )
-	} )
+			shuffle: vi.fn((queue: Queue) => queue) as UseShuffle['shuffle'],
+			unshuffle: vi.fn((queue: Queue) => queue) as UseShuffle['unshuffle'],
+			toggleShuffle: vi.fn((queue: Queue) => queue) as UseShuffle['toggleShuffle'],
+		})
 
-	afterEach( () => {
-		jest.clearAllMocks().resetModules()
-	} )
+		findIndexByUUID.mockImplementation((await getActualUtils()).findIndexByUUID)
+	})
 
+	it('initializes with defaults and derives queue metadata', () => {
+		const queue = makeQueue(['a', 'b', 'c'])
 
-	it( 'initializes with defaults and derives queue metadata', () => {
+		const { result } = renderHook(() =>
+			useQueue({
+				queue,
+				current: queue.items[1],
+				repeat: false,
+			}),
+		)
 
-		const queue = makeQueue( [ 'a', 'b', 'c' ] )
+		expect(result.current.currentId).toBe('b')
+		expect(result.current.hasPrevious).toBe(true)
+		expect(result.current.hasNext).toBe(true)
+		expect(result.current.nextFromQueue.map(item => item.uuid)).toEqual(['c'])
+		expect(result.current.effectiveQueue).toEqual(queue.items)
+	})
 
-		const { result } = renderHook( () => useQueue( {
-			queue,
-			current: queue.items[ 1 ],
-			repeat: false,
-		} ) )
+	it('adds items to the custom queue and updates effective queue', () => {
+		const queue = makeQueue(['a'])
+		const added = makeQueuedItems(['x', 'y'])
+		addItemsUUID.mockReturnValue(added)
 
-		expect( result.current.currentId ).toBe( 'b' )
-		expect( result.current.hasPrevious ).toBe( true )
-		expect( result.current.hasNext ).toBe( true )
-		expect( result.current.nextFromQueue.map( item => item.uuid ) )
-			.toEqual( [ 'c' ] )
-		expect( result.current.effectiveQueue ).toEqual( queue.items )
+		const { result } = renderHook(() =>
+			useQueue({
+				queue,
+				current: queue.items[0],
+			}),
+		)
 
-	} )
+		act(() => {
+			result.current.addToQueue([{ uuid: 'x' as UUID }, { uuid: 'y' as UUID }])
+		})
 
+		expect(addItemsUUID).toHaveBeenCalledTimes(1)
+		expect(result.current.customQueue).toEqual(added)
+		expect(result.current.hasNext).toBe(true)
+		expect(result.current.effectiveQueue.map(item => item.uuid)).toEqual(['a', 'x', 'y'])
+	})
 
-	it( 'adds items to the custom queue and updates effective queue', () => {
+	it('jumps to a custom queue item without moving the main queue cursor', () => {
+		const queue = makeQueue(['a', 'b', 'c'])
+		const added = makeQueuedItems(['x', 'y'])
+		addItemsUUID.mockReturnValue(added)
 
-		const queue = makeQueue( [ 'a' ] )
-		const added = makeQueuedItems( [ 'x', 'y' ] )
-		addItemsUUID.mockReturnValue( added )
+		const { result } = renderHook(() =>
+			useQueue({
+				queue,
+				current: queue.items[0],
+			}),
+		)
 
-		const { result } = renderHook( () => useQueue( {
-			queue,
-			current: queue.items[ 0 ],
-		} ) )
+		act(() => {
+			result.current.addToQueue([{ uuid: 'x' as UUID }, { uuid: 'y' as UUID }])
+		})
 
-		act( () => {
-			result.current.addToQueue( [ { uuid: 'x' as UUID }, { uuid: 'y' as UUID } ] )
-		} )
+		act(() => {
+			result.current.jumpTo({ uuid: 'y' as UUID })
+		})
 
-		expect( addItemsUUID ).toHaveBeenCalledTimes( 1 )
-		expect( result.current.customQueue ).toEqual( added )
-		expect( result.current.hasNext ).toBe( true )
-		expect( result.current.effectiveQueue.map( item => item.uuid ) )
-			.toEqual( [ 'a', 'x', 'y' ] )
+		expect(result.current.currentId).toBe('y')
+		expect(result.current.customQueue).toEqual([])
+		expect(result.current.nextFromQueue.map(item => item.uuid)).toEqual(['b', 'c'])
+	})
 
-	} )
+	it('drains custom queue items before advancing the main queue', () => {
+		const queue = makeQueue(['a', 'b'])
+		const added = makeQueuedItems(['x', 'y'])
+		addItemsUUID.mockReturnValue(added)
 
+		const { result } = renderHook(() =>
+			useQueue({
+				queue,
+				current: queue.items[0],
+			}),
+		)
 
-	it( 'jumps to a custom queue item without moving the main queue cursor', () => {
+		act(() => {
+			result.current.addToQueue([{ uuid: 'x' as UUID }, { uuid: 'y' as UUID }])
+		})
 
-		const queue = makeQueue( [ 'a', 'b', 'c' ] )
-		const added = makeQueuedItems( [ 'x', 'y' ] )
-		addItemsUUID.mockReturnValue( added )
-
-		const { result } = renderHook( () => useQueue( {
-			queue,
-			current: queue.items[ 0 ],
-		} ) )
-
-		act( () => {
-			result.current.addToQueue( [ { uuid: 'x' as UUID }, { uuid: 'y' as UUID } ] )
-		} )
-
-		act( () => {
-			result.current.jumpTo( { uuid: 'y' as UUID } )
-		} )
-
-		expect( result.current.currentId ).toBe( 'y' )
-		expect( result.current.customQueue ).toEqual( [] )
-		expect( result.current.nextFromQueue.map( item => item.uuid ) )
-			.toEqual( [ 'b', 'c' ] )
-
-	} )
-
-
-	it( 'drains custom queue items before advancing the main queue', () => {
-
-		const queue = makeQueue( [ 'a', 'b' ] )
-		const added = makeQueuedItems( [ 'x', 'y' ] )
-		addItemsUUID.mockReturnValue( added )
-
-		const { result } = renderHook( () => useQueue( {
-			queue,
-			current: queue.items[ 0 ],
-		} ) )
-
-		act( () => {
-			result.current.addToQueue( [ { uuid: 'x' as UUID }, { uuid: 'y' as UUID } ] )
-		} )
-
-		act( () => {
+		act(() => {
 			result.current.next()
-		} )
+		})
 
-		expect( result.current.currentId ).toBe( 'x' )
-		expect( result.current.customQueue.map( item => item.uuid ) )
-			.toEqual( [ 'y' ] )
+		expect(result.current.currentId).toBe('x')
+		expect(result.current.customQueue.map(item => item.uuid)).toEqual(['y'])
 
-		act( () => {
+		act(() => {
 			result.current.next()
-		} )
+		})
 
-		expect( result.current.currentId ).toBe( 'y' )
-		expect( result.current.customQueue ).toEqual( [] )
+		expect(result.current.currentId).toBe('y')
+		expect(result.current.customQueue).toEqual([])
 
-		act( () => {
+		act(() => {
 			result.current.next()
-		} )
+		})
 
-		expect( result.current.currentId ).toBe( 'b' )
+		expect(result.current.currentId).toBe('b')
+	})
 
-	} )
+	it('removes items from both queues', () => {
+		const queue = makeQueue(['a', 'b'])
+		const added = makeQueuedItems(['x'])
+		addItemsUUID.mockReturnValue(added)
 
+		const { result } = renderHook(() =>
+			useQueue({
+				queue,
+				current: queue.items[0],
+			}),
+		)
 
-	it( 'removes items from both queues', () => {
+		act(() => {
+			result.current.addToQueue([{ uuid: 'x' as UUID }])
+		})
 
-		const queue = makeQueue( [ 'a', 'b' ] )
-		const added = makeQueuedItems( [ 'x' ] )
-		addItemsUUID.mockReturnValue( added )
+		act(() => {
+			result.current.removeFromQueue('b' as UUID)
+		})
 
-		const { result } = renderHook( () => useQueue( {
-			queue,
-			current: queue.items[ 0 ],
-		} ) )
+		expect(result.current.queue.items.map(item => item.uuid)).toEqual(['a'])
 
-		act( () => {
-			result.current.addToQueue( [ { uuid: 'x' as UUID } ] )
-		} )
+		act(() => {
+			result.current.removeFromQueue('x' as UUID)
+		})
 
-		act( () => {
-			result.current.removeFromQueue( 'b' as UUID )
-		} )
+		expect(result.current.customQueue).toEqual([])
+	})
 
-		expect( result.current.queue.items.map( item => item.uuid ) )
-			.toEqual( [ 'a' ] )
-
-		act( () => {
-			result.current.removeFromQueue( 'x' as UUID )
-		} )
-
-		expect( result.current.customQueue ).toEqual( [] )
-
-	} )
-
-
-	it( 'normalizes UUIDs when setting a new queue', () => {
-
+	it('normalizes UUIDs when setting a new queue', () => {
 		type Item = { label: string }
 		const queue: Queue<Item> = {
-			items: [ { label: 'a', uuid: 'a' as UUID } ],
+			items: [{ label: 'a', uuid: 'a' as UUID }],
 		}
-		const normalized = [ { label: 'new', uuid: 'n1' as UUID } ]
-		maybeAddItemsUUID.mockReturnValue( normalized )
+		const normalized = [{ label: 'new', uuid: 'n1' as UUID }]
+		maybeAddItemsUUID.mockReturnValue(normalized)
 
-		const { result } = renderHook( () => useQueue( { queue } ) )
+		const { result } = renderHook(() => useQueue({ queue }))
 
 		let returned: Queue | undefined
 
-		act( () => {
-			returned = result.current.setQueue( { items: [ { label: 'new' } ] } )
-		} )
+		act(() => {
+			returned = result.current.setQueue({ items: [{ label: 'new' }] })
+		})
 
-		expect( maybeAddItemsUUID ).toHaveBeenCalledTimes( 1 )
-		expect( returned?.items ).toEqual( normalized )
-		expect( result.current.queue.items ).toEqual( normalized )
+		expect(maybeAddItemsUUID).toHaveBeenCalledTimes(1)
+		expect(returned?.items).toEqual(normalized)
+		expect(result.current.queue.items).toEqual(normalized)
+	})
 
-	} )
+	it('updates hasPrevious and hasNext when repeat is disabled', () => {
+		const queue = makeQueue(['a', 'b', 'c'])
 
+		const { result } = renderHook(() =>
+			useQueue({
+				queue,
+				current: queue.items[0],
+				repeat: false,
+			}),
+		)
 
-	it( 'updates hasPrevious and hasNext when repeat is disabled', () => {
+		expect(result.current.hasPrevious).toBe(false)
+		expect(result.current.hasNext).toBe(true)
 
-		const queue = makeQueue( [ 'a', 'b', 'c' ] )
+		act(() => {
+			result.current.jumpTo({ uuid: 'c' as UUID })
+		})
 
-		const { result } = renderHook( () => useQueue( {
-			queue,
-			current: queue.items[ 0 ],
-			repeat: false,
-		} ) )
+		expect(result.current.hasPrevious).toBe(true)
+		expect(result.current.hasNext).toBe(false)
+	})
 
-		expect( result.current.hasPrevious ).toBe( false )
-		expect( result.current.hasNext ).toBe( true )
+	it('returns false for hasPrevious/hasNext when queue is empty', () => {
+		const queue = makeQueue([])
 
-		act( () => {
-			result.current.jumpTo( { uuid: 'c' as UUID } )
-		} )
+		const { result } = renderHook(() =>
+			useQueue({
+				queue,
+				repeat: false,
+			}),
+		)
 
-		expect( result.current.hasPrevious ).toBe( true )
-		expect( result.current.hasNext ).toBe( false )
+		expect(result.current.hasPrevious).toBe(false)
+		expect(result.current.hasNext).toBe(false)
+	})
 
-	} )
+	it('returns hasPrevious/hasNext when cursor is missing but queue has items', () => {
+		const queue = makeQueue(['a'])
 
+		const { result } = renderHook(() =>
+			useQueue({
+				queue,
+				repeat: false,
+			}),
+		)
 
-	it( 'returns false for hasPrevious/hasNext when queue is empty', () => {
+		expect(result.current.hasPrevious).toBe(true)
+		expect(result.current.hasNext).toBe(true)
+	})
 
-		const queue = makeQueue( [] )
+	it('toggles repeat state', () => {
+		const queue = makeQueue(['a'])
 
-		const { result } = renderHook( () => useQueue( {
-			queue,
-			repeat: false,
-		} ) )
+		const { result } = renderHook(() =>
+			useQueue({
+				queue,
+				repeat: false,
+			}),
+		)
 
-		expect( result.current.hasPrevious ).toBe( false )
-		expect( result.current.hasNext ).toBe( false )
+		expect(result.current.isRepeatEnabled).toBe(false)
 
-	} )
-
-
-	it( 'returns hasPrevious/hasNext when cursor is missing but queue has items', () => {
-
-		const queue = makeQueue( [ 'a' ] )
-
-		const { result } = renderHook( () => useQueue( {
-			queue,
-			repeat: false,
-		} ) )
-
-		expect( result.current.hasPrevious ).toBe( true )
-		expect( result.current.hasNext ).toBe( true )
-
-	} )
-
-
-	it( 'toggles repeat state', () => {
-
-		const queue = makeQueue( [ 'a' ] )
-
-		const { result } = renderHook( () => useQueue( {
-			queue,
-			repeat: false,
-		} ) )
-
-		expect( result.current.isRepeatEnabled ).toBe( false )
-
-		act( () => {
+		act(() => {
 			result.current.toggleRepeat()
-		} )
+		})
 
-		expect( result.current.isRepeatEnabled ).toBe( true )
+		expect(result.current.isRepeatEnabled).toBe(true)
 
-		act( () => {
+		act(() => {
 			result.current.toggleRepeat()
-		} )
+		})
 
-		expect( result.current.isRepeatEnabled ).toBe( false )
+		expect(result.current.isRepeatEnabled).toBe(false)
+	})
 
-	} )
+	it('jumps to the first item when uuid is missing and accepts a new queue', () => {
+		const queue = makeQueue(['a'])
+		const newQueue = makeQueue(['x', 'y'])
+		maybeAddItemsUUID.mockReturnValue(newQueue.items)
 
+		const { result } = renderHook(() => useQueue({ queue }))
 
-	it( 'jumps to the first item when uuid is missing and accepts a new queue', () => {
+		let returned: Queue['items'][number] | undefined
 
-		const queue = makeQueue( [ 'a' ] )
-		const newQueue = makeQueue( [ 'x', 'y' ] )
-		maybeAddItemsUUID.mockReturnValue( newQueue.items )
+		act(() => {
+			returned = result.current.jumpTo({ queue: { items: newQueue.items } })
+		})
 
-		const { result } = renderHook( () => useQueue( { queue } ) )
+		expect(maybeAddItemsUUID).toHaveBeenCalledTimes(1)
+		expect(returned?.uuid).toBe('x')
+		expect(result.current.currentId).toBe('x')
+		expect(result.current.queue.items.map(item => item.uuid)).toEqual(['x', 'y'])
+	})
 
-		let returned: Queue[ 'items' ][ number ] | undefined
+	it("jumps to the first item when uuid is set but it doesn't exists in the new queue", () => {
+		const queue = makeQueue(['a'])
+		const newQueue = makeQueue(['x', 'y'])
+		maybeAddItemsUUID.mockReturnValue(newQueue.items)
 
-		act( () => {
-			returned = result.current.jumpTo( { queue: { items: newQueue.items } } )
-		} )
+		const { result } = renderHook(() => useQueue({ queue, current: queue.items.at(0) }))
 
-		expect( maybeAddItemsUUID ).toHaveBeenCalledTimes( 1 )
-		expect( returned?.uuid ).toBe( 'x' )
-		expect( result.current.currentId ).toBe( 'x' )
-		expect( result.current.queue.items.map( item => item.uuid ) )
-			.toEqual( [ 'x', 'y' ] )
+		let returned: Queue['items'][number] | undefined
 
-	} )
+		act(() => {
+			returned = result.current.jumpTo({
+				queue: { items: newQueue.items },
+				uuid: result.current.currentId,
+			})
+		})
 
+		expect(returned?.uuid).toBe('x')
+		expect(result.current.currentId).toBe('x')
+		expect(result.current.queue.items.map(item => item.uuid)).toEqual(['x', 'y'])
+	})
 
-	it( 'jumps to the first item when uuid is set but it doesn\'t exists in the new queue', () => {
+	it('previous returns the last item when current is undefined', () => {
+		const queue = makeQueue(['a', 'b'])
 
-		const queue = makeQueue( [ 'a' ] )
-		const newQueue = makeQueue( [ 'x', 'y' ] )
-		maybeAddItemsUUID.mockReturnValue( newQueue.items )
+		const { result } = renderHook(() => useQueue({ queue }))
 
-		const { result } = renderHook( () => useQueue( { queue, current: queue.items.at( 0 ) } ) )
+		let previousItem: Queue['items'][number] | undefined
 
-		let returned: Queue[ 'items' ][ number ] | undefined
-
-		act( () => {
-			returned = result.current.jumpTo( { queue: { items: newQueue.items }, uuid: result.current.currentId } )
-		} )
-
-		expect( returned?.uuid ).toBe( 'x' )
-		expect( result.current.currentId ).toBe( 'x' )
-		expect( result.current.queue.items.map( item => item.uuid ) )
-			.toEqual( [ 'x', 'y' ] )
-
-	} )
-
-
-	it( 'previous returns the last item when current is undefined', () => {
-
-		const queue = makeQueue( [ 'a', 'b' ] )
-
-		const { result } = renderHook( () => useQueue( { queue } ) )
-
-		let previousItem: Queue[ 'items' ][ number ] | undefined
-
-		act( () => {
+		act(() => {
 			previousItem = result.current.previous()
-		} )
+		})
 
-		expect( previousItem?.uuid ).toBe( 'b' )
-		expect( result.current.currentId ).toBe( 'b' )
+		expect(previousItem?.uuid).toBe('b')
+		expect(result.current.currentId).toBe('b')
+	})
 
-	} )
+	it('advances with getNext/next when custom queue is empty', () => {
+		const queue = makeQueue(['a', 'b', 'c'])
 
+		const { result } = renderHook(() =>
+			useQueue({
+				queue,
+				current: queue.items[0],
+			}),
+		)
 
-	it( 'advances with getNext/next when custom queue is empty', () => {
+		expect(result.current.getNext()?.uuid).toBe('b')
 
-		const queue = makeQueue( [ 'a', 'b', 'c' ] )
-
-		const { result } = renderHook( () => useQueue( {
-			queue,
-			current: queue.items[ 0 ],
-		} ) )
-
-		expect( result.current.getNext()?.uuid ).toBe( 'b' )
-
-		act( () => {
+		act(() => {
 			result.current.next()
-		} )
+		})
 
-		expect( result.current.currentId ).toBe( 'b' )
+		expect(result.current.currentId).toBe('b')
+	})
 
-	} )
+	it('uses custom queue for getNext and previous while in custom items', () => {
+		const queue = makeQueue(['a', 'b', 'c'])
+		const added = makeQueuedItems(['x', 'y'])
+		addItemsUUID.mockReturnValue(added)
 
+		const { result } = renderHook(() =>
+			useQueue({
+				queue,
+				current: queue.items[0],
+			}),
+		)
 
-	it( 'uses custom queue for getNext and previous while in custom items', () => {
+		act(() => {
+			result.current.addToQueue([{ uuid: 'x' as UUID }, { uuid: 'y' as UUID }])
+		})
 
-		const queue = makeQueue( [ 'a', 'b', 'c' ] )
-		const added = makeQueuedItems( [ 'x', 'y' ] )
-		addItemsUUID.mockReturnValue( added )
+		expect(result.current.getNext()?.uuid).toBe('x')
 
-		const { result } = renderHook( () => useQueue( {
-			queue,
-			current: queue.items[ 0 ],
-		} ) )
-
-		act( () => {
-			result.current.addToQueue( [ { uuid: 'x' as UUID }, { uuid: 'y' as UUID } ] )
-		} )
-
-		expect( result.current.getNext()?.uuid ).toBe( 'x' )
-
-		act( () => {
+		act(() => {
 			result.current.next()
-		} )
+		})
 
-		expect( result.current.currentId ).toBe( 'x' )
-		expect( result.current.getPrevious()?.uuid ).toBe( 'a' )
+		expect(result.current.currentId).toBe('x')
+		expect(result.current.getPrevious()?.uuid).toBe('a')
+	})
 
-	} )
+	it('clears the custom queue', () => {
+		const queue = makeQueue(['a'])
+		const added = makeQueuedItems(['x'])
+		addItemsUUID.mockReturnValue(added)
 
+		const { result } = renderHook(() =>
+			useQueue({
+				queue,
+				current: queue.items[0],
+			}),
+		)
 
-	it( 'clears the custom queue', () => {
+		act(() => {
+			result.current.addToQueue([{ uuid: 'x' as UUID }])
+		})
 
-		const queue = makeQueue( [ 'a' ] )
-		const added = makeQueuedItems( [ 'x' ] )
-		addItemsUUID.mockReturnValue( added )
+		expect(result.current.customQueue).toEqual(added)
 
-		const { result } = renderHook( () => useQueue( {
-			queue,
-			current: queue.items[ 0 ],
-		} ) )
-
-		act( () => {
-			result.current.addToQueue( [ { uuid: 'x' as UUID } ] )
-		} )
-
-		expect( result.current.customQueue ).toEqual( added )
-
-		act( () => {
+		act(() => {
 			result.current.clearQueue()
-		} )
+		})
 
-		expect( result.current.customQueue ).toEqual( [] )
+		expect(result.current.customQueue).toEqual([])
+	})
 
-	} )
+	it('uses custom queue items when jumping to a custom uuid', () => {
+		const queue = makeQueue(['a', 'b'])
+		const added = makeQueuedItems(['x', 'y'])
+		addItemsUUID.mockReturnValue(added)
 
+		findIndexByUUID.mockReturnValue(0)
 
-	it( 'uses custom queue items when jumping to a custom uuid', () => {
+		const { result } = renderHook(() =>
+			useQueue({
+				queue,
+				current: queue.items[0],
+			}),
+		)
 
-		const queue = makeQueue( [ 'a', 'b' ] )
-		const added = makeQueuedItems( [ 'x', 'y' ] )
-		addItemsUUID.mockReturnValue( added )
+		act(() => {
+			result.current.addToQueue([{ uuid: 'x' as UUID }])
+		})
 
-		findIndexByUUID.mockReturnValue( 0 )
+		let jumped: Queue['items'][number] | undefined
 
-		const { result } = renderHook( () => useQueue( {
-			queue,
-			current: queue.items[ 0 ],
-		} ) )
+		act(() => {
+			jumped = result.current.jumpTo({ uuid: 'x' as UUID })
+		})
 
-		act( () => {
-			result.current.addToQueue( [ { uuid: 'x' as UUID } ] )
-		} )
+		expect(jumped?.uuid).toBe('x')
+		expect(result.current.currentId).toBe('x')
+		expect(result.current.customQueue.map(item => item.uuid)).toEqual(['y'])
+	})
 
-		let jumped: Queue[ 'items' ][ number ] | undefined
+	it('falls back to main queue when custom uuid is not found', () => {
+		const queue = makeQueue(['a', 'b', 'c'])
+		const added = makeQueuedItems(['x', 'y'])
 
-		act( () => {
-			jumped = result.current.jumpTo( { uuid: 'x' as UUID } )
-		} )
+		addItemsUUID.mockReturnValue(added)
 
-		expect( jumped?.uuid ).toBe( 'x' )
-		expect( result.current.currentId ).toBe( 'x' )
-		expect( result.current.customQueue.map( item => item.uuid ) ).toEqual( [ 'y' ] )
+		const { result } = renderHook(() =>
+			useQueue({
+				queue,
+				current: queue.items[0],
+			}),
+		)
 
-	} )
+		act(() => {
+			result.current.addToQueue([{ uuid: 'x' as UUID }, { uuid: 'y' as UUID }])
+		})
 
+		act(() => {
+			result.current.jumpTo({ uuid: 'b' as UUID })
+		})
 
-	it( 'falls back to main queue when custom uuid is not found', () => {
+		expect(result.current.currentId).toBe('b')
+		expect(result.current.customQueue.map(item => item.uuid)).toEqual(['x', 'y'])
+	})
 
-		const queue = makeQueue( [ 'a', 'b', 'c' ] )
-		const added = makeQueuedItems( [ 'x', 'y' ] )
-		addItemsUUID.mockReturnValue( added )
+	it('returns previous item from main queue when current is in main queue', () => {
+		const queue = makeQueue(['a', 'b', 'c'])
 
-		const { result } = renderHook( () => useQueue( {
-			queue,
-			current: queue.items[ 0 ],
-		} ) )
+		const { result } = renderHook(() =>
+			useQueue({
+				queue,
+				current: queue.items[1],
+			}),
+		)
 
-		act( () => {
-			result.current.addToQueue( [ { uuid: 'x' as UUID }, { uuid: 'y' as UUID } ] )
-		} )
+		expect(result.current.getPrevious()?.uuid).toBe('a')
+	})
 
-		act( () => {
-			result.current.jumpTo( { uuid: 'b' as UUID } )
-		} )
+	it('delegates shuffle controls to useShuffle handlers', () => {
+		const queue = makeQueue(['a', 'b'])
+		const shuffledQueue = makeQueue(['b', 'a'])
 
-		expect( result.current.currentId ).toBe( 'b' )
-		expect( result.current.customQueue.map( item => item.uuid ) )
-			.toEqual( [ 'x', 'y' ] )
-
-	} )
-
-
-	it( 'returns previous item from main queue when current is in main queue', () => {
-
-		const queue = makeQueue( [ 'a', 'b', 'c' ] )
-
-		const { result } = renderHook( () => useQueue( {
-			queue,
-			current: queue.items[ 1 ],
-		} ) )
-
-		expect( result.current.getPrevious()?.uuid ).toBe( 'a' )
-
-	} )
-
-
-	it( 'delegates shuffle controls to useShuffle handlers', () => {
-
-		const queue = makeQueue( [ 'a', 'b' ] )
-		const shuffledQueue = makeQueue( [ 'b', 'a' ] )
-
-		const handlers = {
+		const handlers: UseShuffle = {
 			enabled: true,
-			shuffle: jest.fn( () => shuffledQueue ),
-			unshuffle: jest.fn( () => queue ),
-			toggleShuffle: jest.fn( () => queue ),
+			shuffle: vi.fn(() => shuffledQueue) as UseShuffle['shuffle'],
+			unshuffle: vi.fn(() => queue) as UseShuffle['unshuffle'],
+			toggleShuffle: vi.fn(() => queue) as UseShuffle['toggleShuffle'],
 		}
 
-		useShuffle.mockReturnValue( handlers )
+		useShuffle.mockReturnValue(handlers)
 
-		const { result } = renderHook( () => useQueue( {
-			queue,
-			current: queue.items[ 0 ],
-		} ) )
+		const { result } = renderHook(() =>
+			useQueue({
+				queue,
+				current: queue.items[0],
+			}),
+		)
 
-		act( () => {
+		act(() => {
 			result.current.shuffle()
-		} )
+		})
 
-		expect( handlers.shuffle ).toHaveBeenCalledWith( queue, 'a' )
-		expect( result.current.queue.items.map( item => item.uuid ) )
-			.toEqual( [ 'b', 'a' ] )
+		expect(handlers.shuffle).toHaveBeenCalledWith(queue, 'a')
+		expect(result.current.queue.items.map(item => item.uuid)).toEqual(['b', 'a'])
 
-		act( () => {
+		act(() => {
 			result.current.unshuffle()
-		} )
+		})
 
-		expect( handlers.unshuffle ).toHaveBeenCalledWith( shuffledQueue, 'a' )
-		expect( result.current.queue.items.map( item => item.uuid ) )
-			.toEqual( [ 'a', 'b' ] )
+		expect(handlers.unshuffle).toHaveBeenCalledWith(shuffledQueue, 'a')
+		expect(result.current.queue.items.map(item => item.uuid)).toEqual(['a', 'b'])
 
-		act( () => {
+		act(() => {
 			result.current.toggleShuffle()
-		} )
+		})
 
-		expect( handlers.toggleShuffle ).toHaveBeenCalledWith( queue, 'a' )
-
-	} )
-
-} )
+		expect(handlers.toggleShuffle).toHaveBeenCalledWith(queue, 'a')
+	})
+})

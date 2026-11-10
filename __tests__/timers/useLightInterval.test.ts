@@ -1,85 +1,70 @@
-import { act, renderHook } from '@testing-library/react'
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
 import { useLightInterval } from '@/timers/useLightInterval'
+import { act, renderHook } from '@testing-library/react'
 
+describe('useLightInterval', () => {
+	beforeAll(() => {
+		vi.useFakeTimers()
+	})
 
-describe( 'useLightInterval', () => {
+	afterAll(() => {
+		vi.clearAllTimers().useRealTimers()
+	})
 
-	beforeAll( () => {
-		jest.useFakeTimers()
-	} )
+	it('calls the callback after the specified delay', () => {
+		const callback = vi.fn()
+		const delay = 1000
 
-	afterAll( () => {
-		jest.clearAllTimers()
-		jest.useRealTimers()
-	} )
+		renderHook(() => useLightInterval(callback, { delay }))
 
+		expect(callback).not.toHaveBeenCalled()
 
-	it( 'calls the callback after the specified delay', () => {
-	
-		const callback	= jest.fn()
-		const delay		= 1000
+		act(() => {
+			vi.advanceTimersByTime(delay)
+		})
 
-		renderHook( () => useLightInterval( callback, { delay } ) )
+		expect(callback).toHaveBeenCalledTimes(1)
+	})
 
-		expect( callback ).not.toHaveBeenCalled()
+	it('calls the callback with optional arguments', () => {
+		const callback = vi.fn()
+		const delay = 1000
+		const args = ['argument1', 'argument2']
 
-		act( () => {
-			jest.advanceTimersByTime( delay )
-		} )
+		renderHook(() => useLightInterval(callback, { delay, args }))
 
-		expect( callback ).toHaveBeenCalledTimes( 1 )
+		expect(callback).not.toHaveBeenCalled()
 
-	} )
+		act(() => {
+			vi.advanceTimersByTime(delay)
+		})
 
+		expect(callback).toHaveBeenCalledWith(...args)
+	})
 
-	it( 'calls the callback with optional arguments', () => {
-	
-		const callback	= jest.fn()
-		const delay		= 1000
-		const args		= [ 'argument1', 'argument2' ]
+	it('defaults delay to 1 if not provided', () => {
+		const callback = vi.fn()
 
-		renderHook( () => useLightInterval( callback, { delay, args } ) )
+		renderHook(() => useLightInterval(callback))
 
-		expect( callback ).not.toHaveBeenCalled()
+		act(() => {
+			vi.advanceTimersByTime(1)
+		})
 
-		act( () => {
-			jest.advanceTimersByTime( delay )
-		} )
+		expect(callback).toHaveBeenCalledTimes(1)
+	})
 
-		expect( callback ).toHaveBeenCalledWith( ...args )
+	it('clears the timer on unmount', () => {
+		const callback = vi.fn()
+		const delay = 1000
 
-	} )
+		const { unmount } = renderHook(() => useLightInterval(callback, { delay }))
 
-
-	it( 'defaults delay to 1 if not provided', () => {
-
-		const callback = jest.fn()
-
-		renderHook( () => useLightInterval( callback ) )
-
-		act( () => {
-			jest.advanceTimersByTime( 1 )
-		} )
-
-		expect( callback ).toHaveBeenCalledTimes( 1 )
-
-	} )
-
-
-	it( 'clears the timer on unmount', () => {
-
-		const callback	= jest.fn()
-		const delay		= 1000
-
-		const { unmount } = renderHook( () => useLightInterval( callback, { delay } ) )
-
-		act( () => {
+		act(() => {
 			unmount()
-			jest.advanceTimersByTime( delay )
-		} )
+			vi.advanceTimersByTime(delay)
+		})
 
-		expect( callback ).not.toHaveBeenCalled()
-
-	} )
-
-} )
+		expect(callback).not.toHaveBeenCalled()
+	})
+})
