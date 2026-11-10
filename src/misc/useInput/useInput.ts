@@ -1,48 +1,51 @@
+import type {
+	ChangeHandler,
+	InputState,
+	InputType,
+	ParseValueHandler,
+	ValidateValueHandler,
+} from '@/misc/useInput/types'
+import { initialState, inputReducer, isEmptyValue } from '@/misc/useInput/inputReducer'
+import { useUpdateEffect } from '@/misc/useUpdateEffect'
 import { useCallback, useMemo, useReducer } from 'react'
-import { useUpdateEffect } from '../useUpdateEffect'
+import { InputActionKind } from '@/misc/useInput/types'
 
-import { initialState, inputReducer, isEmptyValue } from './inputReducer'
-import { InputActionKind } from './types'
-import type { ChangeHandler, InputState, InputType, ParseValueHandler, ValidateValueHandler } from './types'
-
-export type { InputType, InputState, ChangeHandler, ParseValueHandler, ValidateValueHandler }
-
+export * from '@/misc/useInput/types'
 
 /**
  * useInput options.
- * 
+ *
  * @template I The input value type.
  * @template O The output parsed value type.
  */
-export interface UseInputOptions<I = unknown, O = I>
-{
+export interface UseInputOptions<I = unknown, O = I> {
 	/**
 	 * The React HTML input element ref.
-	 * 
+	 *
 	 * This is required to properly execute the {@link UseInputOutput.focus}.
 	 */
 	inputRef?: React.RefObject<InputType>
 	/**
 	 * The input initial value.
-	 * 
+	 *
 	 */
 	initialValue?: O | null
 	/**
 	 * A timeout in milliseconds which will be used to define the input as "touched" thus validations are triggered and errors can be displayed.
-	 * 
+	 *
 	 * @default 600
 	 */
 	touchTimeout?: number
 	/**
 	 * Validate value.
-	 * 
+	 *
 	 * @param value The value to validate. If `parse` callback is given, the `value` will be parsed before validation.
 	 * @returns `true` if the `value` has a valid state, `false` otherwise.
 	 */
 	validate?: ValidateValueHandler<O>
 	/**
 	 * Parse value.
-	 * 
+	 *
 	 * @param value The value to parse.
 	 * @returns The parsed `value`.
 	 */
@@ -54,12 +57,10 @@ export interface UseInputOptions<I = unknown, O = I>
 	onChange?: ChangeHandler<O>
 }
 
-
-export interface UseInputOutput<I = unknown, O = I> extends InputState<I, O>
-{
+export interface UseInputOutput<I = unknown, O = I> extends InputState<I, O> {
 	/**
 	 * Indicates whether the Input is empty or not.
-	 * 
+	 *
 	 */
 	isEmpty: boolean
 	/**
@@ -70,92 +71,80 @@ export interface UseInputOutput<I = unknown, O = I> extends InputState<I, O>
 	hasError: boolean
 	/**
 	 * Change handler callback used to handle Input change events.
-	 * 
+	 *
 	 */
 	changeHandler: React.ChangeEventHandler<InputType>
 	/**
 	 * Blur handler callback used to handle Input blur events.
-	 * 
+	 *
 	 */
 	blurHandler: () => void
 	/**
 	 * Call `setValue` method to update input value.
-	 * 
+	 *
 	 */
-	setValue: ( value: O ) => void
+	setValue: (value: O) => void
 	/**
 	 * Call `submit` method to re-run validations and ensure error state is updated successfully.
-	 * 
+	 *
 	 */
 	submit: () => void
 	/**
 	 * Call `reset` method to reset the Input state.
-	 * 
+	 *
 	 */
 	reset: () => void
 	/**
 	 * Call `focus` method to focus the Input Element. `inputRef` must be provided in the input options.
-	 * 
+	 *
 	 */
 	focus: () => void
 }
 
-
 /**
  * Handle input states with ease.
- * 
+ *
  * @param options An object defining custom options. See {@link UseInputOptions} for more info.
  * @returns	An object containing Input state and utility functions. See {@link UseInputOutput} for more info.
  */
-export const useInput = <I = unknown, O = I>( options: UseInputOptions<I, O> = {} ): UseInputOutput<I, O> => {
+export const useInput = <I = unknown, O = I>(options: UseInputOptions<I, O> = {}): UseInputOutput<I, O> => {
+	const { inputRef } = options
+	const { initialValue } = options
+	const { touchTimeout = 600 } = options
+	const { validate, parse } = options
+	const { onChange } = options
 
-	const { inputRef }				= options
-	const { initialValue }			= options
-	const { touchTimeout = 600 }	= options
-	const { validate, parse }		= options
-	const { onChange }				= options
+	const [state, dispatch] = useReducer(inputReducer, {
+		...initialState,
+		value: initialValue,
+	})
 
-	const [ state, dispatch ] = useReducer( inputReducer,
-		{
-			...initialState,
-			value: initialValue,
-		}
+	const value = useMemo(() => (parse ? parse(state.value as I) : (state.value as O)), [state.value, parse])
+
+	const isValid = useMemo(
+		() => (typeof validate === 'function' ? validate(value) : true),
+		[value, validate],
 	)
 
-	const value = useMemo( () => (
-		parse ? parse( state.value as I ) : state.value as O
-	), [ state.value, parse ] )
-	
-	const isValid = useMemo( () => (
-		typeof validate === 'function' ? validate( value ) : true
-	), [ value, validate ] )
-
-	const { isTouched }	= state
-	const isEmpty		= isEmptyValue( value )
-	const hasError		= (
-		( ! isValid && isTouched ) ||
-		( !! initialValue && ! isValid )
-	)
-
+	const { isTouched } = state
+	const isEmpty = isEmptyValue(value)
+	const hasError = (!isValid && isTouched) || (!!initialValue && !isValid)
 
 	/**
 	 * Set 'touched' state with delay when `value` change.
-	 * 
+	 *
 	 */
-	useUpdateEffect( () => {
+	useUpdateEffect(() => {
+		const identifier = setTimeout(() => {
+			if (isEmptyValue(value)) return
 
-		const identifier = setTimeout( () => {
-			if ( isEmptyValue( value ) ) return
-
-			dispatch( {
+			dispatch({
 				type: InputActionKind.TOUCHED,
-			} )
-		}, touchTimeout )
+			})
+		}, touchTimeout)
 
-		return () => clearTimeout( identifier )
-
-	}, [ value, touchTimeout ] )
-
+		return () => clearTimeout(identifier)
+	}, [value, touchTimeout])
 
 	/**
 	 * Handle input change state.
@@ -164,83 +153,80 @@ export const useInput = <I = unknown, O = I>( options: UseInputOptions<I, O> = {
 	 */
 	const changeHandler = useCallback<React.ChangeEventHandler<InputType>>(
 		event => {
-		
-			const { target }	= event
-			const { type }		= target
-			const value			= (
-				type === 'checkbox' ?
-				( target as HTMLInputElement ).checked : target.value
-			)
+			const { target } = event
+			const { type } = target
+			const value = type === 'checkbox' ? (target as HTMLInputElement).checked : target.value
 
-			dispatch( {
-				type	: InputActionKind.CHANGE,
-				value	: value,
-			} )
+			dispatch({
+				type: InputActionKind.CHANGE,
+				value: value,
+			})
 
-			onChange?.( parse ? parse( value as I ) : value as O )
-			
-		}, [ onChange, parse ]
+			onChange?.(parse ? parse(value as I) : (value as O))
+		},
+		[onChange, parse],
 	)
-
 
 	/**
 	 * Handle input blur state.
 	 *
 	 */
-	const blurHandler = useCallback( () => {
-		dispatch( {
+	const blurHandler = useCallback(() => {
+		dispatch({
 			type: InputActionKind.BLUR,
-		} )
-	}, [] )
-
+		})
+	}, [])
 
 	/**
 	 * Trigger input validation on submit.
 	 *
 	 */
-	const submit = useCallback( () => {
-		dispatch( {
+	const submit = useCallback(() => {
+		dispatch({
 			type: InputActionKind.TOUCHED,
-		} )
-	}, [] )
-
+		})
+	}, [])
 
 	/**
 	 * Programmatically set a new value.
 	 *
 	 */
-	const setValue = useCallback( ( value: O ) => {
-		dispatch( {
-			type	: InputActionKind.CHANGE,
-			value	: value,
-		} )
-	}, [] )
-
+	const setValue = useCallback((value: O) => {
+		dispatch({
+			type: InputActionKind.CHANGE,
+			value: value,
+		})
+	}, [])
 
 	/**
 	 * Focus the input.
 	 *
 	 */
-	const focus = useCallback( () => {
+	const focus = useCallback(() => {
 		inputRef?.current?.focus()
-	}, [ inputRef ] )
-
+	}, [inputRef])
 
 	/**
 	 * Reset the input.
 	 *
 	 */
-	const reset = useCallback( () => {
-		dispatch( {
+	const reset = useCallback(() => {
+		dispatch({
 			type: InputActionKind.RESET,
-		} )
-	}, [] )
-
+		})
+	}, [])
 
 	return {
-		value, isTouched, isValid, isEmpty, hasError,
-		changeHandler, blurHandler, setValue,
-		submit, focus, reset,
+		value,
+		isTouched,
+		isValid,
+		isEmpty,
+		hasError,
+		changeHandler,
+		blurHandler,
+		setValue,
+		submit,
+		focus,
+		reset,
 	}
-
 }

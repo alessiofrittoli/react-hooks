@@ -1,37 +1,30 @@
-import { useCallback, useMemo } from 'react'
 import {
 	blockScroll as blockScrollHandler,
-	restoreScroll as restoreScrollHandler
+	restoreScroll as restoreScrollHandler,
 } from '@alessiofrittoli/web-utils'
-
+import { useCallback, useMemo } from 'react'
 
 /**
  * Prevent Element overflow.
- * 
+ *
  * @param target (Optional) The React RefObject target HTMLElement. Default: `Document.documentElement`.
  */
-export const useScrollBlock = ( target?: React.RefObject<HTMLElement | null> ) => {
+export const useScrollBlock = (
+	target?: React.RefObject<HTMLElement | null>,
+): readonly [() => void, () => void] => {
+	const _target = useMemo(() => target?.current, [target])
 
-	const _target = useMemo( () => target?.current, [ target ] )
-	
 	/**
 	 * Block scroll.
-	 * 
+	 *
 	 */
-	const blockScroll = useCallback(
-		() => blockScrollHandler( _target || undefined ), [ _target ]
-	)
-
+	const blockScroll = useCallback(() => blockScrollHandler(_target || undefined), [_target])
 
 	/**
 	 * Restore scroll.
-	 * 
+	 *
 	 */
-	const restoreScroll = useCallback(
-		() => restoreScrollHandler( _target || undefined ), [ _target ]
-	)
+	const restoreScroll = useCallback(() => restoreScrollHandler(_target || undefined), [_target])
 
-	
-	return [ blockScroll, restoreScroll ] as const
-
+	return [blockScroll, restoreScroll]
 }

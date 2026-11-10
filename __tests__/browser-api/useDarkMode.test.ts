@@ -1,268 +1,210 @@
-import { useState } from 'react'
+import { useMediaQuery as _useMediaQuery, type UseMediaQueryStateOptions } from '@/browser-api/useMediaQuery'
+import { useLocalStorage as _useLocalStorage } from '@/browser-api/storage'
+import { beforeEach, describe, expect, it, vi, type Mock } from 'vitest'
 import { renderHook, act } from '@testing-library/react'
 import { useDarkMode } from '@/browser-api/useDarkMode'
-import { useMediaQuery as _useMediaQuery } from '@/browser-api/useMediaQuery'
-import { useLocalStorage as _useLocalStorage } from '@/browser-api/storage'
+import { useState } from 'react'
 
+vi.mock('@/browser-api/useMediaQuery')
+vi.mock('@/browser-api/storage')
 
-jest.mock( '@/browser-api/useMediaQuery' )
-jest.mock( '@/browser-api/storage' )
+const useMediaQuery = _useMediaQuery as unknown as Mock<
+	(query: string, options?: UseMediaQueryStateOptions) => boolean
+>
 
+const useLocalStorage = _useLocalStorage as Mock<typeof _useLocalStorage>
 
-const useMediaQuery		= _useMediaQuery as jest.Mock
-const useLocalStorage	= _useLocalStorage as jest.Mock
+describe('useDarkMode', () => {
+	beforeEach(() => {
+		useMediaQuery.mockReturnValue(false)
+		useLocalStorage.mockImplementation((key, initial) => useState(initial))
+	})
 
+	it('initializes with the correct default values', () => {
+		const { result } = renderHook(() => useDarkMode())
 
-describe( 'useDarkMode', () => {
+		expect(result.current.isDarkMode).toBe(false)
+		expect(result.current.isDarkOS).toBe(false)
+	})
 
-	beforeEach( () => {
-		useMediaQuery.mockReturnValue( false )
-		useLocalStorage.mockImplementation( ( key, initial ) => useState( initial ) )
-	} )
+	it('respects the initial option', () => {
+		const { result } = renderHook(() => useDarkMode({ initial: true }))
 
+		expect(result.current.isDarkMode).toBe(true)
+	})
 
-	afterEach( () => {
-		jest.restoreAllMocks().resetModules()
-	} )
+	it('fallback to user device preference', () => {
+		useMediaQuery.mockReturnValue(true)
+		useLocalStorage.mockReturnValue([undefined, () => {}])
 
+		const { result } = renderHook(() => useDarkMode())
 
-	it( 'initializes with the correct default values', () => {
+		expect(result.current.isDarkMode).toBe(true)
+		expect(result.current.isDarkOS).toBe(true)
+	})
 
-		const { result } = renderHook( () => useDarkMode() )
+	describe('toggleDarkMode', () => {
+		it('toggles dark mode', () => {
+			const { result } = renderHook(() => useDarkMode())
 
-		expect( result.current.isDarkMode ).toBe( false )
-		expect( result.current.isDarkOS ).toBe( false )
+			expect(result.current.isDarkMode).toBe(false)
 
-	} )
-
-
-	it( 'respects the initial option', () => {
-
-		const { result } = renderHook( () => useDarkMode( { initial: true } ) )
-
-		expect( result.current.isDarkMode ).toBe( true )
-
-	} )
-
-
-	it( 'fallback to user device preference', () => {
-
-		useMediaQuery.mockReturnValue( true )
-		useLocalStorage.mockReturnValue( [ undefined ] )
-
-		const { result } = renderHook( () => useDarkMode() )
-
-		expect( result.current.isDarkMode ).toBe( true )
-		expect( result.current.isDarkOS ).toBe( true )
-
-	} )
-
-
-	describe( 'toggleDarkMode', () => {
-
-		it( 'toggles dark mode', () => {
-
-			const { result } = renderHook( () => useDarkMode() )
-
-			expect( result.current.isDarkMode ).toBe( false )
-	
-			act( () => {
+			act(() => {
 				result.current.toggleDarkMode()
-			} )
-			
-			expect( result.current.isDarkMode ).toBe( true )
-			
-			act( () => {
+			})
+
+			expect(result.current.isDarkMode).toBe(true)
+
+			act(() => {
 				result.current.toggleDarkMode()
-			} )
-			
-			expect( result.current.isDarkMode ).toBe( false )
-	
-		} )
+			})
 
-	} )
+			expect(result.current.isDarkMode).toBe(false)
+		})
+	})
 
+	describe('enableDarkMode', () => {
+		it('enables dark mode', () => {
+			const { result } = renderHook(() => useDarkMode())
 
-	describe( 'enableDarkMode', () => {
-		
-		it( 'enables dark mode', () => {
+			expect(result.current.isDarkMode).toBe(false)
 
-			const { result } = renderHook( () => useDarkMode() )
-	
-			expect( result.current.isDarkMode ).toBe( false )
-
-			act( () => {
+			act(() => {
 				result.current.enableDarkMode()
-			} )
-	
-			expect( result.current.isDarkMode ).toBe( true )
-	
-		} )
+			})
 
-	} )
+			expect(result.current.isDarkMode).toBe(true)
+		})
+	})
 
+	describe('disableDarkMode', () => {
+		it('disables dark mode', () => {
+			const { result } = renderHook(() => useDarkMode({ initial: true }))
 
-	describe( 'disableDarkMode', () => {
-		
-		it( 'disables dark mode', () => {
+			expect(result.current.isDarkMode).toBe(true)
 
-			const { result } = renderHook( () => useDarkMode( { initial: true }) )
-
-			expect( result.current.isDarkMode ).toBe( true )
-	
-			act( () => {
+			act(() => {
 				result.current.disableDarkMode()
-			} )
+			})
 
-			expect( result.current.isDarkMode ).toBe( false )
+			expect(result.current.isDarkMode).toBe(false)
+		})
+	})
 
-		} )
+	it('updates class names on the document element', () => {
+		const { result } = renderHook(() => useDarkMode({ docClassNames: ['dark-theme', 'light-theme'] }))
 
-	} )
-
-
-	it( 'updates class names on the document element', () => {
-
-		const { result } = renderHook( () =>
-			useDarkMode( { docClassNames: [ 'dark-theme', 'light-theme' ] } )
-		)
-
-		act( () => {
+		act(() => {
 			result.current.enableDarkMode()
-		} )
+		})
 
-		expect( document.body.parentElement?.classList.contains( 'dark-theme' ) )
-			.toBe( true )
-		expect( document.body.parentElement?.classList.contains( 'light-theme' ) )
-			.toBe( false )
+		expect(document.body.parentElement?.classList.contains('dark-theme')).toBe(true)
+		expect(document.body.parentElement?.classList.contains('light-theme')).toBe(false)
 
-		act( () => {
+		act(() => {
 			result.current.disableDarkMode()
-		} )
+		})
 
-		expect( document.body.parentElement?.classList.contains( 'dark-theme' ) )
-			.toBe( false )
-		expect( document.body.parentElement?.classList.contains( 'light-theme' ) )
-			.toBe( true )
+		expect(document.body.parentElement?.classList.contains('dark-theme')).toBe(false)
+		expect(document.body.parentElement?.classList.contains('light-theme')).toBe(true)
+	})
 
-	} )
-
-
-	it( 'updates dark mode state based on OS preference changes', () => {
-
-		const { result, rerender } = renderHook( () =>
-			useDarkMode( { docClassNames: [ 'dark-theme', 'light-theme' ] } )
+	it('updates dark mode state based on OS preference changes', () => {
+		const { result, rerender } = renderHook(() =>
+			useDarkMode({ docClassNames: ['dark-theme', 'light-theme'] }),
 		)
 
-		expect( result.current.isDarkMode ).toBe( false )
-		expect( result.current.isDarkOS ).toBe( false )
+		expect(result.current.isDarkMode).toBe(false)
+		expect(result.current.isDarkOS).toBe(false)
 
-		act( () => {
-			useMediaQuery.mockReturnValue( true )
+		act(() => {
+			useMediaQuery.mockReturnValue(true)
 			rerender()
-		} )
+		})
 
-		expect( result.current.isDarkMode ).toBe( true )
-		expect( result.current.isDarkOS ).toBe( true )
+		expect(result.current.isDarkMode).toBe(true)
+		expect(result.current.isDarkOS).toBe(true)
+	})
 
-	} )
+	it('switches theme color accordingly', () => {
+		const lightColor = document.createElement('meta')
+		lightColor.setAttribute('name', 'theme-color')
+		lightColor.setAttribute('content', '#FFFFFF')
+		lightColor.setAttribute('media', '(prefers-color-scheme: light)')
 
+		const darkColor = document.createElement('meta')
+		darkColor.setAttribute('name', 'theme-color')
+		darkColor.setAttribute('content', '#1F1F1F')
+		darkColor.setAttribute('media', '(prefers-color-scheme: dark)')
 
-	it( 'switches theme color accordingly', () => {
+		document.head.append(lightColor)
+		document.head.append(darkColor)
 
-		const lightColor = document.createElement( 'meta' )
-		lightColor.setAttribute( 'name', 'theme-color' )
-		lightColor.setAttribute( 'content', '#FFFFFF' )
-		lightColor.setAttribute( 'media', '(prefers-color-scheme: light)' )
+		const { result } = renderHook(() => useDarkMode({ initial: false }))
 
-		const darkColor = document.createElement( 'meta' )
-		darkColor.setAttribute( 'name', 'theme-color' )
-		darkColor.setAttribute( 'content', '#1F1F1F' )
-		darkColor.setAttribute( 'media', '(prefers-color-scheme: dark)' )
-
-		document.head.append( lightColor )
-		document.head.append( darkColor )
-		
-		const { result } = renderHook( () => useDarkMode( { initial: false } ) )
-
-		act( () => {
+		act(() => {
 			result.current.enableDarkMode()
-		} )
+		})
 
 		expect(
-			document.querySelector( 'meta[media="(prefers-color-scheme: light)"]' )
-				?.getAttribute( 'content' )
-		).toBe( '#1F1F1F' )
+			document.querySelector('meta[media="(prefers-color-scheme: light)"]')?.getAttribute('content'),
+		).toBe('#1F1F1F')
 		expect(
-			document.querySelector( 'meta[media="(prefers-color-scheme: dark)"]' )
-				?.getAttribute( 'content' )
-		).toBe( '#1F1F1F' )
-		
-		
-		act( () => {
+			document.querySelector('meta[media="(prefers-color-scheme: dark)"]')?.getAttribute('content'),
+		).toBe('#1F1F1F')
+
+		act(() => {
 			result.current.disableDarkMode()
-		} )
+		})
 
 		expect(
-			document.querySelector( 'meta[media="(prefers-color-scheme: light)"]' )
-				?.getAttribute( 'content' )
-		).toBe( '#FFFFFF' )
+			document.querySelector('meta[media="(prefers-color-scheme: light)"]')?.getAttribute('content'),
+		).toBe('#FFFFFF')
 		expect(
-			document.querySelector( 'meta[media="(prefers-color-scheme: dark)"]' )
-				?.getAttribute( 'content' )
-		).toBe( '#FFFFFF' )
+			document.querySelector('meta[media="(prefers-color-scheme: dark)"]')?.getAttribute('content'),
+		).toBe('#FFFFFF')
 
 		lightColor.remove()
 		darkColor.remove()
+	})
 
-	} )
-	
-	
-	it( 'doesn\'t switch theme colors if no color is found', () => {
+	it("doesn't switch theme colors if no color is found", () => {
+		const lightColor = document.createElement('meta')
+		lightColor.setAttribute('name', 'theme-color')
+		lightColor.setAttribute('media', '(prefers-color-scheme: light)')
 
-		const lightColor = document.createElement( 'meta' )
-		lightColor.setAttribute( 'name', 'theme-color' )
-		lightColor.setAttribute( 'media', '(prefers-color-scheme: light)' )
+		const darkColor = document.createElement('meta')
+		darkColor.setAttribute('name', 'theme-color')
+		darkColor.setAttribute('media', '(prefers-color-scheme: dark)')
 
-		const darkColor = document.createElement( 'meta' )
-		darkColor.setAttribute( 'name', 'theme-color' )
-		darkColor.setAttribute( 'media', '(prefers-color-scheme: dark)' )
+		document.head.append(lightColor)
+		document.head.append(darkColor)
 
-		document.head.append( lightColor )
-		document.head.append( darkColor )
-		
-		const { result } = renderHook( () => useDarkMode( { initial: false } ) )
+		const { result } = renderHook(() => useDarkMode({ initial: false }))
 
-		act( () => {
+		act(() => {
 			result.current.enableDarkMode()
-		} )
+		})
 
 		expect(
-			document.querySelector( 'meta[media="(prefers-color-scheme: light)"]' )
-				?.getAttribute( 'content' )
+			document.querySelector('meta[media="(prefers-color-scheme: light)"]')?.getAttribute('content'),
 		).toBeNull()
 		expect(
-			document.querySelector( 'meta[media="(prefers-color-scheme: dark)"]' )
-				?.getAttribute( 'content' )
+			document.querySelector('meta[media="(prefers-color-scheme: dark)"]')?.getAttribute('content'),
 		).toBeNull()
-		
-		
-		act( () => {
+
+		act(() => {
 			result.current.disableDarkMode()
-		} )
+		})
 
 		expect(
-			document.querySelector( 'meta[media="(prefers-color-scheme: light)"]' )
-				?.getAttribute( 'content' )
+			document.querySelector('meta[media="(prefers-color-scheme: light)"]')?.getAttribute('content'),
 		).toBeNull()
 		expect(
-			document.querySelector( 'meta[media="(prefers-color-scheme: dark)"]' )
-				?.getAttribute( 'content' )
+			document.querySelector('meta[media="(prefers-color-scheme: dark)"]')?.getAttribute('content'),
 		).toBeNull()
 
 		lightColor.remove()
 		darkColor.remove()
-
-	} )
-
-} )
+	})
+})

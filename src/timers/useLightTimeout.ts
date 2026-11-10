@@ -1,10 +1,9 @@
+import type { BasicTimerOptions, TimerHandler } from '@/timers/types'
 import { useEffect } from 'react'
-import type { BasicTimerOptions, TimerHandler } from './types'
-
 
 /**
  * Schedules execution of a one-time `callback` after `delay` milliseconds.
- * 
+ *
  * This is a lighter version of [`useTimeout`](./useTimeout.ts), suggested to use when
  * a basic functionality is enough (no manual start/stop or state updates).
  *
@@ -17,27 +16,23 @@ import type { BasicTimerOptions, TimerHandler } from './types'
  * will be set to `1`. Non-integer delays are truncated to an integer.
  *
  * If `callback` is not a function, a `TypeError` will be thrown.
- * 
+ *
  * The `Timeout` is automatically cancelled on unmount.
- * 
+ *
  * @template T An Array defining optional arguments passed to the `callback`.
- * 
+ *
  * @param	callback	The function to call when the timer elapses.
  * @param	options		(Optional) An object defining custom timer options. See {@link BasicTimerOptions} for more info.
  */
 export const useLightTimeout = <T extends readonly unknown[]>(
 	callback: TimerHandler<T>,
-	options	: BasicTimerOptions<T> = {},
-) => {
-
+	options: BasicTimerOptions<T> = {},
+): void => {
 	const { delay = 1, args } = options
 
-	useEffect( () => {
-		
-		const timer = setTimeout( callback, delay, ...( args || [] ) )
+	useEffect(() => {
+		const timer = setTimeout(callback, delay, ...(args || []))
 
-		return () => clearTimeout( timer )
-
-	}, [ delay, args, callback ] )
-
+		return () => clearTimeout(timer)
+	}, [delay, args, callback])
 }

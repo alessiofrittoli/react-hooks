@@ -1,39 +1,30 @@
-import { renderHook } from '@testing-library/react'
+import { useMediaQuery as _useMediaQuery, type UseMediaQueryStateOptions } from '@/browser-api/useMediaQuery'
 import { useIsTouchDevice } from '@/browser-api/useIsTouchDevice'
-import { useMediaQuery as _useMediaQuery } from '@/browser-api/useMediaQuery'
+import { describe, expect, it, vi, type Mock } from 'vitest'
+import { renderHook } from '@testing-library/react'
 
-jest.mock( '@/browser-api/useMediaQuery', () => ( {
-	useMediaQuery: jest.fn().mockReturnValue( false )
-} ) )
+vi.mock('@/browser-api/useMediaQuery', () => ({
+	useMediaQuery: vi.fn().mockReturnValue(false),
+}))
 
+const useMediaQuery = _useMediaQuery as Mock<(query: string, options?: UseMediaQueryStateOptions) => boolean>
 
-const useMediaQuery = _useMediaQuery as jest.Mock
+describe('useIsTouchDevice', () => {
+	it('calls useMediaQuery with (pointer: coarse)', () => {
+		renderHook(() => useIsTouchDevice())
 
-describe( 'useIsTouchDevice', () => {
+		expect(useMediaQuery).toHaveBeenCalledWith('(pointer: coarse)')
+	})
 
-	afterEach( () => {
-		jest.clearAllMocks()
-	} )
+	it('returns true if useMediaQuery returns true', () => {
+		useMediaQuery.mockReturnValueOnce(true)
+		const { result } = renderHook(() => useIsTouchDevice())
+		expect(result.current).toBe(true)
+	})
 
-
-	it( 'calls useMediaQuery with (pointer: coarse)', () => {
-		renderHook( () => useIsTouchDevice() )
-		expect( useMediaQuery )
-			.toHaveBeenCalledWith( '(pointer: coarse)' )
-	} )
-
-
-	it( 'returns true if useMediaQuery returns true', () => {
-		useMediaQuery.mockReturnValueOnce( true )
-		const { result } = renderHook( () => useIsTouchDevice() )
-		expect( result.current ).toBe( true )
-	} )
-
-
-	it( 'returns false if useMediaQuery returns false', () => {
-		useMediaQuery.mockReturnValueOnce( false )
-		const { result } = renderHook( () => useIsTouchDevice() )
-		expect( result.current ).toBe( false )
-	} )
-
-} )
+	it('returns false if useMediaQuery returns false', () => {
+		useMediaQuery.mockReturnValueOnce(false)
+		const { result } = renderHook(() => useIsTouchDevice())
+		expect(result.current).toBe(false)
+	})
+})

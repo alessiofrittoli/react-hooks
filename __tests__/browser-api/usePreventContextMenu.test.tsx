@@ -1,76 +1,60 @@
-import { renderHook } from '@testing-library/react'
-import { useEventListener } from '@/browser-api/useEventListener'
 import { usePreventContextMenu } from '@/browser-api/usePreventContextMenu'
+import { useEventListener } from '@/browser-api/useEventListener'
+import { renderHook } from '@testing-library/react'
+import { describe, expect, it, vi } from 'vitest'
 
-jest.mock( '@/browser-api/useEventListener' )
+vi.mock('@/browser-api/useEventListener')
 
+describe('usePreventContextMenu', () => {
+	it('calls useEventListener with contextmenu event', () => {
+		renderHook(() => usePreventContextMenu())
 
-describe( 'usePreventContextMenu', () => {
-
-	afterEach( () => {
-		jest.clearAllMocks()
-	} )
-
-
-	it( 'calls useEventListener with contextmenu event', () => {
-
-		renderHook( () => usePreventContextMenu() )
-
-		expect( useEventListener ).toHaveBeenCalledWith(
+		expect(useEventListener).toHaveBeenCalledWith(
 			'contextmenu',
-			expect.objectContaining( {
-				target		: undefined,
-				listener	: expect.any( Function ),
-			} )
+			expect.objectContaining({
+				target: undefined,
+				listener: expect.any(Function),
+			}),
 		)
+	})
 
-	} )
+	it('prevents default on contextmenu event', () => {
+		renderHook(() => usePreventContextMenu())
 
+		const event = new MouseEvent('contextmenu')
 
-	it( 'prevents default on contextmenu event', () => {
+		vi.spyOn(event, 'preventDefault')
 
-		renderHook( () => usePreventContextMenu() )
+		const call = vi.mocked(useEventListener).mock.calls[0]
 
-		const event = new MouseEvent( 'contextmenu' )
-		jest.spyOn( event, 'preventDefault' )
-		
-		const call = jest.mocked( useEventListener ).mock.calls[ 0 ]
+		call?.[1].listener(event)
 
-		call?.[ 1 ].listener( event )
+		expect(event.preventDefault).toHaveBeenCalled()
+	})
 
-		expect( event.preventDefault ).toHaveBeenCalled()
+	it('passes target to useEventListener when provided', () => {
+		const target = document.createElement('div')
 
-	} )
+		renderHook(() => usePreventContextMenu(target))
 
-
-	it( 'passes target to useEventListener when provided', () => {
-
-		const target = document.createElement( 'div' )
-
-		renderHook( () => usePreventContextMenu( target ) )
-
-		expect( useEventListener ).toHaveBeenCalledWith(
+		expect(useEventListener).toHaveBeenCalledWith(
 			'contextmenu',
-			expect.objectContaining( {
+			expect.objectContaining({
 				target,
-			} )
+			}),
 		)
+	})
 
-	} )
+	it('passes ref object as target when provided', () => {
+		const ref = { current: document.createElement('div') }
 
+		renderHook(() => usePreventContextMenu(ref))
 
-	it( 'passes ref object as target when provided', () => {
-
-		const ref = { current: document.createElement( 'div' ) }
-
-		renderHook( () => usePreventContextMenu( ref ) )
-
-		expect( useEventListener ).toHaveBeenCalledWith(
+		expect(useEventListener).toHaveBeenCalledWith(
 			'contextmenu',
-			expect.objectContaining( {
+			expect.objectContaining({
 				target: ref,
-			} )
+			}),
 		)
-	} )
-
-} )
+	})
+})

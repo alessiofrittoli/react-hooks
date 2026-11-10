@@ -1,83 +1,73 @@
-import { useRef } from 'react'
-import { renderHook, act } from '@testing-library/react'
+import { blockScroll as _blockScroll, restoreScroll as _restoreScroll } from '@alessiofrittoli/web-utils'
+import { describe, expect, it, vi, type Mock } from 'vitest'
 import { useScrollBlock } from '@/dom-api/useScrollBlock'
-import { blockScroll, restoreScroll } from '@alessiofrittoli/web-utils'
+import { renderHook, act } from '@testing-library/react'
+import { useRef } from 'react'
 
-jest.mock( '@alessiofrittoli/web-utils', () => ( {
-	blockScroll		: jest.fn(),
-	restoreScroll	: jest.fn(),
-} ) )
+vi.mock('@alessiofrittoli/web-utils')
 
+const blockScroll = _blockScroll as Mock<typeof _blockScroll>
+const restoreScroll = _restoreScroll as Mock<typeof _restoreScroll>
 
-describe( 'useScrollBlock', () => {
+describe('useScrollBlock', () => {
+	it('calls blockScroll with default target when invoked', () => {
+		const {
+			result: { current },
+		} = renderHook(() => useScrollBlock())
+		const [hookBlockScroll] = current
 
-	afterEach( () => {
-		jest.clearAllMocks().resetModules()
-	} )
-	
-
-	it( 'calls blockScroll with default target when invoked', () => {
-		
-		const { result: { current } } = renderHook( () => useScrollBlock() )
-		const [ hookBlockScroll ] = current
-
-		act( () => {
+		act(() => {
 			hookBlockScroll()
-		} )
+		})
 
-		expect( blockScroll ).toHaveBeenCalledWith( undefined )
+		expect(blockScroll).toHaveBeenCalledWith(undefined)
+	})
 
-	} )
+	it('calls blockScroll with custom target when invoked', () => {
+		const target = document.createElement('div')
+		const {
+			result: { current },
+		} = renderHook(() => {
+			const targetRef = useRef(target)
+			return useScrollBlock(targetRef)
+		})
 
+		const [hookBlockScroll] = current
 
-	it( 'calls blockScroll with custom target when invoked', () => {
-
-		const target = document.createElement( 'div' )
-		const { result: { current } } = renderHook( () => {
-			const targetRef	= useRef( target )
-			return useScrollBlock( targetRef )
-		} )
-
-		const [ hookBlockScroll ] = current
-
-		act( () => {
+		act(() => {
 			hookBlockScroll()
-		} )
+		})
 
-		expect( blockScroll ).toHaveBeenCalledWith( target )
+		expect(blockScroll).toHaveBeenCalledWith(target)
+	})
 
-	} )
+	it('calls restoreScroll with default target when invoked', () => {
+		const {
+			result: { current },
+		} = renderHook(() => useScrollBlock())
+		const [, hookRestoreScroll] = current
 
-
-	it( 'calls restoreScroll with default target when invoked', () => {
-
-		const { result: { current } } = renderHook( () => useScrollBlock() )
-		const [, hookRestoreScroll ] = current
-
-		act( () => {
+		act(() => {
 			hookRestoreScroll()
-		} )
+		})
 
-		expect( restoreScroll ).toHaveBeenCalledWith( undefined )
+		expect(restoreScroll).toHaveBeenCalledWith(undefined)
+	})
 
-	} )
-	
-	
-	it( 'calls restoreScroll with custom target when invoked', () => {
+	it('calls restoreScroll with custom target when invoked', () => {
+		const target = document.createElement('div')
+		const {
+			result: { current },
+		} = renderHook(() => {
+			const targetRef = useRef(target)
+			return useScrollBlock(targetRef)
+		})
+		const [, hookRestoreScroll] = current
 
-		const target = document.createElement( 'div' )
-		const { result: { current } } = renderHook( () => {
-			const targetRef	= useRef( target )
-			return useScrollBlock( targetRef )
-		} )
-		const [, hookRestoreScroll ] = current
-
-		act( () => {
+		act(() => {
 			hookRestoreScroll()
-		} )
+		})
 
-		expect( restoreScroll ).toHaveBeenCalledWith( target )
-
-	} )
-
-} )
+		expect(restoreScroll).toHaveBeenCalledWith(target)
+	})
+})
