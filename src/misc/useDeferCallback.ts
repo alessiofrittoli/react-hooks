@@ -19,7 +19,8 @@ import { useCallback } from 'react'
  * )
  * ```
  */
-export const useDeferCallback = <T extends DeferredTask<U>, U extends unknown[] = unknown[]>(
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const useDeferCallback = <T extends DeferredTask<U>, U extends any[] = any[]>(
 	task: T,
 	deps: React.DependencyList,
 	// eslint-disable-next-line react-hooks/exhaustive-deps, react-hooks/use-memo
